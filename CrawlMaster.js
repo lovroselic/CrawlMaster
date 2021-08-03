@@ -795,7 +795,7 @@ var INI = {
   LAMP_PERSISTENCE: 99,
   INVISIBILITY_TIME: 60,
   LUCKY_TIME: 60,
-  INI_BASE_EXP_FONT: 100, 
+  INI_BASE_EXP_FONT: 100,
   LEVEL_FACTOR: 1.5,
   POTION_INC: 0.4,
   HEALTH_INC: 4,
@@ -809,12 +809,12 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.31.0.A",
+  VERSION: "0.31.1.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
   CSS: "color: #239AFF;",
-  INIT: function () {
+  INIT() {
     console.log(
       `${PRG.NAME} ${PRG.VERSION} by Lovro Selic, (c) C00lSch00l ${PRG.YEAR} on ${navigator.userAgent}`
     );
@@ -831,7 +831,7 @@ var PRG = {
     ENGINE.setSpriteSheetSize(64);
     ENGINE.init();
   },
-  setup: function () {
+  setup() {
     console.log("PRG.setup");
     $("#gridsize").val(INI.GRIDSIZE);
     $("#gridsize").change(GAME.resizeGrid);
@@ -845,7 +845,6 @@ var PRG = {
     $("#screen_width").html(INI.SCREEN_WIDTH);
     $("#screen_height").html(INI.SCREEN_HEIGHT);
 
-    //
     $("#walltexture").change(function () {
       ENGINE.fill(LAYER.wallcanvas, TEXTURE[$("#walltexture")[0].value]);
       GAME.applyTextures();
@@ -859,7 +858,6 @@ var PRG = {
       GAME.applyTextures();
     });
 
-    //
     $("#toggleHelp").click(function () {
       $("#help").toggle(400);
     });
@@ -867,7 +865,7 @@ var PRG = {
       $("#about").toggle(400);
     });
   },
-  start: function () {
+  start() {
     console.log(PRG.NAME + " started.");
     $(ENGINE.topCanvas).off("mousemove", ENGINE.mouseOver);
     $(ENGINE.topCanvas).off("click", ENGINE.mouseClick);
@@ -887,9 +885,9 @@ var HERO = {
     this.resetVision();
     this.visible();
     this.unlucky();
-    //console.log("HERO", HERO);
     this.dead = false;
-    this.maxHealth = 15;
+    //this.maxHealth = 15;
+    this.maxHealth = 1500;
     this.maxMana = 15;
     this.restore();
     //stats
@@ -1000,7 +998,7 @@ var HERO = {
     },
     scroll: new Inventory()
   },
-  usePotion: function (type) {
+  usePotion(type) {
     let Type = type.capitalize();
     let max = `max${Type}`;
     if (HERO[type] === HERO[max]) {
@@ -1205,10 +1203,10 @@ var SWORD = {
   }
 };
 var GAME = {
-  clearInfo: function () {
+  clearInfo() {
     ENGINE.clearLayer("info");
   },
-  infoTimer: function () {
+  infoTimer() {
     let T;
     if (ENGINE.TIMERS.exists(INI.INFO_TIMER_ID)) {
       T = ENGINE.TIMERS.access(INI.INFO_TIMER_ID);
@@ -1217,7 +1215,7 @@ var GAME = {
       T = new CountDown(INI.INFO_TIMER_ID, INI.INFO_TIMER, GAME.clearInfo);
     }
   },
-  applyTextures: function () {
+  applyTextures() {
     ENGINE.RAYCAST_DRAW.configure(
       $("#floortexture")[0].value,
       $("#ceilingtexture")[0].value,
@@ -1227,7 +1225,7 @@ var GAME = {
       GAME.frameDraw();
     }
   },
-  start: function () {
+  start() {
     if (AUDIO.Title) {
       AUDIO.Title.pause();
       AUDIO.Title.currentTime = 0;
@@ -1276,7 +1274,6 @@ var GAME = {
     SAVE_GAME.pointers = [...HERO.attributesForSaveGame, 'GAME.level', 'GAME.gold'];
     SAVE_GAME.lists = ["HERO.inventory.scroll"];
     SAVE_GAME.timers = ["Main"];
-    //console.log('SAVE_GAME...', SAVE_GAME.pointers, SAVE_GAME.lists, SAVE_GAME.timers);
     //end SAVE GAME
     GAME.time = new Timer("Main");
 
@@ -1301,12 +1298,12 @@ var GAME = {
       MAP[level].DUNGEON = null;
     }
   },
-  prepareForRestart: function () {
+  prepareForRestart() {
     console.log("preparing game for start or safe restart ...");
     ENGINE.TIMERS.clear();
     GAME.discardMaps();
   },
-  paintCoord: function () {
+  paintCoord() {
     ENGINE.clearLayer("coord");
     let map = MAP[GAME.level].DUNGEON;
     for (let x = 0; x < map.width; x++) {
@@ -1320,16 +1317,16 @@ var GAME = {
       }
     }
   },
-  clickPause: function () {
+  clickPause() {
     if (HERO.dead) return;
     $("#pause").trigger("click");
     ENGINE.GAME.keymap[ENGINE.KEY.map.F4] = false;
   },
-  lostFocus: function () {
+  lostFocus() {
     if (GAME.paused || HERO.dead) return;
     GAME.clickPause();
   },
-  pause: function () {
+  pause() {
     if (HERO.dead) return;
     console.log("%cGAME paused.", PRG.CSS);
     $("#pause").prop("value", "Resume Game [F4]");
@@ -1346,7 +1343,7 @@ var GAME = {
     GAME.paused = true;
     ENGINE.TIMERS.stop();
   },
-  resume: function () {
+  resume() {
     console.log("%cGAME resumed.", PRG.CSS);
     $("#pause").prop("value", "Pause Game [F4]");
     $("#pause").off("click", GAME.resume);
@@ -1357,25 +1354,25 @@ var GAME = {
     ENGINE.GAME.ANIMATION.next(GAME.run);
     GAME.paused = false;
   },
-  newGrid: function () {
+  newGrid() {
     ENGINE.INI.GRIDPIX = INI.GRIDSIZE;
     ENGINE.gameHEIGHT = MAP[GAME.level].height * ENGINE.INI.GRIDPIX;
     ENGINE.gameWIDTH = MAP[GAME.level].width * ENGINE.INI.GRIDPIX;
   },
-  blockGrid: function () {
+  blockGrid() {
     ENGINE.resizeBOX("ROOM");
     $(ENGINE.gameWindowId).width(ENGINE.gameWIDTH + 4);
     ENGINE.BLOCKGRID.configure("pacgrid", "#FFF", "#000");
     ENGINE.BLOCKGRID.draw(MAP[GAME.level].DUNGEON);
   },
-  render: function () {
+  render() {
     GAME.blockGrid();
   },
-  drawPlayer: function () {
+  drawPlayer() {
     ENGINE.clearLayer(ENGINE.VECTOR2D.layerString);
     ENGINE.VECTOR2D.draw();
   },
-  drawKeys: function () {
+  drawKeys() {
     let map = MAP[GAME.level].DUNGEON;
     for (let key in map.keys) {
       let grid = map.keys[key];
@@ -1387,7 +1384,7 @@ var GAME = {
       );
     }
   },
-  frameDraw: function (lapsedTime) {
+  frameDraw(lapsedTime) {
     if (DEBUG._2D_display) {
       GAME.drawPlayer();
       GAME.drawKeys();
@@ -1404,7 +1401,7 @@ var GAME = {
       GAME.FPS(lapsedTime);
     }
   },
-  FPS: function (lapsedTime) {
+  FPS(lapsedTime) {
     let CTX = LAYER.FPS;
     CTX.fillStyle = "white";
     ENGINE.clearLayer("FPS");
@@ -1412,7 +1409,7 @@ var GAME = {
     GAME.fps.update(fps);
     CTX.fillText(GAME.fps.getFps(), 5, 10);
   },
-  respond: function () {
+  respond() {
     var map = ENGINE.GAME.keymap;
     if (map[ENGINE.KEY.map.F4]) {
       $("#pause").trigger("click");
@@ -1491,7 +1488,7 @@ var GAME = {
       return;
     }
   },
-  run: function (lapsedTime) {
+  run(lapsedTime) {
     if (ENGINE.GAME.stopAnimation) return;
     let map = MAP[GAME.level].DUNGEON;
     //must be before to set indexArray
@@ -1529,7 +1526,6 @@ var GAME = {
             }
           }
 
-          //console.log("..obj-wall", rightObject);
           rightObject.interact();
           break;
       }
@@ -1564,7 +1560,7 @@ var GAME = {
       }
     }
   },
-  linkMaps: function () {
+  linkMaps() {
     let map = MAP[GAME.level].DUNGEON;
     RAYCAST.setMap(map);
     ENEMY.linkMap(map);
@@ -1573,7 +1569,8 @@ var GAME = {
     FLOOR_OBJECT.init(map);
     MINIMAP.init(map, INI.MIMIMAP_WIDTH, INI.MIMIMAP_HEIGHT);
   },
-  newDungeon: function (waypoint = "entrance") {
+  newDungeon(waypoint = "entrance") {
+
     /*
     dungeon setup
     raycast setup: done?
@@ -1599,10 +1596,11 @@ var GAME = {
       GAME.paintCoord();
     }
   },
-  resizeGrid: function () {
-    console.log("resizing grid");
-    if (isNaN(parseInt($("#gridsize").val(), 10)))
+  resizeGrid() {
+    if (isNaN(parseInt($("#gridsize").val(), 10))) {
       $("#gridsize").val(INI.GRIDSIZE);
+    }
+
     if ($("#gridsize").val() < INI.MIN_GRID) $("#gridsize").val(INI.MIN_GRID);
     if ($("#gridsize").val() > INI.MAX_GRID) $("#gridsize").val(INI.MAX_GRID);
     if ($("#gridsize").val() % 8 !== 0) {
@@ -1614,7 +1612,7 @@ var GAME = {
     ENGINE.gameWIDTH = MAP.level.width * ENGINE.INI.GRIDPIX;
     GAME.render();
   },
-  setup: function () {
+  setup() {
     console.log("GAME SETUP started");
     MAZE.connectSome = true;
     MAZE.leaveDeadEnds = 4;
@@ -1717,7 +1715,7 @@ var GAME = {
     );
     FORM.set("WINDOW", "mouse");
   },
-  configDungeon: function (waypoint = "entrance") {
+  configDungeon(waypoint = "entrance") {
     SPAWN.spawn(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
     PLAYER.initialize(
       Grid.toCenter(MAP[GAME.level].DUNGEON[waypoint]),
@@ -1795,7 +1793,7 @@ var TITLE = {
     TITLE.main();
     TITLE.scrolls();
   },
-  background: function () {
+  background() {
     TITLE.clearAllLayers();
     TITLE.blackBackground();
 
@@ -1861,7 +1859,7 @@ var TITLE = {
     this.stats();
     this.gold();
   },
-  firstTitle: function () {
+  firstTitle() {
     let CTX = LAYER.black;
     var fs = 60;
     CTX.font = fs + "px DeepDown";
@@ -1874,7 +1872,7 @@ var TITLE = {
     var grad = CTX.createLinearGradient(gx, gy + 10, gx, gy + fs);
     this.drawTitleText(CTX, grad, x, y);
   },
-  title: function () {
+  title() {
     let CTX = LAYER.title;
     var fs = 42;
     CTX.font = fs + "px DeepDown";
@@ -1906,12 +1904,12 @@ var TITLE = {
     CTX.shadowBlur = 2;
     CTX.fillText(PRG.NAME, x, y);
   },
-  main: function () {
+  main() {
     this.background();
     this.title();
   },
-  setup: function () { },
-  keys: function () {
+  setup() { },
+  keys() {
     ENGINE.clearLayer("keys");
     let y = (SPRITE.LineTop.height / 2 + TITLE.stack.delta2 / 2) | 0;
     let list = [...HERO.inventory.key, ...HERO.inventory.status];
@@ -1926,7 +1924,7 @@ var TITLE = {
       ENGINE.spriteDraw("keys", x, y, SPRITE[item.spriteClass]);
     }
   },
-  potion: function () {
+  potion() {
     ENGINE.clearLayer("potion");
     let CTX = LAYER.potion;
     CTX.fillStyle = "#AAA";
@@ -1939,7 +1937,7 @@ var TITLE = {
     CTX.fillText(HERO.inventory.potion.red, TITLE.stack.p1, TITLE.stack.PY);
     CTX.fillText(HERO.inventory.potion.blue, TITLE.stack.p2, TITLE.stack.PY);
   },
-  scrolls: function () {
+  scrolls() {
     let INV = HERO.inventory.scroll;
     ENGINE.clearLayer("scrolls");
     let CTX = LAYER.scrolls;
@@ -1990,7 +1988,7 @@ var TITLE = {
       }
     }
   },
-  time: function () {
+  time() {
     let fs = 14;
     let y = ((TITLE.stack.delta2 + SPRITE.LineTop.height) / 2 + fs / 4) | 0;
     let x = ((INI.SCREEN_WIDTH / 2 - SPRITE.LineTop.width) / 2) | 0;
@@ -2004,7 +2002,7 @@ var TITLE = {
     x = (INI.SCREEN_WIDTH / 2 - x - timeMeasure.width) | 0;
     CTX.fillText(time, x, y);
   },
-  statBar: function (x, y, value, max, color) {
+  statBar(x, y, value, max, color) {
     var CTX = LAYER.stat;
     CTX.save();
     ENGINE.resetShadow(CTX);
@@ -2022,7 +2020,7 @@ var TITLE = {
   magicBar(x, y) {
     TITLE.statBar(x, y, HERO.magicExp, HERO.magicExpGoal, "#800080");
   },
-  statusBar: function (x, y, value, max, color) {
+  statusBar(x, y, value, max, color) {
     var CTX = LAYER.statusBars;
     CTX.save();
     ENGINE.resetShadow(CTX);
@@ -2031,7 +2029,7 @@ var TITLE = {
     ENGINE.statusBar(CTX, x, y, w, h, value, max, color);
     CTX.restore();
   },
-  healthBar: function (x, y) {
+  healthBar(x, y) {
     TITLE.statusBar(x, y, HERO.health, HERO.maxHealth, "#F00");
   },
   manaBar(x, y) {

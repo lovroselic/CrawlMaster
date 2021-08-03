@@ -42,8 +42,8 @@ var CAMERA = {
   dir: null,
   transformX: null,
   transformDepth: null,
-  Z: 0.5, 
-  set: function (player = PLAYER) {
+  Z: 0.5,
+  set(player = PLAYER) {
     CAMERA.dir = player.dir
       .rotate(Math.radians(90))
       .scale(Math.tan(Math.radians(CAMERA.FOV) / 2));
@@ -58,7 +58,7 @@ var CAMERA = {
     CAMERA.transformDepth =
       invDet * (-CAMERA.dir.y * spritePos.x + CAMERA.dir.x * spritePos.y);
   },
-  setZ(z){
+  setZ(z) {
     this.Z = z;
   },
 };
@@ -68,13 +68,13 @@ var PLAYER = {
   dir: null,
   rotationResolution: 64,
   moveSpeed: 4.0, // grids/s
-  initialize: function (start, dir) {
+  initialize(start, dir) {
     PLAYER.pos = start;
     PLAYER.dir = dir;
     PLAYER.r = this.size / 2;
     CAMERA.set();
   },
-  rotate: function (rotDirection, lapsedTime) {
+  rotate(rotDirection, lapsedTime) {
     let angle =
       Math.round(lapsedTime / ENGINE.INI.ANIMATION_INTERVAL) *
       rotDirection *
@@ -82,7 +82,7 @@ var PLAYER = {
     PLAYER.dir = PLAYER.dir.rotate(angle);
     CAMERA.dir = CAMERA.dir.rotate(angle);
   },
-  bumpEnemy: function (nextPos) {
+  bumpEnemy(nextPos) {
     let checkGrids = RAYCAST.MAP.GA.gridsAroundEntity(
       nextPos,
       PLAYER.dir,
@@ -100,7 +100,7 @@ var PLAYER = {
     }
     return false;
   },
-  move: function (reverse, lapsedTime) {
+  move(reverse, lapsedTime) {
     let length = (lapsedTime / 1000) * PLAYER.moveSpeed;
     let dir;
     if (reverse) {
@@ -124,7 +124,7 @@ var PLAYER = {
       PLAYER.pos = nextPos;
     }
   },
-  usingStaircase: function (nextPos, resolution = 4) {
+  usingStaircase(nextPos, resolution = 4) {
     let currentGrid = Grid.toClass(this.pos);
     if (RAYCAST.MAP.GA.notStair(currentGrid)) return null;
 
@@ -155,7 +155,7 @@ var PLAYER = {
 
     return null;
   },
-  strafe: function (rotDirection, lapsedTime) {
+  strafe(rotDirection, lapsedTime) {
     let length = (lapsedTime / 1000) * PLAYER.moveSpeed;
     let dir = PLAYER.dir.rotate((rotDirection * Math.PI) / 2);
     let nextPos = PLAYER.pos.translate(dir, length);
@@ -172,7 +172,7 @@ var PLAYER = {
       PLAYER.pos = nextPos;
     }
   },
-  respond: function (lapsedTime) {
+  respond(lapsedTime) {
     var map = ENGINE.GAME.keymap;
     if (map[ENGINE.KEY.map.Q]) {
       PLAYER.rotate(-1, lapsedTime);
@@ -204,7 +204,7 @@ var PLAYER = {
       return;
     }
   },
-  circleCollision: function (entity, nextPos = null) {
+  circleCollision(entity, nextPos = null) {
     let distance;
     if (nextPos !== null) {
       distance = entity.moveState.pos.EuclidianDistance(nextPos);
@@ -221,7 +221,7 @@ var PLAYER = {
 var FLOOR_OBJECT = {
   POOL: null,
   IA: "floor_objectIA",
-  draw: function () {
+  draw() {
     for (let obj of this.POOL) {
       if (obj) obj.draw();
     }
@@ -230,15 +230,15 @@ var FLOOR_OBJECT = {
     this.POOL.push(obj);
     obj.id = this.POOL.length;
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  init: function (map) {
+  init(map) {
     this.linkMap(map);
     this.manage(null, map);
   },
   reIndexRequired: false,
-  reIndex: function () {
+  reIndex() {
     if (!this.reIndexRequired) return;
     this.POOL = this.POOL.filter((el) => el !== null);
     for (const [index, obj] of this.POOL.entries()) {
@@ -246,7 +246,7 @@ var FLOOR_OBJECT = {
     }
     this.reIndexRequired = false;
   },
-  poolToIA: function (IA) {
+  poolToIA(IA) {
     for (const obj of this.POOL) {
       let grid = Grid.toClass(obj.moveState.pos);
       if (!IA.has(grid, obj.id)) {
@@ -254,13 +254,13 @@ var FLOOR_OBJECT = {
       }
     }
   },
-  manage: function (lapsedTime, map) {
+  manage(lapsedTime, map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4);
     this.reIndex();
     this.poolToIA(map[this.IA]);
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   }
 };
@@ -272,20 +272,20 @@ var DESTRUCTION_ANIMATION = {
       if (anim) anim.draw();
     }
   },
-  add: function (anim) {
+  add(anim) {
     this.POOL.push(anim);
     anim.id = this.POOL.length;
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  reIndex: function () {
+  reIndex() {
     this.POOL = this.POOL.filter((el) => el !== null);
     for (const [index, anim] of this.POOL.entries()) {
       anim.id = index + 1;
     }
   },
-  poolToIA: function (IA) {
+  poolToIA(IA) {
     for (const anim of this.POOL) {
       let grid = Grid.toClass(anim.moveState.pos);
       if (!IA.has(grid, anim.id)) {
@@ -293,7 +293,7 @@ var DESTRUCTION_ANIMATION = {
       }
     }
   },
-  manage: function (lapsedTime, map) {
+  manage(lapsedTime, map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4);
     this.reIndex();
     this.poolToIA(map[this.IA]);
@@ -305,27 +305,27 @@ var DESTRUCTION_ANIMATION = {
     }
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   }
 };
 var CHANGING_ANIMATION = {
   POOL: null,
   IA: "changeanimIA",
-  add: function (anim) {
+  add(anim) {
     this.POOL.push(anim);
     anim.id = this.POOL.length;
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  reIndex: function () {
+  reIndex() {
     this.POOL = this.POOL.filter((el) => el !== null);
     for (const [index, anim] of this.POOL.entries()) {
       anim.id = index + 1;
     }
   },
-  poolToIA: function (IA) {
+  poolToIA(IA) {
     for (const anim of this.POOL) {
       let grid = Grid.toClass(anim.moveState.pos);
       if (!IA.has(grid, anim.id)) {
@@ -334,10 +334,10 @@ var CHANGING_ANIMATION = {
     }
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   },
-  manage: function (lapsedTime, map) {
+  manage(lapsedTime, map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4);
     this.reIndex();
     this.poolToIA(map[this.IA]);
@@ -352,25 +352,25 @@ var CHANGING_ANIMATION = {
 var MISSILE = {
   POOL: null,
   IA: "missileIA",
-  draw: function () {
+  draw() {
     for (let missile of this.POOL) {
       if (missile) missile.draw();
     }
   },
-  add: function (missile) {
+  add(missile) {
     this.POOL.push(missile);
     missile.id = this.POOL.length;
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  reIndex: function () {
+  reIndex() {
     this.POOL = this.POOL.filter((el) => el !== null);
     for (const [index, missile] of this.POOL.entries()) {
       missile.id = index + 1;
     }
   },
-  poolToIA: function (IA) {
+  poolToIA(IA) {
     for (const missile of this.POOL) {
       let grid = Grid.toClass(missile.moveState.pos);
       if (!IA.has(grid, missile.id)) {
@@ -378,7 +378,7 @@ var MISSILE = {
       }
     }
   },
-  manage: function (lapsedTime, map) {
+  manage(lapsedTime, map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4);
     this.reIndex();
     this.poolToIA(map[this.IA]);
@@ -434,33 +434,37 @@ var MISSILE = {
     }
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   }
 };
 var DECAL = {
   POOL: null,
   IA: "decalIA",
-  add: function (decal) {
+  add(decal) {
     this.POOL.push(decal);
     decal.id = this.POOL.length;
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  init: function (map) {
+  init(map) {
     this.linkMap(map);
-    this.manage(null, map);
+    //this.manage(null, map);
+    this.manage(map);
   },
-  manage: function (lapsedTime, map) {
+  manage(map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4); // = IA
     //map[this.IA] = new IndexArray(map.width, map.height, 4, 2); // = IA
     this.poolToIA(map[this.IA]);
   },
-  update: function (lapsedTime, map) {
+  /*update: function (lapsedTime, map) {
     this.manage(lapsedTime, map);
+  },*/
+  update(map) {
+    this.manage(map);
   },
-  poolToIA: function (IA) {
+  poolToIA(IA) {
     for (const decal of this.POOL) {
       if (decal === null) continue;
       IA.next(decal.floorGrid, decal.id);
@@ -468,10 +472,10 @@ var DECAL = {
     }
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   },
-  calcPosition: function (position) {
+  calcPosition(position) {
     let offset = new FP_Grid();
     switch (position[0]) {
       case "center":
@@ -503,7 +507,7 @@ var DECAL = {
     }
     return offset;
   },
-  playerBehindPlane: function (instance) {
+  playerBehindPlane(instance) {
     let playerGrid = Grid.toClass(PLAYER.pos);
     let delta = instance.grid.direction(playerGrid);
     for (let dim of ["x", "y"]) {
@@ -515,7 +519,7 @@ var DECAL = {
       } else return true;
     }
   },
-  drawPosition: function (instance) {
+  drawPosition(instance) {
     let drawPosition = new FP_Grid();
     let leftPosition = new FP_Grid();
     let rightPosition = new FP_Grid();
@@ -549,24 +553,27 @@ var DECAL = {
 var ENEMY = {
   POOL: null,
   IA: "enemyIA",
-  draw: function () {
+  draw() {
     for (let enemy of this.POOL) {
       if (enemy) enemy.draw();
     }
   },
-  add: function (monster) {
+  add(monster) {
     this.POOL.push(monster);
     monster.id = ENEMY.POOL.length;
   },
-  clearAll(){
-    for (let E of this.POOL){
+  clearAll() {
+    for (let E of this.POOL) {
       if (E) this.remove(E.id);
     }
   },
-  remove: function (id) {
+  remove(id) {
     this.POOL[id - 1] = null;
   },
-  poolToIA: function (IA) {
+  show(id){
+    return this.POOL[id - 1];
+  },
+  poolToIA(IA) {
     for (const enemy of this.POOL) {
       if (enemy === null) continue;
       for (const dir of ENGINE.corners) {
@@ -583,7 +590,7 @@ var ENEMY = {
       }
     }
   },
-  manage: function (lapsedTime, map, flagArray) {
+  manage(lapsedTime, map, flagArray) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4);
     this.poolToIA(map[this.IA]);
     GRID.calcDistancesBFS_A(Grid.toClass(PLAYER.pos), map);
@@ -659,12 +666,12 @@ var ENEMY = {
     }
   },
   map: null,
-  linkMap: function (map) {
+  linkMap(map) {
     this.map = map;
   }
 };
 var RAYCAST = {
-  VERSION: "0.99.01.B",
+  VERSION: "0.99.02.B",
   CSS: "color: gold",
   MAP: null,
   spriteSources: [
@@ -697,7 +704,7 @@ var RAYCAST = {
     GRID_BUFFER: null,
     BUFFER: null
   },
-  initialize: function (w, h, ts = 64) {
+  initialize(w, h, ts = 64) {
     console.log(`%cRAYCAST initialized.`, RAYCAST.CSS);
     RAYCAST.SCREEN_WIDTH = w;
     RAYCAST.SCREEN_HEIGHT = h;
@@ -708,23 +715,22 @@ var RAYCAST = {
     RAYCAST.TEX_SIZE = ts;
     console.log("RAYCAST", RAYCAST);
   },
-  setMap: function (map) {
+  setMap(map) {
     RAYCAST.MAP = map;
   },
-  randomBuffer: function (BUFFER) {
+  randomBuffer(BUFFER) {
     for (let i = 0; i < BUFFER.length; i++) {
       BUFFER[i] = RND(0, 255);
     }
     return BUFFER;
   },
-  renderView: function (floorData, ceilingData, wallData) {
+  renderView(floorData, ceilingData, wallData) {
     let BUFFER = new Uint8ClampedArray(
       4 * RAYCAST.SCREEN_WIDTH * RAYCAST.SCREEN_HEIGHT
     );
     let Z_BUFFER = new Float32Array(RAYCAST.SCREEN_WIDTH);
     let H_BUFFER = new Uint32Array(RAYCAST.SCREEN_WIDTH);
     let GRID_BUFFER = new Array(RAYCAST.SCREEN_WIDTH); //to which grid x belongs
-    let POINT_BUFFER = new Array(RAYCAST.SCREEN_WIDTH); //which point is x
     let VISIBLE_SPRITE_LIST = [];
     let VISIBLE_DECAL_LIST = [];
 
@@ -813,19 +819,6 @@ var RAYCAST = {
         } else {
           wallX = PLAYER.pos.x + perpWallDist * rayDir.x;
         }
-
-        //POINT_BUFFER is currently not used, pending removal
-        /*POINT_BUFFER[x] = FP_Grid.toClass(Map);
-        let dims = ["y", "x"];
-        POINT_BUFFER[x][dims[side]] = wallX;
-
-        if (stepX === -1 && side === 0) {
-          POINT_BUFFER[x].x += 1.0;
-        }
-        if (stepY === -1 && side === 1) {
-          POINT_BUFFER[x].y += 1.0;
-        }*/
-        //POINT_BUFFER END
 
         wallX -= wallX | 0;
 
@@ -954,7 +947,6 @@ var RAYCAST = {
     RAYCAST.DATA.Z_BUFFER = Z_BUFFER;
     RAYCAST.DATA.H_BUFFER = H_BUFFER;
     RAYCAST.DATA.GRID_BUFFER = GRID_BUFFER;
-    //RAYCAST.DATA.POINT_BUFFER = POINT_BUFFER; //pending removal
     RAYCAST.DATA.BUFFER = BUFFER;
     //
 
@@ -995,7 +987,7 @@ var RAYCAST = {
 
     return imageData;
   },
-  checkSprite: function (grid) {
+  checkSprite(grid) {
     let spritesInCell = [];
     for (const source of RAYCAST.spriteSources) {
       let IA = RAYCAST.MAP[source.IA];
@@ -1014,7 +1006,7 @@ var RAYCAST = {
     }
     return spritesInCell;
   },
-  checkDecal: function (grid) {
+  checkDecal(grid) {
     let decalsInCell = [];
     for (const source of RAYCAST.decalSources) {
       let IA = RAYCAST.MAP[source.IA];
@@ -1034,13 +1026,13 @@ var RAYCAST = {
     }
     return decalsInCell;
   },
-  drawSprite: function (sprite) {
+  drawSprite(sprite) {
     let spriteRel = sprite.moveState.pos.sub(PLAYER.pos);
     CAMERA.transform(spriteRel);
 
     let spriteScreenX = Math.floor(
       (RAYCAST.SCREEN_WIDTH / 2) *
-        (1 + CAMERA.transformX / CAMERA.transformDepth)
+      (1 + CAMERA.transformX / CAMERA.transformDepth)
     );
 
     let imageData = sprite.actor.getImageData();
@@ -1049,8 +1041,8 @@ var RAYCAST = {
 
     let verticalMove = Math.floor(
       (sprite.base * (0.5 * (RAYCAST.INI.BLOCK_SIZE + imageData.height))) /
-        vScale /
-        CAMERA.transformDepth
+      vScale /
+      CAMERA.transformDepth
     );
 
     let spriteHeight = Math.abs(
@@ -1132,7 +1124,7 @@ var RAYCAST = {
       }
     }
   },
-  drawDecal: function (decal) {
+  drawDecal(decal) {
     decal.distance = decal.drawPosition.EuclidianDistance(PLAYER.pos);
     decal.hide();
     let imageData = decal.getImageData();
@@ -1142,7 +1134,7 @@ var RAYCAST = {
     CAMERA.transform(leftRel);
     let drawStartX_abs = Math.floor(
       (RAYCAST.SCREEN_WIDTH / 2) *
-        (1 + CAMERA.transformX / CAMERA.transformDepth)
+      (1 + CAMERA.transformX / CAMERA.transformDepth)
     );
     let drawStartX = Math.max(drawStartX_abs, 0);
     if (drawStartX >= RAYCAST.SCREEN_WIDTH) {
@@ -1153,7 +1145,7 @@ var RAYCAST = {
     CAMERA.transform(rightRel);
     let drawEndX_abs = Math.floor(
       (RAYCAST.SCREEN_WIDTH / 2) *
-        (1 + CAMERA.transformX / CAMERA.transformDepth)
+      (1 + CAMERA.transformX / CAMERA.transformDepth)
     );
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
     if (drawEndX < 0) {
@@ -1165,8 +1157,8 @@ var RAYCAST = {
 
     let verticalMove = Math.floor(
       (RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) /
-        vScale /
-        CAMERA.transformDepth
+      vScale /
+      CAMERA.transformDepth
     );
 
     for (let stripe = drawStartX; stripe < drawEndX; stripe++) {
@@ -1223,7 +1215,7 @@ var RAYCAST = {
       }
     }
   },
-  drawFlatSprite: function (decal) {
+  drawFlatSprite(decal) {
     let initialGrid = FP_Grid.toClass(Grid.toClass(decal.moveState.pos));
     let dim = null;
     for (let d of ["x", "y"]) {
@@ -1252,7 +1244,7 @@ var RAYCAST = {
     CAMERA.transform(leftRel);
     let drawStartX_abs = Math.floor(
       (RAYCAST.SCREEN_WIDTH / 2) *
-        (1 + CAMERA.transformX / CAMERA.transformDepth)
+      (1 + CAMERA.transformX / CAMERA.transformDepth)
     );
     let drawStartX = Math.max(drawStartX_abs, 0);
     if (drawStartX >= RAYCAST.SCREEN_WIDTH) {
@@ -1263,7 +1255,7 @@ var RAYCAST = {
     CAMERA.transform(rightRel);
     let drawEndX_abs = Math.floor(
       (RAYCAST.SCREEN_WIDTH / 2) *
-        (1 + CAMERA.transformX / CAMERA.transformDepth)
+      (1 + CAMERA.transformX / CAMERA.transformDepth)
     );
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
     if (drawEndX < 0) {
@@ -1279,8 +1271,8 @@ var RAYCAST = {
 
       let verticalMove = Math.floor(
         (RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) /
-          vScale /
-          CAMERA.transformDepth
+        vScale /
+        CAMERA.transformDepth
       );
 
       let decalHeight = Math.round(
@@ -1325,22 +1317,22 @@ var RAYCAST = {
       }
     }
   },
-  pasteColor: function (color, index, buffer) {
+  pasteColor(color, index, buffer) {
     for (let i = 0; i < 4; i++) {
       buffer[index + i] = color[i];
     }
   },
-  darken: function (color, amt = 1) {
+  darken(color, amt = 1) {
     for (let i = 0; i < 3; i++) {
       color[i] = color[i] >>> amt;
     }
   },
-  tint: function (color, amt = 1.0) {
+  tint(color, amt = 1.0) {
     for (let i = 0; i < 3; i++) {
       color[i] = color[i] * amt;
     }
   },
-  volume: function (distance) {
+  volume(distance) {
     let ratio =
       (RAYCAST.INI.NO_SOUND -
         RAYCAST.INI.NORMAL_SOUND -
@@ -1353,7 +1345,7 @@ var RAYCAST = {
 var RAY_MOUSE = {
   floorSources: [FLOOR_OBJECT],
   wallSources: [DECAL],
-  initialize: function (id) {
+  initialize(id) {
     RAYCAST.DATA.window = id;
     RAYCAST.DATA.layer = ENGINE.getCanvasName(id);
     ENGINE.topCanvas = RAYCAST.DATA.layer;
@@ -1363,7 +1355,7 @@ var RAY_MOUSE = {
       ENGINE.readMouse
     );
   },
-  click: function () {
+  click() {
     if (ENGINE.mouseOverId(RAYCAST.DATA.window)) {
       if (ENGINE.mouseClickId(RAYCAST.DATA.window)) {
         let distance = RAYCAST.DATA.Z_BUFFER[ENGINE.mouseX];
@@ -1421,7 +1413,7 @@ var RAY_MOUSE = {
     }
     return null;
   },
-  checkFloor: function (grid) {
+  checkFloor(grid) {
     let objects = [];
     let intGrid = Grid.toClass(grid);
     for (const source of RAY_MOUSE.floorSources) {
@@ -1436,7 +1428,7 @@ var RAY_MOUSE = {
     }
     return objects;
   },
-  checkWall: function (grid) {
+  checkWall(grid) {
     let objects = [];
     let intGrid = Grid.toClass(grid);
     for (const source of RAY_MOUSE.wallSources) {

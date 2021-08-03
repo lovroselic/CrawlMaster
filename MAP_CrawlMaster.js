@@ -770,7 +770,7 @@ var SPAWN = {
     monster_on_corridors: 25,
     gold_per_level: 6
   },
-  init: function () {
+  init() {
     //console.log("SPAWN initializing dependencies...");
     //init dependencies
     for (const item in COMMON_ITEM_TYPE) {
@@ -778,7 +778,7 @@ var SPAWN = {
       ASSET[sprite] = new LiveSPRITE("1D", [SPRITE[sprite]]);
     }
   },
-  dungeonObjects: function (map, level, upperLimit) {
+  dungeonObjects(map, level, upperLimit) {
     map.entranceVector = map.deadEndDirection(map.entrance);
     let upGrid = map.entrance.add(map.entranceVector.mirror());
     let stairsUp;
@@ -863,7 +863,7 @@ var SPAWN = {
       map.keys.Gold
     ];
   },
-  spawn: function (map, level, upperLimit) {
+  spawn(map, level, upperLimit) {
     console.log("spawning level...", level);
     let t0 = performance.now();
     this.dungeonObjects(map, level, upperLimit);
@@ -876,7 +876,7 @@ var SPAWN = {
       "color: orange"
     );
   },
-  monsters: function (map, level) {
+  monsters(map, level) {
     //monsters on corridors
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
     for (let grid of corrGrids) {
@@ -916,7 +916,7 @@ var SPAWN = {
       }
     }
   },
-  decals: function (map) {
+  decals(map) {
     for (const room of map.rooms) {
       const t = 0.25 * room.squareSize + 0.4;
       let N = RND(
@@ -940,7 +940,7 @@ var SPAWN = {
       DECAL.add(new Decal(grid.grid, grid.dir, DECAL_TYPE.Crest));
     }
   },
-  containers: function (map) {
+  containers(map) {
     for (const room of map.rooms) {
       let corner = map.roomCornerGrids(room);
       let position = Grid.toCenter(corner.grid).translate(
@@ -960,7 +960,7 @@ var SPAWN = {
       FLOOR_OBJECT.add(container);
     }
   },
-  items: function (map) {
+  items(map) {
     //console.log("spawning items...");
 
     //health potions

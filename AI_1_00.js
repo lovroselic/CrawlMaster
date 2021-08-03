@@ -3,6 +3,7 @@
 /*jshint -W117 */
 /*jshint -W061 */
 "use strict";
+
 /////////////////////AI.js///////////////
 /* 
 
@@ -18,6 +19,7 @@ dependencies:
 /*  
 
 TODO:
+  line 153 if path clear
       
 */
 /////////////////////////////////////////
@@ -29,7 +31,7 @@ var AI = {
   initialize(ref) {
     this.referenceEntity = ref;
   },
-  wanderer: function (enemy) {
+  wanderer(enemy) {
     let directions = enemy.parent.map.GA.getDirectionsIfNot(
       Grid.toClass(enemy.moveState.pos),
       MAPDICT.WALL,
@@ -41,16 +43,16 @@ var AI = {
       return [enemy.moveState.dir.mirror()];
     }
   },
-  immobile: function () {
+  immobile() {
     return [NOWAY];
   },
-  hunt: function (enemy) {
+  hunt(enemy) {
     let nodeMap = enemy.parent.map.nodeMap;
     let grid = Grid.toClass(enemy.moveState.pos);
     let goto = nodeMap[grid.x][grid.y].goto || NOWAY;
     return [goto];
   },
-  crossroader: function (enemy, playerPosition, dir) {
+  crossroader(enemy, playerPosition, dir) {
     let goal = enemy.parent.map.GA.findNextCrossroad(playerPosition, dir);
     if (goal === null) {
       return this.hunt(enemy);
@@ -74,17 +76,17 @@ var AI = {
     let directions = GRID.directionsFromPath(path, 1);
     return directions;
   },
-  follower: function (enemy, ARG) {
+  follower(enemy, ARG) {
     return this.crossroader(
       enemy,
       ARG.playerPosition,
       ARG.currentPlayerDir.mirror()
     );
   },
-  advancer: function (enemy, ARG) {
+  advancer(enemy, ARG) {
     return this.crossroader(enemy, ARG.playerPosition, ARG.currentPlayerDir);
   },
-  runAway: function (enemy) {
+  runAway(enemy) {
     let nodeMap = enemy.parent.map.nodeMap;
     let grid = Grid.toClass(enemy.moveState.pos);
     let directions = enemy.parent.map.GA.getDirectionsFromNodeMap(
@@ -101,7 +103,7 @@ var AI = {
     let maxDistance = Math.max(...distances);
     return [directions[distances.indexOf(maxDistance)]];
   },
-  goto: function (enemy) {
+  goto(enemy) {
     let goal = enemy.guardPosition; // should be set in SPAWN!
     let Astar = enemy.parent.map.GA.findPath_AStar_fast(
       Grid.toClass(enemy.moveState.pos),
@@ -130,7 +132,7 @@ var AI = {
     let directions = GRID.directionsFromPath(path);
     return directions;
   },
-  circler: function (enemy) {
+  circler(enemy) {
     let currentGrid = Grid.toClass(enemy.moveState.pos);
     let gridPath = [currentGrid];
     let firstDir = ENGINE.directions.chooseRandom();
@@ -145,15 +147,26 @@ var AI = {
     let directions = GRID.directionsFromPath(gridPath);
     return directions;
   },
-  shoot: function (enemy, ARG) {
+  shoot(enemy, ARG) {
     if (enemy.caster) {
       if (enemy.mana >= Missile.calcMana(enemy.magic)) {
         let GA = enemy.parent.map.GA;
+        let IA = enemy.parent.map.enemyIA;
+        let pool = enemy.parent.map.ENEMY.POOL;
+        //cont HERE
+        //https://www.geeksforgeeks.org/check-if-any-point-overlaps-the-given-circle-and-rectangle/
+        //need to acces R of missile!!
+        console.log(enemy.id, enemy.class, "... tries to shoot");
         if (
           GRID.vision(
             Grid.toClass(enemy.moveState.pos),
             Grid.toClass(ARG.playerPosition),
             GA
+          ) &&
+          GRID.freedom(
+            Grid.toClass(enemy.moveState.pos),
+            Grid.toClass(ARG.playerPosition),
+            IA, pool
           )
         ) {
           //what about collateral?
@@ -173,7 +186,7 @@ var AI = {
       return this.keepTheDistance(enemy, ARG);
     }
   },
-  keepTheDistance: function (enemy, ARG) {
+  keepTheDistance(enemy, ARG) {
     let map = enemy.parent.map;
     let grid = Grid.toClass(enemy.moveState.pos);
     let playerGrid = Grid.toClass(ARG.playerPosition);
@@ -199,8 +212,8 @@ var AI = {
   },
 
   //to do
-  prophet: function (enemy, ARG) { },
-  shadower: function () { }
+  prophet(enemy, ARG) { },
+  shadower() { }
 };
 class Behaviour {
   constructor(
@@ -251,7 +264,6 @@ class Behaviour {
     ) {
       this.strategy = this.getActive();
       enemy.dirStack.clear();
-      //console.log(enemy.class, "strategy flipped to Active:", this.strategy);
     }
     if (
       distance >= this.passive.distance &&
@@ -261,7 +273,6 @@ class Behaviour {
         this.restorePassive();
       }
       this.strategy = this.getPassive();
-      //console.log(enemy.class, "strategy flipped to Passive:", this.strategy);
     }
     return;
   }

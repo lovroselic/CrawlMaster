@@ -3,6 +3,7 @@
 /*jshint -W117 */
 /*jshint -W061 */
 "use strict";
+
 //////////////////////////////////////
 // GRID v 3.00.DEV   by LS          //
 //////////////////////////////////////
@@ -10,8 +11,7 @@
 /*
 TODO:
   
-  global offset
- known bugs:
+known bugs:
 
 */
 
@@ -29,38 +29,38 @@ var GRID = {
     let touchDistance = entity1.r + entity2.r;
     return distance < touchDistance;
   },
-  collision: function (actor, grid) {
+  circleRectangleCollision() { },
+  collision(actor, grid) {
     let actorGrid = actor.MoveState.homeGrid;
     return GRID.same(actorGrid, grid);
   },
-  spriteToSpriteCollision: function (actor1, actor2) {
+  spriteToSpriteCollision(actor1, actor2) {
     return GRID.same(actor1.MoveState.homeGrid, actor2.MoveState.homeGrid);
   },
-  gridToCenterPX: function (grid) {
+  gridToCenterPX(grid) {
     var x = grid.x * ENGINE.INI.GRIDPIX + Math.floor(ENGINE.INI.GRIDPIX / 2);
     var y = grid.y * ENGINE.INI.GRIDPIX + Math.floor(ENGINE.INI.GRIDPIX / 2);
     return new Point(x, y);
   },
-  gridToSprite: function (grid, actor) {
+  gridToSprite(grid, actor) {
     GRID.coordToSprite(GRID.gridToCoord(grid), actor);
   },
-  coordToSprite: function (coord, actor) {
+  coordToSprite(coord, actor) {
     actor.x = coord.x + Math.floor(ENGINE.INI.GRIDPIX / 2);
     actor.y = coord.y + Math.floor(ENGINE.INI.GRIDPIX / 2);
   },
-  gridToCoord: function (grid) {
+  gridToCoord(grid) {
     var x = grid.x * ENGINE.INI.GRIDPIX;
     var y = grid.y * ENGINE.INI.GRIDPIX;
     return new Point(x, y);
   },
-  coordToGrid: function (x, y) {
+  coordToGrid(x, y) {
     var tx = Math.floor(x / ENGINE.INI.GRIDPIX);
     var ty = Math.floor(y / ENGINE.INI.GRIDPIX);
     return new Grid(tx, ty);
   },
-  grid: function () {
+  grid(CTX = LAYER.grid) {
     //potentially obsolete
-    var CTX = LAYER.grid;
     var x = 0;
     var y = 0;
     CTX.strokeStyle = "#AAA";
@@ -86,7 +86,7 @@ var GRID = {
       CTX.stroke();
     } while (x <= CTX.canvas.width);
   },
-  paintText: function (point, text, layer, color = "#FFF") {
+  paintText(point, text, layer, color = "#FFF") {
     //check usage, obsolete?
     var CTX = LAYER[layer];
     CTX.font = "10px Consolas";
@@ -96,7 +96,7 @@ var GRID = {
     CTX.textAlign = "center";
     CTX.fillText(text, x, y);
   },
-  trueToGrid: function (actor) {
+  trueToGrid(actor) {
     var TX = actor.x - Math.floor(ENGINE.INI.GRIDPIX / 2);
     var TY = actor.y - Math.floor(ENGINE.INI.GRIDPIX / 2);
     var GX = Math.floor(TX / ENGINE.INI.GRIDPIX);
@@ -107,14 +107,14 @@ var GRID = {
       return null;
     } else return { x: GX, y: GY };
   },
-  same: function (grid1, grid2) {
+  same(grid1, grid2) {
     if (grid1 === null || grid2 === null) return false;
     if (grid1 === undefined || grid2 === undefined) return false;
     if (grid1.x === grid2.x && grid1.y === grid2.y) {
       return true;
     } else return false;
   },
-  isGridIn: function (grid, gridArray) {
+  isGridIn(grid, gridArray) {
     for (var q = 0; q < gridArray.length; q++) {
       if (grid.x === gridArray[q].x && grid.y === gridArray[q].y) {
         return q;
@@ -122,15 +122,16 @@ var GRID = {
     }
     return -1;
   },
-  contTranslatePosition: function (entity, lapsedTime) {
+  contTranslatePosition(entity, lapsedTime) {
     let length = (lapsedTime / 1000) * entity.moveSpeed;
     entity.moveState.pos = entity.moveState.pos.translate(
       entity.moveState.dir,
       length
     );
     entity.actor.updateAnimation(lapsedTime);
+    return;
   },
-  translatePosition: function (entity, lapsedTime) {
+  translatePosition(entity, lapsedTime) {
     let length = (lapsedTime / 1000) * entity.moveSpeed;
     entity.moveState.pos = entity.moveState.pos.translate(
       entity.moveState.realDir,
@@ -159,7 +160,7 @@ var GRID = {
       return;
     }
   },
-  translateMove: function (
+  translateMove(
     entity,
     gridArray,
     changeView = false,
@@ -201,7 +202,7 @@ var GRID = {
     }
     return;
   },
-  blockMove: function (entity, changeView = false) {
+  blockMove(entity, changeView = false) {
     let newGrid = entity.MoveState.startGrid.add(entity.MoveState.dir);
     entity.MoveState.reset(newGrid);
     GRID.gridToSprite(newGrid, entity.actor);
@@ -214,8 +215,9 @@ var GRID = {
       ENGINE.VIEWPORT.check(entity.actor);
     }
     ENGINE.VIEWPORT.alignTo(entity.actor);
+    return;
   },
-  teleportToGrid: function (entity, grid, changeView = false) {
+  teleportToGrid(entity, grid, changeView = false) {
     entity.MoveState.reset(grid);
     GRID.gridToSprite(grid, entity.actor);
     if (changeView) {
@@ -223,20 +225,36 @@ var GRID = {
     }
     ENGINE.VIEWPORT.alignTo(entity.actor);
   },
-  gridToIndex: function (grid, map = MAP[GAME.level]) {
+  gridToIndex(grid, map = MAP[GAME.level]) {
     return grid.x + grid.y * map.width;
   },
-  indexToGrid: function (index, map = MAP[GAME.level]) {
+  indexToGrid(index, map = MAP[GAME.level]) {
     let x = index % map.width;
     let y = Math.floor(index / map.width);
     return new Grid(x, y);
   },
-  vision: function (startGrid, endGrid, GA) {
+  vision(startGrid, endGrid, GA) {
     if (GRID.same(startGrid, endGrid)) return true;
     let path = GRID.raycasting(startGrid, endGrid);
     return GA.pathClear(path);
   },
-  raycasting: function (startGrid, endGrid) {
+  freedom(startGrid, endGrid, IA, pool) {
+    if (GRID.same(startGrid, endGrid)) return true;
+    let path = GRID.raycasting(startGrid, endGrid).slice(1); // ignoring start
+    console.log("freedom: path", path);
+    let candidates = IA.unrollArray(path);
+    if (candidates.size > 0) {
+      console.log("freedom: candidates to be evaluated", candidates);
+      for (const candidate of candidates) {
+        console.log("..candidate", candidate, pool[candidate-1]);
+        //continue HERE
+
+
+        
+      }
+    } else return true;
+  },
+  raycasting(startGrid, endGrid) {
     let normDir = startGrid.direction(endGrid);
     let path = [];
     path.push(Grid.toClass(startGrid));
@@ -261,14 +279,14 @@ var GRID = {
     } while (!GRID.same(node, endGrid));
     return path;
   },
-  pathClear: function (path) {
+  pathClear(path) {
     if (path.length === 0) return true;
     for (let q = 0; q < path.length; q++) {
       if (GRID.gridIsBlock(path[q])) return false;
     }
     return true;
   },
-  calcDistancesBFS_BH: function (start, dungeon) {
+  calcDistancesBFS_BH(start, dungeon) {
     dungeon.setNodeMap();
     let BH = new BinHeap("distance");
     dungeon.nodeMap[start.x][start.y].distance = 0;
@@ -279,7 +297,7 @@ var GRID = {
       for (let D = 0; D < ENGINE.directions.length; D++) {
         let nextNode =
           dungeon.nodeMap[node.grid.x + ENGINE.directions[D].x][
-            node.grid.y + ENGINE.directions[D].y
+          node.grid.y + ENGINE.directions[D].y
           ];
         if (nextNode) {
           if (nextNode.distance > node.distance + 1) {
@@ -292,7 +310,7 @@ var GRID = {
       }
     }
   },
-  calcDistancesBFS_A: function (start, dungeon) {
+  calcDistancesBFS_A(start, dungeon) {
     dungeon.setNodeMap();
     let Q = new NodeQ("distance");
     dungeon.nodeMap[start.x][start.y].distance = 0;
@@ -321,7 +339,7 @@ var GRID = {
       }
     }
   },
-  pathFromNodeMap: function (origin, nodeMap) {
+  pathFromNodeMap(origin, nodeMap) {
     let path = [origin];
     let prev = nodeMap[origin.x][origin.y].prev;
     while (prev) {
@@ -590,7 +608,7 @@ class GridArray {
   isWall(grid) {
     return this.check(grid, MAPDICT.WALL) === MAPDICT.WALL;
   }
-  notWall(grid){
+  notWall(grid) {
     return !this.isWall(grid);
   }
   isMazeWall(grid) {
@@ -631,8 +649,8 @@ class GridArray {
       this.clear(grid, MAPDICT.WALL);
     }
   }
-  isDoorClosed(grid) {}
-  isDoorOpen(grid) {}
+  isDoorClosed(grid) { }
+  isDoorOpen(grid) { }
   toRoom(grid) {
     this.setValue(grid, MAPDICT.ROOM);
   }
@@ -642,7 +660,7 @@ class GridArray {
   isRoom(grid) {
     return this.check(grid, MAPDICT.ROOM) === MAPDICT.ROOM;
   }
-  notRoom(grid){
+  notRoom(grid) {
     return !this.isRoom(grid);
   }
   toShrine(grid) {
@@ -672,10 +690,10 @@ class GridArray {
   isStartPosition(grid) {
     return this.check(grid, MAPDICT.START_POSITION) === MAPDICT.START_POSITION;
   }
-  isFog(grid){
+  isFog(grid) {
     return this.check(grid, MAPDICT.FOG) === MAPDICT.FOG;
   }
-  clearFog(grid){
+  clearFog(grid) {
     this.clear(grid, MAPDICT.FOG);
   }
   border(set = MAPDICT.WALL) {
@@ -1122,7 +1140,7 @@ class GridArray {
     }
     return true;
   }
-  pointsAroundEntity(pos, dir, r, resolution = 4){
+  pointsAroundEntity(pos, dir, r, resolution = 4) {
     let checks = [];
     for (
       let theta = 0;
@@ -1133,13 +1151,13 @@ class GridArray {
     }
     return checks;
   }
-  gridsAroundEntity(pos, dir, r, resolution = 4){
+  gridsAroundEntity(pos, dir, r, resolution = 4) {
     let checks = this.pointsAroundEntity(pos, dir, r, resolution = 4);
     checks = checks.filter(this.positionIsNotWall, this);
     return checks.map(Grid.toClass);
   }
-  pathClear(path){
-    for (const grid of path){
+  pathClear(path) {
+    for (const grid of path) {
       if (this.isWall(grid)) return false;
     }
     return true;
@@ -1251,9 +1269,9 @@ class IndexArray {
     }
     return items;
   }
-  unrollArray(arr){
+  unrollArray(arr) {
     let items = [];
-    for (let a of arr){
+    for (let a of arr) {
       items = items.concat(this.unroll(a));
     }
     return new Set(items);
@@ -1291,10 +1309,10 @@ class IndexArray {
       this.add(grid, a, i);
     }
   }
-  hasFreeBanks(grid){
-    if (this.empty(grid)){
+  hasFreeBanks(grid) {
+    if (this.empty(grid)) {
       return true;
-    } else if (this.nextFreeBank(grid) !== -1){
+    } else if (this.nextFreeBank(grid) !== -1) {
       return true;
     }
     return false;
@@ -1313,7 +1331,6 @@ var MINIMAP = {
     LOCKED_DOOR: "#826644",
     HERO: "#FFF",
     SHRINE: "#FF00FF",
-    //SHRINE: "##FF00FF"
   },
   DATA: {
     PIX_SIZE: 4,
@@ -1336,7 +1353,6 @@ var MINIMAP = {
     this.DATA.layer = layer;
   },
   setOffset(x, y) {
-    //console.log(".setting offset", x, y);
     this.DATA.x = x;
     this.DATA.y = y;
   },
@@ -1449,20 +1465,20 @@ var MINIMAP = {
       this.DATA.PIX_SIZE
     );
   },
-  unveil(at, vision = 1){
+  unveil(at, vision = 1) {
     let x = at.x - vision;
     let y = at.y - vision;
     let range = 2 * vision + 1;
-    for (let ix = x; ix < x + range; ix++){
-      for (let iy = y; iy < y + range; iy++){
-        let grid = new Grid(ix,iy);
-        if (!this.DATA.dungeon.GA.isOutOfBounds(grid)){
+    for (let ix = x; ix < x + range; ix++) {
+      for (let iy = y; iy < y + range; iy++) {
+        let grid = new Grid(ix, iy);
+        if (!this.DATA.dungeon.GA.isOutOfBounds(grid)) {
           this.DATA.dungeon.GA.clearFog(grid);
         }
       }
     }
   },
-  reveal(origin, r){
+  reveal(origin, r) {
     //console.log("MM reveal", arguments);
     let GA = this.DATA.dungeon.GA;
     let map = this.DATA.dungeon;
@@ -1470,9 +1486,9 @@ var MINIMAP = {
     let sY = Math.max(0, origin.y - r);
     let eX = Math.min(origin.x + r, map.maxX);
     let eY = Math.min(origin.y + r, map.maxY);
-    for (let x = sX; x <= eX; x++){
-      for (let y = sY; y <= eY; y++){
-        let grid = new Grid(x,y);
+    for (let x = sX; x <= eX; x++) {
+      for (let y = sY; y <= eY; y++) {
+        let grid = new Grid(x, y);
         GA.clearFog(grid);
       }
     }

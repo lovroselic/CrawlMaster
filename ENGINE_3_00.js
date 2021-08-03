@@ -3,6 +3,7 @@
 /*jshint -W117 */
 /*jshint -W061 */
 "use strict";
+
 //////////////////engine.js/////////////////////////
 //                                                //
 //      ENGINE version 3.00.00.A by LS          //
@@ -86,7 +87,7 @@ var ENGINE = {
   circle: [UP, UpRight, RIGHT, DownRight, DOWN, DownLeft, LEFT, UpLeft],
   dirCircle: [UP, RIGHT, DOWN, LEFT],
   layersToClear: new Set(),
-  disableKey: function (key) {
+  disableKey(key) {
     $(document).keydown(function (event) {
       if (event.which === ENGINE.KEY.map[key]) {
         event.preventDefault();
@@ -103,24 +104,24 @@ var ENGINE = {
       }
     });
   },
-  hideMouse: function () {
+  hideMouse() {
     $("#game").css("cursor", "none");
     $("#game").on("mousemove", ENGINE.waitThenHideMouse);
   },
-  waitThenHideMouse: function () {
+  waitThenHideMouse() {
     $("#game").css("cursor", "default");
     $("#game").off("mousemove", ENGINE.waitThenHideMouse);
     setTimeout(ENGINE.hideMouse, ENGINE.INI.MOUSE_IDLE);
   },
-  showMouse: function () {
+  showMouse() {
     $("#game").off("mousemove", ENGINE.waitThenHideMouse);
     $("#game").css("cursor", "default");
   },
-  disableArrows: function () {
+  disableArrows() {
     ENGINE.disableKey("up");
     ENGINE.disableKey("down");
   },
-  init: function () {
+  init() {
     console.log(`%cInitializing ENGINE V${String(ENGINE.VERSION)}`, ENGINE.CSS);
 
     $("#temp").append(
@@ -141,31 +142,31 @@ var ENGINE = {
     LAYER.temp2 = $("#temp_canvas2")[0].getContext("2d");
     VIEW.init();
   },
-  fill: function (ctx, pattern) {
+  fill(ctx, pattern) {
     let CTX = ctx;
     let pat = CTX.createPattern(pattern, "repeat");
     CTX.fillStyle = pat;
     CTX.fillRect(0, 0, CTX.canvas.width, CTX.canvas.height);
   },
-  clearLayer: function (layer) {
+  clearLayer(layer) {
     let CTX = LAYER[layer];
     CTX.clearRect(0, 0, CTX.canvas.width, CTX.canvas.height);
   },
-  clearContext: function (CTX) {
+  clearContext(CTX) {
     CTX.clearRect(0, 0, CTX.canvas.width, CTX.canvas.height);
   },
-  clearLayerStack: function () {
+  clearLayerStack() {
     let CLR = ENGINE.layersToClear.length;
     if (CLR === 0) return;
     ENGINE.layersToClear.forEach(ENGINE.clearLayer);
     ENGINE.layersToClear.clear();
   },
-  fillLayer: function (layer, colour) {
+  fillLayer(layer, colour) {
     let CTX = LAYER[layer];
     CTX.fillStyle = colour;
     CTX.fillRect(0, 0, CTX.canvas.width, CTX.canvas.height);
   },
-  resizeBOX: function (id, width, height) {
+  resizeBOX(id, width, height) {
     width = width || ENGINE.gameWIDTH;
     height = height || ENGINE.gameHEIGHT;
     let box = $("#" + id).children();
@@ -174,7 +175,7 @@ var ENGINE = {
       box[a].height = height;
     }
   },
-  addBOX: function (id, width, height, alias, type) {
+  addBOX(id, width, height, alias, type) {
     //types null, side, fside
     if (id === null) return;
     if (width === null) return;
@@ -207,40 +208,40 @@ var ENGINE = {
       ENGINE.currentLEFT = 0;
     }
   },
-  addCanvas: function (id, w, h) {
+  addCanvas(id, w, h) {
     //adds canvas to div
     let canvas = `<canvas id="c_${id}" width="${w}" height="${h}"></canvas>`;
     $(`#${id}`).append(canvas);
     LAYER[id] = $(`#c_${id}`)[0].getContext("2d");
   },
-  copyLayer: function (copyFrom, copyTo, orX, orY, orW, orH) {
+  copyLayer(copyFrom, copyTo, orX, orY, orW, orH) {
     let CTX = LAYER[copyTo];
     CTX.drawImage(LAYER[copyFrom].canvas, orX, orY, orW, orH, 0, 0, orW, orH);
   },
-  flattenLayers: function (src, dest) {
+  flattenLayers(src, dest) {
     let W = LAYER[dest].canvas.width;
     let H = LAYER[dest].canvas.height;
     ENGINE.copyLayer(src, dest, 0, 0, W, H, 0, 0, W, H);
   },
-  spriteDraw: function (layer, X, Y, image, offset = new Vector(0, 0)) {
+  spriteDraw(layer, X, Y, image, offset = new Vector(0, 0)) {
     let CX = offset.x + Math.floor(X - Math.floor(image.width / 2));
     let CY = offset.y + Math.floor(Y - Math.floor(image.height / 2));
     let CTX = LAYER[layer];
     CTX.drawImage(image, CX, CY);
   },
-  drawToGrid: function (layer, grid, image) {
+  drawToGrid(layer, grid, image) {
     let p = GRID.gridToCoord(grid);
     ENGINE.draw(layer, p.x, p.y, image);
   },
-  spriteToGrid: function (layer, grid, image) {
+  spriteToGrid(layer, grid, image) {
     let p = GRID.gridToCenterPX(grid);
     ENGINE.spriteDraw(layer, p.x, p.y, image);
   },
-  draw: function (layer, X, Y, image) {
+  draw(layer, X, Y, image) {
     let CTX = LAYER[layer];
     CTX.drawImage(image, X, Y);
   },
-  drawPart: function (layer, X, Y, image, line) {
+  drawPart(layer, X, Y, image, line) {
     let CTX = LAYER[layer];
     CTX.drawImage(
       image,
@@ -254,7 +255,7 @@ var ENGINE = {
       image.height - line
     );
   },
-  drawPool: function (layer, pool, sprite) {
+  drawPool(layer, pool, sprite) {
     let CTX = LAYER[layer];
     let PL = pool.length;
     if (PL === 0) return;
@@ -262,7 +263,7 @@ var ENGINE = {
       ENGINE.spriteDraw(layer, pool[i].x, pool[i].y, sprite);
     }
   },
-  trimCanvas: function (data) {
+  trimCanvas(data) {
     var top = 0,
       bottom = data.height,
       left = 0,
@@ -290,7 +291,7 @@ var ENGINE = {
       return true;
     }
   },
-  rotateImage: function (image, degree, newName) {
+  rotateImage(image, degree, newName) {
     let CTX = LAYER.temp;
     let CW = image.width;
     let CH = image.height;
@@ -323,7 +324,7 @@ var ENGINE = {
     SPRITE[newName].width = CTX.canvas.width;
     SPRITE[newName].height = CTX.canvas.height;*/
   },
-  setCollisionsafe: function (safe) {
+  setCollisionsafe(safe) {
     if (safe !== undefined) {
       ENGINE.INI.COLLISION_SAFE = safe;
     } else {
@@ -342,7 +343,7 @@ var ENGINE = {
       ENGINE.CSS
     );
   },
-  ready: function () {
+  ready() {
     ENGINE.setCollisionsafe();
     console.log("%cENGINE ready!", ENGINE.CSS);
     $("#load").addClass("hidden");
@@ -360,7 +361,7 @@ var ENGINE = {
     let D = P1.x * P2.y - P2.x * P1.y;
     return cR ** 2 * dr2 > D ** 2;
   },
-  intersectionCollision: function (actor1, actor2) {
+  intersectionCollision(actor1, actor2) {
     if (actor1.class !== "bullet" && actor2.class !== "bullet") return;
     if (actor1.prevX === null || actor2.prevX === null) return;
 
@@ -402,7 +403,7 @@ var ENGINE = {
       line2.y2
     );
   },
-  lineIntersects: function (a, b, c, d, p, q, r, s) {
+  lineIntersects(a, b, c, d, p, q, r, s) {
     //https://stackoverflow.com/a/24392281/4154250
     var det, gamma, lambda;
     det = (c - a) * (s - q) - (r - p) * (d - b);
@@ -414,7 +415,7 @@ var ENGINE = {
       return 0 < lambda && lambda < 1 && 0 < gamma && gamma < 1;
     }
   },
-  pixPerfectCollision: function (actor1, actor2) {
+  pixPerfectCollision(actor1, actor2) {
     var w1 = parseInt(actor1.width / 2, 10);
     var w2 = parseInt(actor2.width / 2, 10);
     var h1 = parseInt(actor1.height / 2, 10);
@@ -452,7 +453,7 @@ var ENGINE = {
       return ENGINE.intersectionCollision(actor1, actor2);
     } else return false;
   },
-  collision: function (actor1, actor2) {
+  collision(actor1, actor2) {
     var X = Math.abs(actor1.x - actor2.x);
     var Y = Math.abs(actor1.y - actor2.y);
     if (Y >= ENGINE.INI.COLLISION_SAFE) return false;
@@ -467,7 +468,7 @@ var ENGINE = {
       return ENGINE.pixPerfectCollision(actor1, actor2);
     } else return true;
   },
-  collisionToBackground: function (actor, layer) {
+  collisionToBackground(actor, layer) {
     var CTX = layer;
     var maxSq = Math.max(actor.width, actor.height);
     var R = Math.ceil(0.5 * Math.sqrt(2 * Math.pow(maxSq, 2)));
@@ -516,7 +517,7 @@ var ENGINE = {
       return index;
     }
   },
-  drawLoadingGraph: function (counter) {
+  drawLoadingGraph(counter) {
     var count = ENGINE.LOAD[counter];
     var HMI = ENGINE.LOAD["HM" + counter];
     var text = counter;
@@ -545,7 +546,7 @@ var ENGINE = {
     );
     return;
   },
-  statusBar: function (CTX, x, y, w, h, value, max, color) {
+  statusBar(CTX, x, y, w, h, value, max, color) {
     CTX.save();
     ENGINE.resetShadow(CTX);
     let fs = h / 2;
@@ -566,13 +567,13 @@ var ENGINE = {
     CTX.fillText(`${value}/${max}`, tx, ty);
     CTX.restore();
   },
-  resetShadow: function (CTX) {
+  resetShadow(CTX) {
     CTX.shadowColor = "#000";
     CTX.shadowOffsetX = 0;
     CTX.shadowOffsetY = 0;
     CTX.shadowBlur = 0;
   },
-  spriteDump: function (layer, spriteList) {
+  spriteDump(layer, spriteList) {
     console.log("%c********* SPRITE DUMP *********", ENGINE.CSS);
     console.log(SPRITE);
     var x = 0;
@@ -594,7 +595,7 @@ var ENGINE = {
       }
     });
   },
-  window: function (
+  window(
     width = ENGINE.gameWIDTH / 2,
     height = ENGINE.gameHEIGHT / 2,
     CTX = LAYER.text,
@@ -625,29 +626,29 @@ var ENGINE = {
     CTX.restore();
     return new Point(x, y);
   },
-  mouseOver: function (event) {
+  mouseOver(event) {
     ENGINE.readMouse(event);
     FORM.BUTTON.changeMousePointer(ENGINE.topCanvas);
   },
-  mouseOverId: function (id) {
+  mouseOverId(id) {
     return $(`#${id}:hover`).length !== 0;
   },
-  mouseClickId: function (id) {
+  mouseClickId(id) {
     return $(`#${id}:active`).length !== 0;
   },
-  mousePointer: function (cname) {
+  mousePointer(cname) {
     $(cname).css("cursor", "pointer");
   },
-  mouseGrab: function (cname) {
+  mouseGrab(cname) {
     $(cname).css("cursor", "grab");
   },
-  mouseGrabbing: function (cname) {
+  mouseGrabbing(cname) {
     $(cname).css("cursor", "grabbing");
   },
-  mouseDefault: function (cname) {
+  mouseDefault(cname) {
     $(cname).css("cursor", "default");
   },
-  readMouse: function (event) {
+  readMouse(event) {
     var canvasOffset = $(event.data.layer).offset();
     var offsetX = canvasOffset.left;
     var offsetY = canvasOffset.top;
@@ -656,37 +657,37 @@ var ENGINE = {
     ENGINE.mouseX = mouseX;
     ENGINE.mouseY = mouseY;
   },
-  mouseClick: function (event) {
+  mouseClick(event) {
     ENGINE.readMouse(event);
     FORM.BUTTON.click();
     return;
   },
-  mousePassClick: function (event, func) {
+  mousePassClick(event, func) {
     ENGINE.readMouse(event);
     func.call();
   },
-  getCanvasNumber: function (id) {
+  getCanvasNumber(id) {
     var cnv = $("#" + id + " .layer");
     return cnv.length;
   },
-  getCanvasName: function (id) {
+  getCanvasName(id) {
     let CL = ENGINE.getCanvasNumber(id);
     let cname = `#${id}_canvas_${--CL}`;
     return cname;
   },
-  watchVisibility: function (func) {
+  watchVisibility(func) {
     document.addEventListener("visibilitychange", function () {
       if (document.visibilityState !== "visible") {
         func.call();
       }
     });
   },
-  cutGrid: function (layer, point) {
+  cutGrid(layer, point) {
     var CTX = layer;
     CTX.clearRect(point.x, point.y, ENGINE.INI.GRIDPIX, ENGINE.INI.GRIDPIX);
     return;
   },
-  cutManyGrids: function (layer, point, N) {
+  cutManyGrids(layer, point, N) {
     var CTX = layer;
     CTX.clearRect(
       point.x,
@@ -696,7 +697,7 @@ var ENGINE = {
     );
     return;
   },
-  spreadAroundCenter: function (toDo, x, delta) {
+  spreadAroundCenter(toDo, x, delta) {
     var xS = [];
     var odd = toDo % 2;
     var n = 2;
@@ -749,27 +750,27 @@ var ENGINE = {
     NTX.putImageData(imgData, 0, 0);
     return ENGINE.contextToSprite(name, NTX);
   },
-  imgToTexture: function (obj) {
+  imgToTexture(obj) {
     TEXTURE[obj.name] = obj.img;
   },
-  imgToSprite: function (obj) {
+  imgToSprite(obj) {
     SPRITE[obj.name] = obj.img;
     SPRITE[obj.name].crossOrigin = "Anonymous";
     SPRITE[obj.name].width = obj.img.width;
     SPRITE[obj.name].height = obj.img.height;
   },
-  imgToCanvas: function (img) {
+  imgToCanvas(img) {
     LAYER.temp.canvas.width = img.width;
     LAYER.temp.canvas.height = img.height;
     LAYER.temp.drawImage(img, 0, 0);
     return LAYER.temp.canvas;
   },
-  getImgData: function (img, offX = 0, offY = 0) {
+  getImgData(img, offX = 0, offY = 0) {
     const canvas = ENGINE.imgToCanvas(img);
     const ctx = canvas.getContext("2d");
     return ctx.getImageData(offX, offY, canvas.width, canvas.height);
   },
-  extractImg: function (x, y, CTX) {
+  extractImg(x, y, CTX) {
     var data, imgDATA;
     var NTX = LAYER.temp2;
     data = CTX.getImageData(
@@ -799,14 +800,14 @@ var ENGINE = {
     NTX.putImageData(trimmed, 0, 0);
     return NTX;
   },
-  drawSheet: function (spriteSheet) {
+  drawSheet(spriteSheet) {
     var CTX = LAYER.temp;
     CTX.canvas.width = spriteSheet.width;
     CTX.canvas.height = spriteSheet.height;
     ENGINE.draw("temp", 0, 0, spriteSheet);
     return CTX;
   },
-  contextToSprite: function (newName, NTX) {
+  contextToSprite(newName, NTX) {
     SPRITE[newName] = new Image();
     SPRITE[newName].crossOrigin = "Anonymous";
     SPRITE[newName].src = NTX.canvas.toDataURL("image/png");
@@ -814,7 +815,7 @@ var ENGINE = {
     SPRITE[newName].height = NTX.canvas.height;
     return SPRITE[newName];
   },
-  packToSprite: function (obj) {
+  packToSprite(obj) {
     var tag = ["left", "right", "front", "back"];
     var CTX = ENGINE.drawSheet(obj.img);
     let x, y;
@@ -829,7 +830,7 @@ var ENGINE = {
       }
     }
   },
-  seqToSprite: function (obj) {
+  seqToSprite(obj) {
     var CTX = ENGINE.drawSheet(obj.img);
     let x;
     let newName;
@@ -840,7 +841,7 @@ var ENGINE = {
       ASSET[obj.name].linear.push(ENGINE.contextToSprite(newName, NTX));
     }
   },
-  sheetToSprite: function (obj) {
+  sheetToSprite(obj) {
     var CTX = ENGINE.drawSheet(obj.img);
     let x;
     let newName;
@@ -851,10 +852,10 @@ var ENGINE = {
       ASSET[obj.parent][obj.tag].push(ENGINE.contextToSprite(newName, NTX));
     }
   },
-  audioToAudio: function (obj) {
+  audioToAudio(obj) {
     AUDIO[obj.name] = obj.audio;
   },
-  linkToWasm: function (obj) {
+  linkToWasm(obj) {
     var bin = obj.exports;
     let name = null;
     for (var fn in bin) {
@@ -866,16 +867,16 @@ var ENGINE = {
     WASM[name] = bin[name];
     MEMORY[name] = bin.memory;
   },
-  spriteToAsset: function (obj) {
+  spriteToAsset(obj) {
     //console.log(obj.name, "to asset", obj.asset);
     ASSET[obj.asset].linear.push(SPRITE[obj.name]);
   },
   KEY: {
-    on: function () {
+    on() {
       $(document).keydown(ENGINE.GAME.checkKey);
       $(document).keyup(ENGINE.GAME.clearKey);
     },
-    off: function () {
+    off() {
       $(document).off("keyup", ENGINE.GAME.clearKey);
       $(document).off("keydown", ENGINE.GAME.checkKey);
     },
@@ -908,7 +909,7 @@ var ENGINE = {
       LT: 60,
       LTC: 226
     },
-    waitFor: function (func, key = "enter") {
+    waitFor(func, key = "enter") {
       if (ENGINE.GAME.stopAnimation) return;
       let map = ENGINE.GAME.keymap;
       if (map[ENGINE.KEY.map[key]]) {
@@ -918,7 +919,7 @@ var ENGINE = {
         return;
       }
     },
-    dirFromKey: function () {
+    dirFromKey() {
       //[LEFT, UP, RIGHT, DOWN]
       let pressed = [0, 0, 0, 0];
       if (ENGINE.GAME.keymap[ENGINE.KEY.map.left]) pressed[0] = 1;
@@ -963,25 +964,25 @@ var ENGINE = {
       60: false, //lt
       226: false //lt-chrome
     },
-    clearAllKeys: function () {
+    clearAllKeys() {
       for (var key in ENGINE.GAME.keymap) {
         ENGINE.GAME.keymap[key] = false;
       }
     },
-    clearKey: function (e) {
+    clearKey(e) {
       e = e || window.event;
       if (e.keyCode in ENGINE.GAME.keymap) {
         ENGINE.GAME.keymap[e.keyCode] = false;
       }
     },
-    checkKey: function (e) {
+    checkKey(e) {
       e = e || window.event;
       if (e.keyCode in ENGINE.GAME.keymap) {
         ENGINE.GAME.keymap[e.keyCode] = true;
         e.preventDefault();
       }
     },
-    run: function (func, nextFunct) {
+    run(func, nextFunct) {
       ENGINE.GAME.running = true;
       //if (!ENGINE.GAME.frame.start) ENGINE.GAME.frame.start = performance.now();
       if (ENGINE.GAME.frame.start === null)
@@ -1012,7 +1013,7 @@ var ENGINE = {
         return;
       }
     },
-    start: function () {
+    start() {
       $("#bottom")[0].scrollIntoView();
       ENGINE.GAME.stopAnimation = false;
       ENGINE.GAME.started = Date.now();
@@ -1021,7 +1022,7 @@ var ENGINE = {
       ENGINE.KEY.on();
     },
     ANIMATION: {
-      start: function (wrapper) {
+      start(wrapper) {
         console.log(
           `%cENGINE.GAME.ANIMATION.start --> ${wrapper.name}`,
           "color: #0F0"
@@ -1029,10 +1030,10 @@ var ENGINE = {
         ENGINE.GAME.stopAnimation = false;
         ENGINE.GAME.run(wrapper, ENGINE.GAME.ANIMATION.queue);
       },
-      stop: function () {
+      stop() {
         ENGINE.GAME.stopAnimation = true;
       },
-      next: function (functionPointer) {
+      next(functionPointer) {
         if (ENGINE.GAME.running) {
           ENGINE.GAME.ANIMATION.addToQueue(functionPointer);
           ENGINE.GAME.ANIMATION.stop();
@@ -1040,10 +1041,10 @@ var ENGINE = {
           ENGINE.GAME.ANIMATION.start(functionPointer);
         }
       },
-      addToQueue: function (functionPointer) {
+      addToQueue(functionPointer) {
         ENGINE.GAME.ANIMATION.STACK.push(functionPointer);
       },
-      queue: function () {
+      queue() {
         ENGINE.GAME.ANIMATION.stop();
         setTimeout(() => {
           console.log(`%cGame running? ${ENGINE.GAME.running}`, ENGINE.CSS);
@@ -1059,11 +1060,11 @@ var ENGINE = {
           }
         }, ENGINE.INI.ANIMATION_INTERVAL);
       },
-      waitThen: function (func, n = 1) {
+      waitThen(func, n = 1) {
         setTimeout(func, ENGINE.INI.ANIMATION_INTERVAL * n);
       },
       STACK: [],
-      resetTimer: function () {
+      resetTimer() {
         ENGINE.GAME.frame.start = null;
       }
     }
@@ -1073,18 +1074,18 @@ var ENGINE = {
       x: 0,
       y: 0
     },
-    setMax: function (max) {
+    setMax(max) {
       ENGINE.VIEWPORT.max.x = max.x;
       ENGINE.VIEWPORT.max.y = max.y;
     },
     changed: false,
-    reset: function () {
+    reset() {
       ENGINE.VIEWPORT.vx = 0;
       ENGINE.VIEWPORT.vy = 0;
     },
     vx: 0,
     vy: 0,
-    change: function (from, to) {
+    change(from, to) {
       ENGINE.copyLayer(
         from,
         to,
@@ -1094,7 +1095,7 @@ var ENGINE = {
         ENGINE.gameHEIGHT
       );
     },
-    check: function (actor, max = ENGINE.VIEWPORT.max) {
+    check(actor, max = ENGINE.VIEWPORT.max) {
       var vx = actor.x - ENGINE.gameWIDTH / 2;
       var vy = actor.y - ENGINE.gameHEIGHT / 2;
       if (vx < 0) vx = 0;
@@ -1107,7 +1108,7 @@ var ENGINE = {
         ENGINE.VIEWPORT.changed = true;
       }
     },
-    alignTo: function (actor) {
+    alignTo(actor) {
       actor.vx = actor.x - ENGINE.VIEWPORT.vx;
       actor.vy = actor.y - ENGINE.VIEWPORT.vy;
     }
@@ -1117,16 +1118,16 @@ var ENGINE = {
       ENGINE.TEXT.RD = rd;
     },
     RD: null,
-    text: function (text, x, y) {
+    text(text, x, y) {
       var CTX = ENGINE.TEXT.RD.layer;
       CTX.textAlign = "center";
       CTX.fillText(text, x, y);
     },
-    centeredText: function (text, width, y) {
+    centeredText(text, width, y) {
       var x = (width / 2) | 0;
       ENGINE.TEXT.text(text, x, y);
     },
-    leftText: function (text, x, y) {
+    leftText(text, x, y) {
       var CTX = ENGINE.TEXT.RD.layer;
       CTX.textAlign = "left";
       CTX.fillText(text, x, y);
@@ -1153,7 +1154,7 @@ var ENGINE = {
     HMWASM: null,
     HMSounds: null,
     HMPacks: null,
-    preload: function () {
+    preload() {
       console.time("preloading");
       console.group("preload");
       console.log("%cPreloading ...", ENGINE.CSS);
@@ -1495,7 +1496,7 @@ var ENGINE = {
   },
   FRAME_COUNTERS: {
     STACK: [],
-    display: function () {
+    display() {
       console.table(ENGINE.FRAME_COUNTERS.STACK, [
         "id",
         "count",
@@ -1503,13 +1504,13 @@ var ENGINE = {
         "onEnd"
       ]);
     },
-    update: function () {
+    update() {
       ENGINE.FRAME_COUNTERS.STACK.forEach((counter) => counter.update());
     },
-    clear: function () {
+    clear() {
       ENGINE.FRAME_COUNTERS.STACK.clear();
     },
-    remove: function (timerID) {
+    remove(timerID) {
       for (let i = ENGINE.FRAME_COUNTERS.STACK.length - 1; i >= 0; i--) {
         if (ENGINE.FRAME_COUNTERS.STACK[i].id === timerID) {
           ENGINE.FRAME_COUNTERS.STACK.splice(i, 1);
@@ -1520,7 +1521,7 @@ var ENGINE = {
   },
   TIMERS: {
     STACK: [],
-    remove: function (timerID) {
+    remove(timerID) {
       for (let i = ENGINE.TIMERS.STACK.length - 1; i >= 0; i--) {
         if (ENGINE.TIMERS.STACK[i].id === timerID) {
           ENGINE.TIMERS.STACK.splice(i, 1);
@@ -1528,7 +1529,7 @@ var ENGINE = {
         }
       }
     },
-    access: function (timerID) {
+    access(timerID) {
       let index = this.index(timerID);
       if (index === -1) {
         console.error("Timer does not exists:", timerID);
@@ -1536,7 +1537,7 @@ var ENGINE = {
       }
       return this.STACK[index];
     },
-    index: function (timerID) {
+    index(timerID) {
       for (let i = ENGINE.TIMERS.STACK.length - 1; i >= 0; i--) {
         if (ENGINE.TIMERS.STACK[i].id === timerID) {
           return i;
@@ -1544,21 +1545,21 @@ var ENGINE = {
       }
       return -1;
     },
-    exists: function (timerID) {
+    exists(timerID) {
       if (ENGINE.TIMERS.index(timerID) >= 0) {
         return true;
       } else return false;
     },
-    stop: function () {
+    stop() {
       ENGINE.TIMERS.STACK.forEach((timer) => timer.stop());
     },
-    start: function () {
+    start() {
       ENGINE.TIMERS.STACK.forEach((timer) => timer.continue());
     },
-    update: function () {
+    update() {
       ENGINE.TIMERS.STACK.forEach((timer) => timer.update());
     },
-    display: function () {
+    display() {
       console.table(ENGINE.TIMERS.STACK, [
         "id",
         "delta",
@@ -1568,7 +1569,7 @@ var ENGINE = {
         "value"
       ]);
     },
-    clear: function () {
+    clear() {
       ENGINE.TIMERS.STACK.clear();
     }
   },
@@ -1581,7 +1582,7 @@ var ENGINE = {
     floorTextureString: null,
     wallTexture: null,
     wallTextureString: null,
-    configure: function (floorLayer, wallLayer, floorTexture, wallTexture) {
+    configure(floorLayer, wallLayer, floorTexture, wallTexture) {
       ENGINE.TEXTUREGRID.setLayers(floorLayer, wallLayer);
       ENGINE.TEXTUREGRID.setTextures(floorTexture, wallTexture);
     },
@@ -1637,7 +1638,7 @@ var ENGINE = {
     }
   },
   PACGRID: {
-    draw: function (pacgrid, corr) {
+    draw(pacgrid, corr) {
       let t0 = performance.now();
       let sizeX = pacgrid.width;
       let sizeY = pacgrid.height;
@@ -1753,24 +1754,24 @@ var ENGINE = {
     round: 4,
     layer: null,
     layerString: null,
-    setLayer: function (layer) {
+    setLayer(layer) {
       ENGINE.PACGRID.layerString = layer;
       ENGINE.PACGRID.layer = LAYER[layer];
     },
     color: null,
-    setColor: function (color) {
+    setColor(color) {
       ENGINE.PACGRID.color = color;
     },
     lineWidth: 2,
-    setLineWidth: function (w) {
+    setLineWidth(w) {
       if (w <= 0 || w > 48) return;
       ENGINE.PACGRID.lineWidth = w;
     },
     background: null,
-    setBackground: function (back) {
+    setBackground(back) {
       ENGINE.PACGRID.background = back;
     },
-    configure: function (width, layer, background, color, shadow = null) {
+    configure(width, layer, background, color, shadow = null) {
       ENGINE.PACGRID.setLayer(layer);
       ENGINE.PACGRID.setLineWidth(width, layer);
       ENGINE.PACGRID.setColor(color);
@@ -1779,7 +1780,7 @@ var ENGINE = {
     }
   },
   BLOCKGRID: {
-    draw: function (maze, corr) {
+    draw(maze, corr) {
       let t0 = performance.now();
       var CTX = ENGINE.BLOCKGRID.layer;
       ENGINE.clearLayer(ENGINE.BLOCKGRID.layerString);
@@ -1813,7 +1814,7 @@ var ENGINE = {
           ENGINE.CSS
         );
     },
-    wall: function (x, y, CTX, value) {
+    wall(x, y, CTX, value) {
       let FS;
       switch (value) {
         case MAPDICT.DOOR:
@@ -1828,7 +1829,7 @@ var ENGINE = {
       let py = y * ENGINE.INI.GRIDPIX;
       CTX.fillRect(px, py, ENGINE.INI.GRIDPIX, ENGINE.INI.GRIDPIX);
     },
-    corr: function (x, y, CTX, value, corr) {
+    corr(x, y, CTX, value, corr) {
       let FS;
       switch (value) {
         case MAPDICT.ROOM:
@@ -1856,19 +1857,19 @@ var ENGINE = {
     },
     layer: null,
     layerString: null,
-    setLayer: function (layer) {
+    setLayer(layer) {
       ENGINE.BLOCKGRID.layerString = layer;
       ENGINE.BLOCKGRID.layer = LAYER[layer];
     },
     color: null,
-    setColor: function (color) {
+    setColor(color) {
       ENGINE.BLOCKGRID.color = color;
     },
     background: null,
-    setBackground: function (back) {
+    setBackground(back) {
       ENGINE.BLOCKGRID.background = back;
     },
-    configure: function (layer, background, color) {
+    configure(layer, background, color) {
       ENGINE.BLOCKGRID.setLayer(layer);
       ENGINE.BLOCKGRID.setColor(color);
       ENGINE.BLOCKGRID.setBackground(background);
@@ -1877,14 +1878,14 @@ var ENGINE = {
   VECTOR2D: {
     layer: null,
     layerString: null,
-    configure: function (layer) {
+    configure(layer) {
       ENGINE.VECTOR2D.setLayer(layer);
     },
-    setLayer: function (layer) {
+    setLayer(layer) {
       ENGINE.VECTOR2D.layerString = layer;
       ENGINE.VECTOR2D.layer = LAYER[layer];
     },
-    draw: function (player = PLAYER) {
+    draw(player = PLAYER) {
       //always draws player 2D representation
       let CTX = ENGINE.VECTOR2D.layer;
       CTX.fillStyle = "#000";
@@ -1902,7 +1903,7 @@ var ENGINE = {
       CTX.lineTo(end.x, end.y);
       CTX.stroke();
     },
-    drawBlock: function (monster) {
+    drawBlock(monster) {
       monster.actor.updateOrientationWidths();
       let CTX = ENGINE.VECTOR2D.layer;
       CTX.fillStyle = "#000";
@@ -1999,7 +2000,7 @@ var ASSET = {
 var WASM = {};
 var MEMORY = {};
 var PATTERN = {
-  create: function (which) {
+  create(which) {
     var image = TEXTURE[which];
     var CTX = LAYER.temp;
     PATTERN[which] = CTX.createPattern(image, "repeat");
@@ -2024,7 +2025,7 @@ class TextSprite {
 }
 var TEXTPOOL = {
   pool: [],
-  draw: function (layer) {
+  draw(layer) {
     var TPL = TEXTPOOL.pool.length;
     if (TPL === 0) return;
     ENGINE.layersToClear.add(layer);
@@ -2066,7 +2067,7 @@ class PartSprite {
 }
 var SpritePOOL = {
   pool: [],
-  draw: function (layer) {
+  draw(layer) {
     var SPL = SpritePOOL.pool.length;
     if (SPL === 0) return;
     ENGINE.layersToClear.add(layer);
@@ -2085,7 +2086,7 @@ var SpritePOOL = {
 };
 var EXPLOSIONS = {
   pool: [],
-  draw: function (layer) {
+  draw(layer) {
     // draws AnimationSPRITE(x, y, type, howmany) from EXPLOSIONS.pool
     // example new AnimationSPRITE(actor.x, actor.y, "AlienExp", 6)
     layer = layer || "explosion";
@@ -2423,13 +2424,13 @@ class _3D_MoveState {
   }
 }
 var VIEW = {
-  init: function () {
+  init() {
     VIEW.x = 0;
     VIEW.y = 0;
     VIEW.speed = 1;
     VIEW.actor = new ACTOR(null, 0, 0);
   },
-  move: function (dir) {
+  move(dir) {
     VIEW.actor.x += VIEW.speed * ENGINE.INI.GRIDPIX * dir.x;
     VIEW.actor.y += VIEW.speed * ENGINE.INI.GRIDPIX * dir.y;
     if (VIEW.actor.x < 0) VIEW.actor.x = 0;
@@ -2461,13 +2462,13 @@ var FORM = {
   },
   BUTTON: {
     POOL: [],
-    draw: function () {
+    draw() {
       ENGINE.clearLayer(FORM.INI.layer);
       for (let q = 0; q < FORM.BUTTON.POOL.length; q++) {
         FORM.BUTTON.POOL[q].draw();
       }
     },
-    changeMousePointer: function (cname) {
+    changeMousePointer(cname) {
       for (let q = 0; q < FORM.BUTTON.POOL.length; q++) {
         let button = FORM.BUTTON.POOL[q];
         if (button.within()) {
@@ -2477,7 +2478,7 @@ var FORM = {
       }
       ENGINE.mouseDefault(cname);
     },
-    click: function () {
+    click() {
       for (let q = 0; q < FORM.BUTTON.POOL.length; q++) {
         let button = FORM.BUTTON.POOL[q];
         if (button.within()) {
@@ -2691,10 +2692,10 @@ class CountDown extends Timer {
 }
 var CONSOLE = {
   id: "Console",
-  set: function (id) {
+  set(id) {
     CONSOLE.id = id;
   },
-  print: function (text) {
+  print(text) {
     $(`#${CONSOLE.id}`).append(`<p>${text}</p>`);
     $(`#${CONSOLE.id}`).children().last()[0].scrollIntoView();
     $("#DOWN")[0].scrollIntoView();

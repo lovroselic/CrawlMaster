@@ -1,6 +1,7 @@
 //Assets for CrawlMaster
 /*jshint -W097 */
 "use strict";
+
 console.log("%cAssets for CrawlMaster ready.", "color: orange");
 
 var LoadTextures = [

@@ -3,6 +3,7 @@
 /*jshint -W117 */
 /*jshint -W061 */
 "use strict";
+
 ///////////////////////Dungeon.js///////////////
 //                                            //
 //        Procedureal maze and dungeon        //
@@ -14,7 +15,7 @@
 /*
 TODO:
 
- known bugs:
+known bugs:
 
 */
 
@@ -113,11 +114,6 @@ class MasterDungeon {
     this.entrance = null;
     this.exit = null;
     this.startPosition = null;
-    //this.gate = null;
-    //this.door = null;
-    //this.temple = null;
-    //this.silverKey = null;
-    //this.goldKey = null;
     this.obstacles = []; //check!!
     this.rooms = [];
     this.lockedRooms = {};
@@ -341,7 +337,6 @@ class MasterDungeon {
     return pool.chooseRandom();
   }
   gridAndAdjacentAvailable(grid, d1, d2) {
-    //if (this.GA.notWall(grid)) return false;
     return (
       this.gridAvailable(grid) &&
       this.gridAvailable(grid.add(d1)) &&
@@ -363,7 +358,6 @@ class MasterDungeon {
     return roomArr;
   }
   makeRooms() {
-    //console.log('room limit', DUNGEON.LIMIT_ROOMS, DUNGEON.ROOM_LIMIT);
     let roomArr = [];
     let id = 0;
     if (DUNGEON.LIMIT_ROOMS) {
@@ -399,7 +393,6 @@ class MasterDungeon {
       for (let y = room.y; y < room.y + room.h; y++) {
         let grid = new Grid(x, y);
         this.GA.toRoom(grid);
-        //this.dot(grid);
       }
     }
   }
@@ -780,9 +773,7 @@ class MasterDungeon {
     for (let q = this.deadEnds.length - 1; q >= 0; q--) {
       let deadEnd = this.deadEnds[q];
       if (!this.isDeadEnd(deadEnd)) continue;
-      //
       if (this.GA.isStair(deadEnd)) continue;
-      //
       let dir = this.deadEndDirection(deadEnd);
       let next = deadEnd.add(dir);
       if (this.hasConnections(next) > 2) {
@@ -1107,7 +1098,6 @@ class MasterDungeon {
         }
       }
     }
-    //return pool;
     return this.reservePool(N, pool);
   }
   poolOfCorridorGrids(N) {
@@ -1235,7 +1225,6 @@ class Dungeon extends MasterDungeon {
       let stairsUp = this.randomUnusedEntry(startingRoom);
       this.GA.toStair(stairsUp);
       this.GA.addRoom(stairsUp);
-      //this.GA.reserve(stairsUp);
       this.entrance = stairsUp;
       
       let exitRoom = getRoom(this.rooms, "common");
@@ -1243,7 +1232,6 @@ class Dungeon extends MasterDungeon {
       let stairsDown = this.randomUnusedEntry(exitRoom);
       this.GA.toStair(stairsDown);
       this.GA.addRoom(stairsDown);
-      //this.GA.reserve(stairsDown);
       this.exit = stairsDown;
       
       //temple, DUNGEON.N_SHRINES
@@ -1534,7 +1522,7 @@ var MAZE = {
   useBias: true,
   bias: 2,
   targetDensity: 0.6,
-  configure: function (maze, sizeX = null, sizeY = null, start = null) {
+  configure(maze, sizeX = null, sizeY = null, start = null) {
     if (MAZE.polishDeadEnds) maze.polishDeadEnds();
     if (MAZE.connectSome) maze.connectSomeDeadEnds(MAZE.leaveDeadEnds);
     if (MAZE.connectDeadEnds) maze.connectDeadEnds();
@@ -1548,7 +1536,7 @@ var MAZE = {
     }
     return maze;
   },
-  create: function (sizeX, sizeY, start) {
+  create(sizeX, sizeY, start) {
     return MAZE.configure(new Maze(sizeX, sizeY, start), sizeX, sizeY, start);
   }
 };
@@ -1586,7 +1574,7 @@ var DUNGEON = {
     DUNGEON.SET_ROOMS = true;
     this.LOCK_LEVEL = lockLevel;
   },
-  create: function (sizeX, sizeY) {
+  create(sizeX, sizeY) {
     DUNGEON.PAD = DUNGEON.MIN_ROOM + 2 * DUNGEON.MIN_PADDING; //minimum area
     DUNGEON.FREE = DUNGEON.MAX_ROOM + 4 * DUNGEON.MIN_PADDING; //not carving further
     //tunneling safeguard
