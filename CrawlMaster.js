@@ -809,7 +809,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.31.1.DEV",
+  VERSION: "0.32.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -886,8 +886,7 @@ var HERO = {
     this.visible();
     this.unlucky();
     this.dead = false;
-    //this.maxHealth = 15;
-    this.maxHealth = 1500;
+    this.maxHealth = 15;
     this.maxMana = 15;
     this.restore();
     //stats

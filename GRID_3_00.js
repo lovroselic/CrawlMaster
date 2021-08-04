@@ -238,20 +238,20 @@ var GRID = {
     let path = GRID.raycasting(startGrid, endGrid);
     return GA.pathClear(path);
   },
-  freedom(startGrid, endGrid, IA, pool) {
+  freedom(startGrid, endGrid, IA) {
     if (GRID.same(startGrid, endGrid)) return true;
-    let path = GRID.raycasting(startGrid, endGrid).slice(1); // ignoring start
-    console.log("freedom: path", path);
+    let path = GRID.raycasting(startGrid, endGrid).slice(1); 
+    //console.log("freedom: path", path);
     let candidates = IA.unrollArray(path);
     if (candidates.size > 0) {
-      console.log("freedom: candidates to be evaluated", candidates);
+      return false;
+      /*console.log("freedom: candidates to be evaluated", candidates);
       for (const candidate of candidates) {
-        console.log("..candidate", candidate, pool[candidate-1]);
+        let enemy = pool[candidate-1];
+        console.log("..candidate", candidate, enemy);
+        console.log("...enemy circle", enemy.r, enemy.moveState.pos);
         //continue HERE
-
-
-        
-      }
+      }*/
     } else return true;
   },
   raycasting(startGrid, endGrid) {

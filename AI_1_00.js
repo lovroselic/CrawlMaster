@@ -19,13 +19,12 @@ dependencies:
 /*  
 
 TODO:
-  line 153 if path clear
       
 */
 /////////////////////////////////////////
 
 var AI = {
-  VERSION: "1.00.0.A",
+  VERSION: "1.00.0.B",
   CSS: "color: silver",
   referenceEntity: null,
   initialize(ref) {
@@ -152,11 +151,7 @@ var AI = {
       if (enemy.mana >= Missile.calcMana(enemy.magic)) {
         let GA = enemy.parent.map.GA;
         let IA = enemy.parent.map.enemyIA;
-        let pool = enemy.parent.map.ENEMY.POOL;
-        //cont HERE
-        //https://www.geeksforgeeks.org/check-if-any-point-overlaps-the-given-circle-and-rectangle/
-        //need to acces R of missile!!
-        console.log(enemy.id, enemy.class, "... tries to shoot");
+        //console.log(enemy.id, enemy.class, "... tries to shoot");
         if (
           GRID.vision(
             Grid.toClass(enemy.moveState.pos),
@@ -166,10 +161,9 @@ var AI = {
           GRID.freedom(
             Grid.toClass(enemy.moveState.pos),
             Grid.toClass(ARG.playerPosition),
-            IA, pool
+            IA
           )
         ) {
-          //what about collateral?
           enemy.canShoot = true;
         }
         return this.hunt(enemy);
