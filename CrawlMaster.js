@@ -523,6 +523,7 @@ class Monster {
       this.mana = this.mana * Missile.calcMana(this.magic);
     }
     this.petrified = false;
+    this.behaviour = new Behaviour(...this.behaviourArguments);
   }
   draw() {
     ENGINE.VECTOR2D.drawBlock(this);
@@ -627,6 +628,7 @@ class Monster {
   }
   weak() {
     let ratio = this.health / this.fullHealth;
+    //console.log(this, "is weak?", ratio, ratio <= 0.2);
     return ratio <= 0.2;
   }
   petrify() {
@@ -809,7 +811,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.32.0.DEV",
+  VERSION: "0.32.5.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -887,6 +889,7 @@ var HERO = {
     this.unlucky();
     this.dead = false;
     this.maxHealth = 15;
+    //this.maxHealth = 1500;
     this.maxMana = 15;
     this.restore();
     //stats
@@ -2329,6 +2332,6 @@ $(function () {
   PRG.INIT();
   PRG.setup();
   ENGINE.LOAD.preload();
-  const BACKUP_MAP = $.extend(true, {}, MAP);
+  //const BACKUP_MAP = $.extend(true, {}, MAP);
   SAVE_GAME.setKey(PRG.SG);
 });

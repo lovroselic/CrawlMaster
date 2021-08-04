@@ -16,7 +16,7 @@ known bugs:
 */
 
 var GRID = {
-  VERSION: "3.00.00.A",
+  VERSION: "3.00.0.B",
   CSS: "color: #0AA",
   SETTING: {
     ALLOW_CROSS: false,
@@ -241,17 +241,11 @@ var GRID = {
   freedom(startGrid, endGrid, IA) {
     if (GRID.same(startGrid, endGrid)) return true;
     let path = GRID.raycasting(startGrid, endGrid).slice(1); 
-    //console.log("freedom: path", path);
     let candidates = IA.unrollArray(path);
     if (candidates.size > 0) {
+      //debug
+      //console.log("cant shoot enemies beetween", candidates);
       return false;
-      /*console.log("freedom: candidates to be evaluated", candidates);
-      for (const candidate of candidates) {
-        let enemy = pool[candidate-1];
-        console.log("..candidate", candidate, enemy);
-        console.log("...enemy circle", enemy.r, enemy.moveState.pos);
-        //continue HERE
-      }*/
     } else return true;
   },
   raycasting(startGrid, endGrid) {

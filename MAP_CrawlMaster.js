@@ -401,7 +401,7 @@ var MONSTER = {
     xp: 5,
     attackSound: "MonsterAttack2",
     hurtSound: "MonsterHurt",
-    behaviour: new Behaviour(),
+    behaviourArguments: [],
     inventory: "GoldCoin",
     inventoryValue: 10
   },
@@ -417,7 +417,7 @@ var MONSTER = {
     xp: 4,
     attackSound: "SnakeAttack",
     hurtSound: "MonsterHurt2",
-    behaviour: new Behaviour(4, ["wanderer"], 2, ["hunt"])
+    behaviourArguments: [4, ["wanderer"], 2, ["hunt"]],
   },
   LittleGreenSnake: {
     class: "LittleGreenSnake",
@@ -431,7 +431,7 @@ var MONSTER = {
     xp: 2,
     attackSound: "SnakeAttack",
     hurtSound: "MonsterHurt2",
-    behaviour: new Behaviour(2, ["wanderer"], 1, ["hunt"])
+    behaviourArguments: [2, ["wanderer"], 1, ["hunt"]],
   },
   Bat: {
     class: "Bat",
@@ -445,7 +445,7 @@ var MONSTER = {
     xp: 1,
     attackSound: "BatAttack",
     hurtSound: "BatAttack",
-    behaviour: new Behaviour(Infinity, ["wanderer"], -1)
+    behaviourArguments: [Infinity, ["wanderer"], -1],
   },
   HellRat: {
     class: "HellRat",
@@ -459,7 +459,7 @@ var MONSTER = {
     xp: 7,
     attackSound: "MonsterAttack1",
     hurtSound: "MonsterHurt",
-    behaviour: new Behaviour(8, ["wanderer"], 6, ["advancer"]),
+    behaviourArguments: [8, ["wanderer"], 6, ["advancer"]],
     inventory: "GoldCoin",
     inventoryValue: 15
   },
@@ -475,16 +475,13 @@ var MONSTER = {
     xp: 20,
     attackSound: "MonsterAttack2",
     hurtSound: "MonsterHurt2",
-    //
     mana: 3,
     caster: true,
     shootDistance: 4,
     stalkDistance: 5,
-    behaviour: new Behaviour(7, ["wanderer"], 5, ["shoot"]),
+    behaviourArguments: [7, ["wanderer"], 5, ["shoot"]],
     inventory: "GoldCoin",
     inventoryValue: 25
-    //behaviour: new Behaviour(2,['goto','circler'],1,['hunt']),
-    //behaviour: new Behaviour(Infinity,['goto','circler'],3,['hunt'])
   },
   Wizard_BossL1: {
     class: "Wizard",
@@ -504,7 +501,7 @@ var MONSTER = {
     stalkDistance: 3,
     inventory: "MagicSkill",
     inventoryValue: 0,
-    behaviour: new Behaviour(Infinity, ["goto", "circler"], 5, ["shoot"])
+    behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
   }
 };
 var MISSILE_TYPE = {
@@ -665,8 +662,8 @@ var MOSTER_LAYOUT = {
   1: {
     start: {
       N: 1,
-      //monster: { LittleGreenSnake: 1 }
-      monster: { Skelegoat: 1 },
+      monster: { LittleGreenSnake: 1 }
+      //monster: { Skelegoat: 1 },
       //monster:{Wizard_BossL1: 1}
     },
     corridor: {

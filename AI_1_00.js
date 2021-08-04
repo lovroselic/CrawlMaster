@@ -19,6 +19,10 @@ dependencies:
 /*  
 
 TODO:
+
+knownBugs:
+  to hunt instead to shoot
+  wrong runaway
       
 */
 /////////////////////////////////////////
@@ -86,6 +90,7 @@ var AI = {
     return this.crossroader(enemy, ARG.playerPosition, ARG.currentPlayerDir);
   },
   runAway(enemy) {
+    console.log(enemy, "strategy to runaway");
     let nodeMap = enemy.parent.map.nodeMap;
     let grid = Grid.toClass(enemy.moveState.pos);
     let directions = enemy.parent.map.GA.getDirectionsFromNodeMap(
@@ -151,27 +156,20 @@ var AI = {
       if (enemy.mana >= Missile.calcMana(enemy.magic)) {
         let GA = enemy.parent.map.GA;
         let IA = enemy.parent.map.enemyIA;
+        //debug
         //console.log(enemy.id, enemy.class, "... tries to shoot");
-        if (
-          GRID.vision(
-            Grid.toClass(enemy.moveState.pos),
-            Grid.toClass(ARG.playerPosition),
-            GA
-          ) &&
-          GRID.freedom(
-            Grid.toClass(enemy.moveState.pos),
-            Grid.toClass(ARG.playerPosition),
-            IA
-          )
-        ) {
+        if (GRID.vision(Grid.toClass(enemy.moveState.pos), Grid.toClass(ARG.playerPosition), GA) &&
+          GRID.freedom(Grid.toClass(enemy.moveState.pos), Grid.toClass(ARG.playerPosition), IA)) {
           enemy.canShoot = true;
         }
         return this.hunt(enemy);
       } else {
         this.caster = false;
         if (enemy.weak()) {
+          //console.log(enemy.id, enemy, "active behavior set to runAway, because enemy is weak");
           enemy.behaviour.set("active", "runAway");
         } else {
+          //console.log(enemy.id, enemy, "active behavior set to HUNT, because enemy is NOT weak");
           enemy.behaviour.set("active", "hunt");
         }
         return this.immobile();
@@ -229,6 +227,7 @@ class Behaviour {
   set(type, behaviour) {
     this[type].queue = [behaviour];
     this.strategy = behaviour;
+    //console.log(this, "DIRECT setting to ", this.strategy, this[type].queue);
   }
   complex(type) {
     return this[type].queue.length > 1;
@@ -252,21 +251,18 @@ class Behaviour {
       this.strategy = this.getPassive();
       return;
     }
-    if (
-      distance <= this.active.distance &&
-      this.strategy === this.getPassive()
-    ) {
+    if (distance <= this.active.distance && this.strategy === this.getPassive()) {
       this.strategy = this.getActive();
+      //console.log(enemy, "strategy changed to Active:", this.strategy);
       enemy.dirStack.clear();
     }
-    if (
-      distance >= this.passive.distance &&
-      this.strategy === this.getActive()
-    ) {
+    if (distance >= this.passive.distance && this.strategy === this.getActive()) {
       if (this.complex("passive")) {
         this.restorePassive();
       }
       this.strategy = this.getPassive();
+      //console.log(enemy, "strategy changed to Passive:", this.strategy);
+      enemy.dirStack.clear();
     }
     return;
   }
