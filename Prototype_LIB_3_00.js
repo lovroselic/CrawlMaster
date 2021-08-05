@@ -43,7 +43,8 @@ changelog:
   function round10(x) {
     return Math.round(x / 10) * 10;
   }
-  function weightedRnd(json) {
+  function weightedRnd(_json) {
+    let json = $.extend(true, {}, _json);
     normalize(json);
     let rnd = Math.random();
     for (const c in json) {
@@ -689,10 +690,11 @@ class DefaultDict {
     return new Proxy(
       {},
       {
-        get: (target, name) => (name in target ? target[name] : defaultVal)
+        get: (target, name) => (name in target ? target[name] : defaultVal),
       }
     );
   }
+
 }
 
 var float64ToInt64Binary = (function () {

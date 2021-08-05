@@ -674,7 +674,7 @@ var MOSTER_LAYOUT = {
         GreenSnake: 3,
         SlowSkeleton: 3,
         HellRat: 3,
-        Skelegoat: 1
+        Skelegoat: 1.5
       }
     },
     common: {
@@ -874,25 +874,25 @@ var SPAWN = {
     );
   },
   monsters(map, level) {
-    //monsters on corridors
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
     for (let grid of corrGrids) {
+      let type = weightedRnd(MOSTER_LAYOUT[level].corridor.monster);
       let enemy = new Monster(
         grid,
         map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
-        MONSTER[weightedRnd(MOSTER_LAYOUT[level].corridor.monster)]
+        MONSTER[type]
       );
       ENEMY.add(enemy);
     }
-    //monsters in rooms
     for (let R of map.rooms) {
       let N = MOSTER_LAYOUT[level][R.type].N;
       for (let i = 0; i < N; i++) {
         let space = map.findSpace(R.area);
+        let type = weightedRnd(MOSTER_LAYOUT[level][R.type].monster);
         let enemy = new Monster(
           space,
           map.GA.getDirectionsIfNot(space, MAPDICT.WALL).chooseRandom(),
-          MONSTER[weightedRnd(MOSTER_LAYOUT[level][R.type].monster)]
+          MONSTER[type]
         );
         let guardPosition = map.findMiddleSpaceUnreserved(R.area);
         enemy.guardPosition = guardPosition;
@@ -902,16 +902,20 @@ var SPAWN = {
       let boss = MOSTER_LAYOUT[level][R.type].boss;
       if (boss) {
         let space = map.findSpace(R.area);
+        let type = weightedRnd(MOSTER_LAYOUT[level][R.type].boss);
         let enemy = new Monster(
           space,
           map.GA.getDirectionsIfNot(space, MAPDICT.WALL).chooseRandom(),
-          MONSTER[weightedRnd(MOSTER_LAYOUT[level][R.type].boss)]
+          MONSTER[type]
         );
         let guardPosition = map.findMiddleSpaceUnreserved(R.area);
         enemy.guardPosition = guardPosition;
         ENEMY.add(enemy);
       }
     }
+
+    //analysis
+    if (DEBUG.VERBOSE) ENEMY.analyze();
   },
   decals(map) {
     for (const room of map.rooms) {

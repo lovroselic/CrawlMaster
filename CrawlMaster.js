@@ -24,6 +24,7 @@ var DEBUG = {
   FPS: true,
   SETTING: true,
   BUTTONS: true,
+  VERBOSE: true,
   clearEnemies() {
     ENEMY.clearAll();
   },
@@ -811,7 +812,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.32.5.DEV",
+  VERSION: "0.33.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",

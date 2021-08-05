@@ -570,7 +570,7 @@ var ENEMY = {
   remove(id) {
     this.POOL[id - 1] = null;
   },
-  show(id){
+  show(id) {
     return this.POOL[id - 1];
   },
   poolToIA(IA) {
@@ -668,6 +668,16 @@ var ENEMY = {
   map: null,
   linkMap(map) {
     this.map = map;
+  },
+  analyze() {
+    let monsterDict = new DefaultDict(0);
+    for (const enemy of this.POOL) {
+      monsterDict[enemy.class]++;
+    }
+
+    for (const item in monsterDict) {
+      console.log(item, monsterDict[item], monsterDict[item] / this.POOL.length * 100, "%");
+    }
   }
 };
 var RAYCAST = {
