@@ -677,7 +677,7 @@ var ENEMY = {
 
     console.group("ENEMY analysis");
     for (const item in monsterDict) {
-      console.log(item, monsterDict[item], monsterDict[item] / this.POOL.length * 100, "%");
+      console.log(item, monsterDict[item], Number(monsterDict[item] / this.POOL.length * 100).toFixed(2), "%");
     }
     console.groupEnd("ENEMY analysis");
   }

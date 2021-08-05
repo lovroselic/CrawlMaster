@@ -8,9 +8,8 @@
 /*
       
  TODO:
-    GAME SAVED text!
-    items: lantern?
-    compass:?
+  items: lantern?
+  compass:?
     
       
  known bugs: 
@@ -27,6 +26,7 @@ var DEBUG = {
   SETTING: true,
   BUTTONS: true,
   VERBOSE: true,
+  LOAD: true,
   clearEnemies() {
     ENEMY.clearAll();
   },
@@ -813,7 +813,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.33.2.DEV",
+  VERSION: "0.34.1.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -891,7 +891,6 @@ var HERO = {
     this.unlucky();
     this.dead = false;
     this.maxHealth = 15;
-    //this.maxHealth = 1500;
     this.maxMana = 15;
     this.restore();
     //stats
@@ -931,8 +930,36 @@ var HERO = {
     for (const P of propsToSave) {
       this.attributesForSaveGame.push(`HERO.${P}`);
     }
-    //
     PLAYER.hitByMissile = HERO.hitByMissile;
+  },
+  depth2(){
+    GAME.level = 2;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 91;
+    this.maxHealth = 27;
+    this.maxMana = 35;
+    this.health = 18;
+    this.mana = 4;
+    this.defense = 6;
+    this.reference_defense = this.defense;
+    this.attack = 9;
+    this.reference_attack = this.attack;
+    this.magic =9;
+    this.reference_magic = this.magic;
+    this.attackExp = 43;
+    this.defenseExp = 30;
+    this.magicExp = 165;
+    this.attackExpGoal = 225;
+    this.defenseExpGoal = 100;
+    this.magicExpGoal = 225;
+    this.inventory.potion.red = 3;
+    let scrolls = ["DrainMana","DrainMana", "Luck", "Map","Map", "BoostArmor"];
+    for (let scr of scrolls){
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
   },
   raiseStat(which) {
     this[which]++;
@@ -1288,6 +1315,12 @@ var GAME = {
       GAME.fromCheckpoint = false;
     }
 
+    if (DEBUG.LOAD){
+      console.log("FORCE LOAD FROM DEBUG!!");
+     
+      HERO.depth2();
+    }
+
     GAME.newGrid();
     GAME.newDungeon();
     TITLE.all();
@@ -1548,6 +1581,7 @@ var GAME = {
     if (MAP[GAME.level].DUNGEON === null) {
       GAME.newDungeon(waypoint);
       SAVE_GAME.save();
+      TURN.display("GAME SAVED","#FFF");
     } else {
       GAME.setlevelTextures(GAME.level);
       ROM.refreshMaps(MAP[GAME.level].DUNGEON);
