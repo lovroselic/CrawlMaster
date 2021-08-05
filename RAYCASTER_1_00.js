@@ -675,9 +675,11 @@ var ENEMY = {
       monsterDict[enemy.class]++;
     }
 
+    console.group("ENEMY analysis");
     for (const item in monsterDict) {
       console.log(item, monsterDict[item], monsterDict[item] / this.POOL.length * 100, "%");
     }
+    console.groupEnd("ENEMY analysis");
   }
 };
 var RAYCAST = {

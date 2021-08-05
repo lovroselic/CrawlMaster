@@ -699,11 +699,13 @@ var MOSTER_LAYOUT = {
     },
     firstKey: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, SlowSkeleton: 3 }
+      monster: { HellRat: 2, GreenSnake: 2, SlowSkeleton: 3 },
+      boss: { Skelegoat: 1 }
     },
     Red: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, Skelegoat: 1 }
+      monster: { HellRat: 2, GreenSnake: 2, Skelegoat: 1 },
+      boss: { Skelegoat: 1 }
     },
     temple: {
       N: 1,
@@ -714,7 +716,8 @@ var MOSTER_LAYOUT = {
     start: {
       N: 1,
       monster: { LittleGreenSnake: 1 }
-      //monster: { Skelegoat: 1 }
+      //monster: { Skelegoat: 1 },
+      //monster:{Wizard_BossL1: 1}
     },
     corridor: {
       N: 25,
@@ -724,7 +727,7 @@ var MOSTER_LAYOUT = {
         GreenSnake: 3,
         SlowSkeleton: 3,
         HellRat: 3,
-        Skelegoat: 1
+        Skelegoat: 1.5
       }
     },
     common: {
@@ -738,26 +741,30 @@ var MOSTER_LAYOUT = {
       }
     },
     Gold: {
-      N: 4,
-      monster: { Skelegoat: 2 }
+      N: 2,
+      monster: { Skelegoat: 2, HellRat: 1 },
+      boss: { Wizard_BossL1: 1 }
     },
     Silver: {
-      N: 3,
-      monster: { HellRat: 2, SlowSkeleton: 1, Skelegoat: 1 }
+      N: 2,
+      monster: { HellRat: 2, SlowSkeleton: 1, Skelegoat: 1 },
+      boss: { Skelegoat: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, SlowSkeleton: 3 }
+      monster: { HellRat: 2, GreenSnake: 2, SlowSkeleton: 3 },
+      boss: { Skelegoat: 1 }
     },
     Red: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, Skelegoat: 1 }
+      monster: { HellRat: 2, GreenSnake: 2, Skelegoat: 1 },
+      boss: { Skelegoat: 1 }
     },
     temple: {
       N: 1,
       monster: { Bat: 1, HellRat: 2 }
     }
-  }
+  },
 };
 var SPAWN = {
   INI: {

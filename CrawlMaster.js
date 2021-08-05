@@ -8,7 +8,9 @@
 /*
       
  TODO:
-    monster: check if clear for friendly fire
+    GAME SAVED text!
+    items: lantern?
+    compass:?
     
       
  known bugs: 
@@ -405,7 +407,6 @@ class Shrine extends DecalMaster {
     this.calcDrawPosition(type);
   }
   interact() {
-    console.log("interacting with", this);
     if (GAME.gold >= 1000) {
       this.interactive = false;
       GAME.gold -= 1000;
@@ -812,7 +813,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.33.0.DEV",
+  VERSION: "0.33.2.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1544,7 +1545,7 @@ var GAME = {
   useStaircase(newLevel, waypoint) {
     ROM.storeMaps(MAP[GAME.level].DUNGEON);
     GAME.level = newLevel;
-    if (MAP[GAME.level].DUNGEON === undefined) {
+    if (MAP[GAME.level].DUNGEON === null) {
       GAME.newDungeon(waypoint);
       SAVE_GAME.save();
     } else {
