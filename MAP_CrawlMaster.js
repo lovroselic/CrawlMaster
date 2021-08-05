@@ -405,6 +405,22 @@ var MONSTER = {
     inventory: "GoldCoin",
     inventoryValue: 10
   },
+  LittleSkelly: {
+    class: "LittleSkelly",
+    moveSpeed: 2.0,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 9,
+    defense: 4,
+    health: 10,
+    magic: 0,
+    xp: 15,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt3",
+    behaviourArguments: [9, ["wanderer"], 5, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 12
+  },
   GreenSnake: {
     class: "GreenSnake",
     moveSpeed: 1.0,
@@ -663,8 +679,6 @@ var MOSTER_LAYOUT = {
     start: {
       N: 1,
       monster: { LittleGreenSnake: 1 }
-      //monster: { Skelegoat: 1 },
-      //monster:{Wizard_BossL1: 1}
     },
     corridor: {
       N: 25,
@@ -715,54 +729,49 @@ var MOSTER_LAYOUT = {
   2: {
     start: {
       N: 1,
-      monster: { LittleGreenSnake: 1 }
-      //monster: { Skelegoat: 1 },
-      //monster:{Wizard_BossL1: 1}
+      monster: { SlowSkeleton: 1 }
     },
     corridor: {
       N: 25,
       monster: {
-        Bat: 2,
-        LittleGreenSnake: 1,
-        GreenSnake: 3,
-        SlowSkeleton: 3,
-        HellRat: 3,
-        Skelegoat: 1.5
+        LittleSkelly: 2,
+        SlowSkeleton: 1,
+        HellRat: 1,
+        Skelegoat: 2
       }
     },
     common: {
       N: 2,
       monster: {
-        Bat: 1,
-        GreenSnake: 2,
-        SlowSkeleton: 3,
-        HellRat: 2,
-        Skelegoat: 1
+        LittleSkelly: 2,
+        SlowSkeleton: 1,
+        HellRat: 1,
+        Skelegoat: 3
       }
     },
     Gold: {
       N: 2,
-      monster: { Skelegoat: 2, HellRat: 1 },
+      monster: { Skelegoat: 2, LittleSkelly: 2, },
       boss: { Wizard_BossL1: 1 }
     },
     Silver: {
       N: 2,
-      monster: { HellRat: 2, SlowSkeleton: 1, Skelegoat: 1 },
+      monster: { LittleSkelly: 2, Skelegoat: 1 },
       boss: { Skelegoat: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, SlowSkeleton: 3 },
+      monster: { LittleSkelly: 2 },
       boss: { Skelegoat: 1 }
     },
     Red: {
       N: 2,
-      monster: { HellRat: 2, GreenSnake: 2, Skelegoat: 1 },
+      monster: { LittleSkelly: 2, Skelegoat: 1 },
       boss: { Skelegoat: 1 }
     },
     temple: {
       N: 1,
-      monster: { Bat: 1, HellRat: 2 }
+      monster: { HellRat: 1 }
     }
   },
 };

@@ -417,7 +417,26 @@ var LoadPacks = [
   { srcName: "Hellrat64.png", count: 8, name: "HellRat" },
   { srcName: "Skelegoat64.png", count: 3, name: "Skelegoat" },
   { srcName: "ChestOpen.png", count: 1, name: "ChestOpen" },
-  { srcName: "ChestClosed.png", count: 1, name: "ChestClosed" }
+  { srcName: "ChestClosed.png", count: 1, name: "ChestClosed" },
+  { srcName: "LittleSkelly64.png", count: 3, name: "LittleSkelly" },
+
+  { srcName: "Fairy64.png", count: 3, name: "Fairy" },
+  { srcName: "Croc64.png", count: 5, name: "Croc" },
+  { srcName: "Knight64.png", count: 4, name: "Knight" },
+  { srcName: "Sorceress64.png", count: 6, name: "Sorceress" },
+  { srcName: "Scorpion64.png", count: 6, name: "Scorpion" },
+  { srcName: "WhiteWolf64.png", count: 4, name: "WhiteWolf" },
+  { srcName: "Black Wolf64.png", count: 3, name: "BlackWolf" },
+  { srcName: "BlueDevil64.png", count: 4, name: "BlueDevil" },
+  { srcName: "GreenZombie64.png", count: 3, name: "GreenZombie" },
+  { srcName: "GreenSkelly64.png", count: 3, name: "GreenSkelly" },
+  { srcName: "GreenPuffer64.png", count: 4, name: "GreenPuffer" },
+  { srcName: "Flamy64.png", count: 4, name: "Flamy" },
+  { srcName: "Badger64.png", count: 3, name: "Badger" },
+  { srcName: "Fox64.png", count: 4, name: "Fox" },
+  { srcName: "Scary64.png", count: 4, name: "Scary" },
+  { srcName: "Spider64.png", count: 6, name: "Spider" },
+  { srcName: "Skeletona64.png", count: 4, name: "Skeletona" },
 ];
 var LoadRotated = [];
 var LoadExtWasm = [];
