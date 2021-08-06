@@ -518,7 +518,79 @@ var MONSTER = {
     inventory: "MagicSkill",
     inventoryValue: 0,
     behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
-  }
+  },
+  Wizard: {
+    class: "Wizard",
+    moveSpeed: 2.0,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 10,
+    defense: 5,
+    magic: 10,
+    health: 25,
+    xp: 25,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    mana: 3,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 3,
+    inventory: "GoldCoin",
+    inventoryValue: 50,
+    behaviourArguments: [8, ["wanderer"], 6, ["shoot"]],
+  },
+  Fox: {
+    class: "Fox",
+    moveSpeed: 3.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 10,
+    defense: 0,
+    magic: 0,
+    health: 20,
+    xp: 20,
+    attackSound: "MonsterAttack1",
+    hurtSound: "PainSqueek",
+    behaviourArguments: [5, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 10
+  },
+  Skeletona: {
+    class: "Skeletona",
+    moveSpeed: 1.8,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 12,
+    defense: 8,
+    health: 20,
+    magic: 0,
+    xp: 25,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt3",
+    behaviourArguments: [6, ["goto", "circler"], 3, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 30
+  },
+  Sorceress_BossL2: {
+    class: "Sorceress",
+    moveSpeed: 1.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 20,
+    defense: 10,
+    magic: 15,
+    health: 50,
+    xp: 150,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    mana: 5,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 3,
+    inventory: "MagicSkill",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -729,7 +801,11 @@ var MOSTER_LAYOUT = {
   2: {
     start: {
       N: 1,
-      monster: { SlowSkeleton: 1 }
+      monster: { SlowSkeleton: 1 },
+      //monster: { Fox: 1 },
+      //monster: { LittleSkelly: 1 },
+      //monster: { Skeletona: 1 },
+      //monster: { Sorceress_BossL2: 1 },
     },
     corridor: {
       N: 25,
@@ -737,7 +813,10 @@ var MOSTER_LAYOUT = {
         LittleSkelly: 2,
         SlowSkeleton: 1,
         HellRat: 1,
-        Skelegoat: 2
+        Skelegoat: 2,
+        Wizard: 0.5,
+        Fox: 1,
+        Skeletona: 0.2
       }
     },
     common: {
@@ -746,28 +825,31 @@ var MOSTER_LAYOUT = {
         LittleSkelly: 2,
         SlowSkeleton: 1,
         HellRat: 1,
-        Skelegoat: 3
+        Skelegoat: 3,
+        Wizard: 1,
+        Fox: 1,
+        Skeletona: 0.5
       }
     },
     Gold: {
       N: 2,
-      monster: { Skelegoat: 2, LittleSkelly: 2, },
-      boss: { Wizard_BossL1: 1 }
+      monster: { Skelegoat: 1, LittleSkelly: 1, Fox: 1, Skeletona: 4 },
+      boss: { Sorceress_BossL2: 1 }
     },
     Silver: {
       N: 2,
-      monster: { LittleSkelly: 2, Skelegoat: 1 },
-      boss: { Skelegoat: 1 }
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 3 },
+      boss: { Wizard: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { LittleSkelly: 2 },
+      monster: { LittleSkelly: 2, Fox: 2, Skeletona: 1 },
       boss: { Skelegoat: 1 }
     },
     Red: {
       N: 2,
-      monster: { LittleSkelly: 2, Skelegoat: 1 },
-      boss: { Skelegoat: 1 }
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 1 },
+      boss: { Wizard: 1 }
     },
     temple: {
       N: 1,
