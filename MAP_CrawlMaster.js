@@ -567,7 +567,7 @@ var MONSTER = {
     xp: 25,
     attackSound: "MonsterAttack2",
     hurtSound: "MonsterHurt3",
-    behaviourArguments: [6, ["goto", "circler"], 3, ["hunt"]],
+    behaviourArguments: [6, ["wanderer"], 3, ["hunt"]],
     inventory: "GoldCoin",
     inventoryValue: 30
   },
@@ -576,10 +576,10 @@ var MONSTER = {
     moveSpeed: 1.5,
     SPRITE_FPS: 30,
     base: 1,
-    attack: 20,
+    attack: 15,
     defense: 10,
-    magic: 15,
-    health: 50,
+    magic: 14,
+    health: 35,
     xp: 150,
     attackSound: "HumanAttack1",
     hurtSound: "Ow",
@@ -711,7 +711,7 @@ var SCROLL_TYPE = {
   Light: 120,
   Invisibility: 100,
   Map: 100,
-  DrainMana: 100,
+  DrainMana: 90,
   Cripple: 90,
   BoostWeapon: 100,
   BoostArmor: 100,
@@ -741,9 +741,9 @@ var MAP = {
   3: {
     width: 37,
     height: 37,
-    floor: "RockFloor",
-    ceil: "MorgueFloor",
-    wall: "CastleWall"
+    floor: "TlakFloor3",
+    ceil: "RockCeiling",
+    wall: "DungeonWall2"
   }
 };
 var MOSTER_LAYOUT = {
@@ -825,6 +825,60 @@ var MOSTER_LAYOUT = {
         LittleSkelly: 2,
         SlowSkeleton: 1,
         HellRat: 1,
+        Skelegoat: 3,
+        Wizard: 1,
+        Fox: 1,
+        Skeletona: 0.5
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { Skelegoat: 1, LittleSkelly: 1, Fox: 1, Skeletona: 4 },
+      boss: { Sorceress_BossL2: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 3 },
+      boss: { Wizard: 1 }
+    },
+    firstKey: {
+      N: 2,
+      monster: { LittleSkelly: 2, Fox: 2, Skeletona: 1 },
+      boss: { Skelegoat: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 1 },
+      boss: { Wizard: 1 }
+    },
+    temple: {
+      N: 1,
+      monster: { HellRat: 1 }
+    }
+  },
+  3: {
+    start: {
+      N: 1,
+      monster: { Bat: 1 },
+      //monster: { Fox: 1 },
+      //monster: { LittleSkelly: 1 },
+      //monster: { Skeletona: 1 },
+      //monster: { Sorceress_BossL2: 1 },
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        LittleSkelly: 2,
+        Skelegoat: 2,
+        Wizard: 0.5,
+        Fox: 1,
+        Skeletona: 0.2
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        LittleSkelly: 2,
         Skelegoat: 3,
         Wizard: 1,
         Fox: 1,

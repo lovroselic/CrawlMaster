@@ -8,8 +8,8 @@
 /*
       
  TODO:
+  high mana cost
   items: lantern?
-  compass:?
     
       
  known bugs: 
@@ -813,7 +813,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.35.1.DEV",
+  VERSION: "0.35.5.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -932,7 +932,7 @@ var HERO = {
     }
     PLAYER.hitByMissile = HERO.hitByMissile;
   },
-  depth2(){
+  depth2() {
     GAME.level = 2;
     GAME.upperLimit = GAME.level;
     GAME.gold = 91;
@@ -944,7 +944,7 @@ var HERO = {
     this.reference_defense = this.defense;
     this.attack = 9;
     this.reference_attack = this.attack;
-    this.magic =9;
+    this.magic = 9;
     this.reference_magic = this.magic;
     this.attackExp = 43;
     this.defenseExp = 30;
@@ -953,8 +953,38 @@ var HERO = {
     this.defenseExpGoal = 100;
     this.magicExpGoal = 225;
     this.inventory.potion.red = 3;
-    let scrolls = ["DrainMana","DrainMana", "Luck", "Map","Map", "BoostArmor"];
-    for (let scr of scrolls){
+    let scrolls = ["DrainMana", "DrainMana", "Luck", "Map", "Map", "BoostArmor"];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth3() {
+    GAME.level = 3;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 587;
+    this.maxHealth = 47;
+    this.maxMana = 50;
+    this.health = 46;
+    this.mana = 16;
+    this.defense = 9;
+    this.reference_defense = this.defense;
+    this.attack = 12;
+    this.reference_attack = this.attack;
+    this.magic = 12;
+    this.reference_magic = this.magic;
+    this.attackExp = 474;
+    this.defenseExp = 77;
+    this.magicExp = 276;
+    this.attackExpGoal = 507;
+    this.defenseExpGoal = 150;
+    this.magicExpGoal = 338;
+    this.inventory.potion.red = 0;
+    this.inventory.potion.blue = 0;
+    let scrolls = [];
+    for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
     }
@@ -1049,9 +1079,10 @@ var HERO = {
   incStatus(type) {
     let Type = type.capitalize();
     let max = `max${Type}`;
-    let ratio = this[type] / this[max];
+    //let ratio = this[type] / this[max];
     this[max] += INI[`${type.toUpperCase()}_INC`];
-    this[type] = Math.round(this[max] * ratio);
+    //this[type] = Math.round(this[max] * ratio);
+    this[type] = this[max];
     TITLE.status();
   },
   incExp(value, type) {
@@ -1315,10 +1346,9 @@ var GAME = {
       GAME.fromCheckpoint = false;
     }
 
-    if (DEBUG.LOAD){
+    if (DEBUG.LOAD) {
       console.log("FORCE LOAD FROM DEBUG!!");
-     
-      HERO.depth2();
+      HERO.depth3();
     }
 
     GAME.newGrid();
@@ -1432,6 +1462,7 @@ var GAME = {
     MINIMAP.draw();
     ENGINE.RAYCAST_DRAW.draw("view"); //destroys enemyIA
     TITLE.time();
+    TITLE.compassNeedle();
     SWORD.draw();
 
     if (DEBUG.FPS) {
@@ -1581,7 +1612,7 @@ var GAME = {
     if (MAP[GAME.level].DUNGEON === null) {
       GAME.newDungeon(waypoint);
       SAVE_GAME.save();
-      TURN.display("GAME SAVED","#FFF");
+      TURN.display("GAME SAVED", "#FFF");
     } else {
       GAME.setlevelTextures(GAME.level);
       ROM.refreshMaps(MAP[GAME.level].DUNGEON);
@@ -1678,7 +1709,7 @@ var GAME = {
       "TITLE",
       INI.SCREEN_WIDTH * 2,
       INI.TITLE_HEIGHT,
-      ["title"],
+      ["title", "compassRose", "compassNeedle"],
       null
     );
     ENGINE.addBOX(
@@ -1891,11 +1922,31 @@ var TITLE = {
     y -= 224;
     ENGINE.draw("Rside_background", x, y, SPRITE.LineTop);
 
+    //compassRose
+    CTX = LAYER.compassRose;
+    x = (3 * INI.SCREEN_WIDTH / 2 + INI.SCREEN_WIDTH / 4) | 0;
+    y = (INI.TITLE_HEIGHT / 2) | 0;
+    ENGINE.spriteDraw("compassRose", x, y, SPRITE.CompassRose);
+    TITLE.stack.compassX = x;
+    TITLE.stack.compassY = y;
+
     //initial draws
     this.potion();
     this.status();
     this.stats();
     this.gold();
+    this.compassNeedle();
+  },
+  compassNeedle() {
+    ENGINE.clearLayer("compassNeedle");
+    let CTX = LAYER.compassNeedle;
+    CTX.strokeStyle = "#F00";
+    let [x, y] = [TITLE.stack.compassX, TITLE.stack.compassY];
+    CTX.beginPath();
+    CTX.moveTo(x, y);
+    let end = new Point(x, y).translate(PLAYER.dir, (SPRITE.CompassRose.width / 2 * 0.8) | 0);
+    CTX.lineTo(end.x, end.y);
+    CTX.stroke();
   },
   firstTitle() {
     let CTX = LAYER.black;
@@ -2194,7 +2245,8 @@ var TITLE = {
       "scrolls",
       "bottom_background",
       "bottom_text",
-      "black"
+      "black",
+      "compassRose", "compassNeedle"
     ]);
     ENGINE.clearLayerStack();
   },

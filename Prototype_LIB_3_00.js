@@ -634,8 +634,6 @@ class Direction {
 }
 class Point {
   constructor(x = 0, y = 0) {
-    //this.x = parseInt(Math.round(x), 10);
-    //this.y = parseInt(Math.round(y), 10);
     this.x = Math.round(x);
     this.y = Math.round(y);
   }

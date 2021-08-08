@@ -53,6 +53,7 @@ var LoadSprites = [
   { srcName: "Invisible24.png", name: "Invisible" },
   { srcName: "Clover24.png", name: "Clover" },
   { srcName: "Lantern24.png", name: "Lantern" },
+  { srcName: "lantern.png", name: "LanternBig" },
   { srcName: "Scroll24.png", name: "ClosedScroll" },
   { srcName: "BluePotion16.png", name: "BluePotion" },
   { srcName: "RedPotion16.png", name: "RedPotion" },
@@ -389,7 +390,8 @@ var LoadSprites = [
   { srcName: "AA41.png", name: "AA41" },
   { srcName: "AA40.png", name: "AA40" },
   { srcName: "SeaWolf.png", name: "SeaWolf" },
-  { srcName: "GIJoe10.png", name: "GIJoe10" }
+  { srcName: "GIJoe10.png", name: "GIJoe10" },
+  { srcName: "CompassRose.png", name: "CompassRose" }
 ];
 var LoadSequences = [
   { srcName: "SHIP_exp", name: "BigExplosion", type: "png", count: 8 },
