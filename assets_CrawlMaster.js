@@ -53,7 +53,7 @@ var LoadSprites = [
   { srcName: "Invisible24.png", name: "Invisible" },
   { srcName: "Clover24.png", name: "Clover" },
   { srcName: "Lantern24.png", name: "Lantern" },
-  { srcName: "lantern.png", name: "LanternBig" },
+  //{ srcName: "lantern.png", name: "LanternBig" },
   { srcName: "Scroll24.png", name: "ClosedScroll" },
   { srcName: "BluePotion16.png", name: "BluePotion" },
   { srcName: "RedPotion16.png", name: "RedPotion" },
@@ -424,6 +424,8 @@ var LoadPacks = [
   { srcName: "Fox64.png", count: 4, name: "Fox" },
   { srcName: "Skeletona64.png", count: 4, name: "Skeletona" },
   { srcName: "Sorceress64.png", count: 6, name: "Sorceress" },
+  { srcName: "SmallEvilBat.png", count: 4, name: "SmallEvilBat" },
+  { srcName: "Aunt.png", count: 9, name: "Aunt" },
 
   { srcName: "Fairy64.png", count: 3, name: "Fairy" },
   { srcName: "Croc64.png", count: 5, name: "Croc" },
@@ -439,6 +441,13 @@ var LoadPacks = [
   { srcName: "Badger64.png", count: 3, name: "Badger" },
   { srcName: "Scary64.png", count: 4, name: "Scary" },
   { srcName: "Spider64.png", count: 6, name: "Spider" },
+  { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon64" },
+  { srcName: "RedBat.png", count: 3, name: "RedBat" },
+  { srcName: "ZombieGirl64.png", count: 4, name: "ZombieGirl" },
+  { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
+  { srcName: "LittleOrc64.png", count: 3, name: "LittleOrc" },
+  { srcName: "BlackGhost.png", count: 4, name: "BlackGhost" },
+  { srcName: "SkeletoneMajor.png", count: 4, name: "SkeletonMajor" },
   
 ];
 var LoadRotated = [];

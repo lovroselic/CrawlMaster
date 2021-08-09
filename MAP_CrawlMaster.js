@@ -591,6 +591,56 @@ var MONSTER = {
     inventoryValue: 0,
     behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
   },
+  SmallEvilBat: {
+    class: "SmallEvilBat",
+    moveSpeed: 3.1,
+    SPRITE_FPS: 30,
+    base: -0.20,
+    attack: 12,
+    defense: 0,
+    magic: 0,
+    health: 15,
+    xp: 15,
+    attackSound: "BatAttack",
+    hurtSound: "BatAttack",
+    behaviourArguments: [Infinity, ["wanderer"], -1],
+  },
+  Sorceress: {
+    class: "Sorceress",
+    moveSpeed: 1.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 15,
+    defense: 10,
+    magic: 14,
+    health: 35,
+    xp: 150,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    mana: 5,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 3,
+    inventory: "GoldCoin",
+    inventoryValue: 50,
+    behaviourArguments: [7, ["wanderer"], 5, ["shoot"]],
+  },
+  Aunt: {
+    class: "Aunt",
+    moveSpeed: 1.8,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 13,
+    defense: 10,
+    magic: 0,
+    health: 25,
+    xp: 25,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    inventory: "GoldCoin",
+    inventoryValue: 20,
+    behaviourArguments: [6, ["wanderer"], 4, ["follower"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -863,51 +913,55 @@ var MOSTER_LAYOUT = {
       //monster: { Fox: 1 },
       //monster: { LittleSkelly: 1 },
       //monster: { Skeletona: 1 },
-      //monster: { Sorceress_BossL2: 1 },
+      //monster: { Aunt: 1 },
     },
     corridor: {
       N: 25,
       monster: {
         LittleSkelly: 2,
         Skelegoat: 2,
-        Wizard: 0.5,
+        Wizard: 1,
         Fox: 1,
-        Skeletona: 0.2
+        Skeletona: 2,
+        SmallEvilBat: 1,
+        Aunt: 0.3,
       }
     },
     common: {
       N: 2,
       monster: {
-        LittleSkelly: 2,
-        Skelegoat: 3,
-        Wizard: 1,
+        LittleSkelly: 1,
+        Skelegoat: 1,
+        Wizard: 2,
         Fox: 1,
-        Skeletona: 0.5
+        Skeletona: 2,
+        SmallEvilBat: 1,
+        Aunt: 1,
       }
     },
     Gold: {
       N: 2,
-      monster: { Skelegoat: 1, LittleSkelly: 1, Fox: 1, Skeletona: 4 },
+      monster: { LittleSkelly: 1, Fox: 1, Skeletona: 3, Sorceress: 2, Aunt: 1 },
       boss: { Sorceress_BossL2: 1 }
     },
     Silver: {
       N: 2,
-      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 3 },
-      boss: { Wizard: 1 }
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 3, Aunt: 2 },
+      boss: { Sorceress: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { LittleSkelly: 2, Fox: 2, Skeletona: 1 },
-      boss: { Skelegoat: 1 }
+      monster: { LittleSkelly: 1, Fox: 2, Skeletona: 1, Aunt: 1 },
+      boss: { Wizard: 1 }
     },
     Red: {
       N: 2,
-      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 1 },
-      boss: { Wizard: 1 }
+      monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 1, SmallEvilBat: 1, Aunt: 1 },
+      boss: { Wizard: 1, Sorceress: 2 }
     },
     temple: {
       N: 1,
-      monster: { HellRat: 1 }
+      monster: { SmallEvilBat: 1 }
     }
   },
 };

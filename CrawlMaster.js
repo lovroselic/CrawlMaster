@@ -9,8 +9,7 @@
       
  TODO:
   high mana cost
-  items: lantern?
-    
+    min 3x cost!!
       
  known bugs: 
 
@@ -813,7 +812,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.35.5.DEV",
+  VERSION: "0.36.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -891,7 +890,8 @@ var HERO = {
     this.unlucky();
     this.dead = false;
     this.maxHealth = 15;
-    this.maxMana = 15;
+    //this.maxMana = 15;
+    this.maxMana = 3 * Missile.calcMana(5);
     this.restore();
     //stats
     this.defense = 5;
@@ -1079,9 +1079,11 @@ var HERO = {
   incStatus(type) {
     let Type = type.capitalize();
     let max = `max${Type}`;
-    //let ratio = this[type] / this[max];
     this[max] += INI[`${type.toUpperCase()}_INC`];
-    //this[type] = Math.round(this[max] * ratio);
+    if (type === 'magic'){
+      //CONT
+      this[max] = Math.max(this[max], 3 * Missile.calcMana(this.reference_magic));
+    }
     this[type] = this[max];
     TITLE.status();
   },
