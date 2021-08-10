@@ -596,8 +596,8 @@ var MONSTER = {
     moveSpeed: 3.1,
     SPRITE_FPS: 30,
     base: -0.20,
-    attack: 12,
-    defense: 0,
+    attack: 13,
+    defense: 6,
     magic: 0,
     health: 15,
     xp: 15,
@@ -614,7 +614,7 @@ var MONSTER = {
     defense: 10,
     magic: 14,
     health: 35,
-    xp: 150,
+    xp: 50,
     attackSound: "HumanAttack1",
     hurtSound: "Ow",
     mana: 5,
@@ -640,6 +640,74 @@ var MONSTER = {
     inventory: "GoldCoin",
     inventoryValue: 20,
     behaviourArguments: [6, ["wanderer"], 4, ["follower"]],
+  },
+  Spider: {
+    class: "Spider",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 20,
+    defense: 10,
+    magic: 5,
+    health: 20,
+    xp: 30,
+    attackSound: "MonsterAttack2",
+    hurtSound: "PainSqueek",
+    behaviourArguments: [15, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 20
+  },
+  SkeletonMajor: {
+    class: "SkeletonMajor",
+    moveSpeed: 2.2,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 18,
+    defense: 14,
+    health: 25,
+    magic: 0,
+    xp: 33,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt3",
+    behaviourArguments: [8, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 30
+  },
+  LittleOrc: {
+    class: "LittleOrc",
+    moveSpeed: 2.4,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 20,
+    defense: 15,
+    health: 25,
+    magic: 0,
+    xp: 40,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 3, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 35
+  },
+  RoomFairy: {
+    class: "Fairy",
+    moveSpeed: 2.0,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 15,
+    defense: 10,
+    magic: 20,
+    health: 40,
+    xp: 60,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    mana: 3,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 4,
+    inventory: "GoldCoin",
+    inventoryValue: 50,
+    behaviourArguments: [10, ["goto", "circler"], 5, ["shoot"]],
   },
 };
 var MISSILE_TYPE = {
@@ -758,7 +826,7 @@ var DESTRUCTION_TYPE = {
   }
 };
 var SCROLL_TYPE = {
-  Light: 120,
+  Light: 130,
   Invisibility: 100,
   Map: 100,
   DrainMana: 90,
@@ -794,6 +862,13 @@ var MAP = {
     floor: "TlakFloor3",
     ceil: "RockCeiling",
     wall: "DungeonWall2"
+  },
+  4: {
+    width: 37,
+    height: 37,
+    floor: "Pavement2",
+    ceil: "MorgueFloor",
+    wall: "DungeonWall3"
   }
 };
 var MOSTER_LAYOUT = {
@@ -958,6 +1033,62 @@ var MOSTER_LAYOUT = {
       N: 2,
       monster: { LittleSkelly: 1, Skelegoat: 1, Fox: 1, Skeletona: 1, SmallEvilBat: 1, Aunt: 1 },
       boss: { Wizard: 1, Sorceress: 2 }
+    },
+    temple: {
+      N: 1,
+      monster: { SmallEvilBat: 1 }
+    }
+  },
+  4: {
+    start: {
+      N: 1,
+      monster: { SmallEvilBat: 1 },
+      //monster: { Spider: 1 },
+      //monster: { SkeletonMajor: 1 },
+      //monster: { LittleOrc: 1 },
+      //monster: { Skeletona: 1 },
+      //monster: { RoomFairy: 1 },
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        Wizard: 1,
+        SmallEvilBat: 1,
+        Aunt: 1,
+        Spider: 1,
+        SkeletonMajor: 1,
+        LittleOrc: 0.2
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        Wizard: 1,
+        Aunt: 1,
+        Spider:1,
+        SkeletonMajor: 1,
+        LittleOrc: 0.5
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { Sorceress: 1, Aunt: 1,Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      boss: { Sorceress_BossL2: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { Aunt: 1, Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      boss: { RoomFairy: 1}
+    },
+    firstKey: {
+      N: 2,
+      monster: { Aunt: 1, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
+      boss: { Sorceress: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { Aunt: 2, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
+      boss: {  Sorceress: 1, LittleOrc: 1 }
     },
     temple: {
       N: 1,

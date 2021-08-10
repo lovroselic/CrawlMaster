@@ -812,7 +812,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.36.0.DEV",
+  VERSION: "0.36.1.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -984,6 +984,36 @@ var HERO = {
     this.inventory.potion.red = 0;
     this.inventory.potion.blue = 0;
     let scrolls = [];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth4() {
+    GAME.level = 4;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 440;
+    this.maxHealth = 63;
+    this.maxMana = 55;
+    this.health = 49;
+    this.mana = 11;
+    this.defense = 13;
+    this.reference_defense = this.defense;
+    this.attack = 16;
+    this.reference_attack = this.attack;
+    this.magic = 16;
+    this.reference_magic = this.magic;
+    this.attackExp = 1102;
+    this.defenseExp = 13;
+    this.magicExp = 444;
+    this.attackExpGoal = 1142;
+    this.defenseExpGoal = 225;
+    this.magicExpGoal = 507;
+    this.inventory.potion.red = 7;
+    this.inventory.potion.blue = 0;
+    let scrolls = ['Petrify'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1350,7 +1380,7 @@ var GAME = {
 
     if (DEBUG.LOAD) {
       console.log("FORCE LOAD FROM DEBUG!!");
-      HERO.depth3();
+      HERO.depth4();
     }
 
     GAME.newGrid();
