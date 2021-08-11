@@ -6,7 +6,7 @@
 
 //////////////////engine.js/////////////////////////
 //                                                //
-//      ENGINE version 3.00.00.A by LS          //
+//      ENGINE version 3.00        by LS          //
 //                                                //
 ////////////////////////////////////////////////////
 /*  
@@ -28,7 +28,7 @@ var DownRight = new Vector(1, 1);
 var DownLeft = new Vector(-1, 1);
 
 var ENGINE = {
-  VERSION: "3.00.00.A",
+  VERSION: "3.00",
   CSS: "color: #0FA",
   INI: {
     ANIMATION_INTERVAL: 16,
@@ -126,17 +126,17 @@ var ENGINE = {
 
     $("#temp").append(
       "<canvas id ='temp_canvas' width='" +
-        ENGINE.INI.sprite_maxW +
-        "' height='" +
-        ENGINE.INI.sprite_maxH +
-        "'></canvas>"
+      ENGINE.INI.sprite_maxW +
+      "' height='" +
+      ENGINE.INI.sprite_maxH +
+      "'></canvas>"
     );
     $("#temp2").append(
       "<canvas id ='temp_canvas2' width='" +
-        ENGINE.INI.sprite_maxW +
-        "' height='" +
-        ENGINE.INI.sprite_maxH +
-        "'></canvas>"
+      ENGINE.INI.sprite_maxW +
+      "' height='" +
+      ENGINE.INI.sprite_maxH +
+      "'></canvas>"
     );
     LAYER.temp = $("#temp_canvas")[0].getContext("2d");
     LAYER.temp2 = $("#temp_canvas2")[0].getContext("2d");
@@ -317,12 +317,6 @@ var ENGINE = {
     CTX.putImageData(trimmed, 0, 0);
     const sprite = ENGINE.contextToSprite(newName, CTX);
     sprite.onload = ENGINE.creationSpriteCount;
-    /*SPRITE[newName] = new Image();
-    SPRITE[newName].onload = ENGINE.creationSpriteCount;
-    SPRITE[newName].crossOrigin = "Anonymous";
-    SPRITE[newName].src = CTX.canvas.toDataURL("image/png");
-    SPRITE[newName].width = CTX.canvas.width;
-    SPRITE[newName].height = CTX.canvas.height;*/
   },
   setCollisionsafe(safe) {
     if (safe !== undefined) {
@@ -868,7 +862,6 @@ var ENGINE = {
     MEMORY[name] = bin.memory;
   },
   spriteToAsset(obj) {
-    //console.log(obj.name, "to asset", obj.asset);
     ASSET[obj.asset].linear.push(SPRITE[obj.name]);
   },
   KEY: {
@@ -984,9 +977,9 @@ var ENGINE = {
     },
     run(func, nextFunct) {
       ENGINE.GAME.running = true;
-      //if (!ENGINE.GAME.frame.start) ENGINE.GAME.frame.start = performance.now();
-      if (ENGINE.GAME.frame.start === null)
+      if (ENGINE.GAME.frame.start === null) {
         ENGINE.GAME.frame.start = performance.now();
+      }
       ENGINE.GAME.frame.delta = performance.now() - ENGINE.GAME.frame.start;
       if (ENGINE.GAME.frame.delta >= ENGINE.INI.ANIMATION_INTERVAL) {
         if (ENGINE.GAME.stopAnimation) {
@@ -1182,12 +1175,12 @@ var ENGINE = {
         let id = "preload_" + name;
         $("#load").append(
           "<canvas id ='" +
-            id +
-            "' width='" +
-            ENGINE.LOAD_W +
-            "' height='" +
-            ENGINE.LOAD_H +
-            "'></canvas>"
+          id +
+          "' width='" +
+          ENGINE.LOAD_W +
+          "' height='" +
+          ENGINE.LOAD_H +
+          "'></canvas>"
         );
         LAYER.PRELOAD[name] = $("#" + id)[0].getContext("2d");
       }
@@ -1224,7 +1217,6 @@ var ENGINE = {
         var toLoad = [];
 
         arrPath.forEach(function (el) {
-          //console.log("which asset", el);
           ASSET[el.name] = new LiveSPRITE("1D", []);
           for (let i = 1; i <= el.count; i++) {
             toLoad.push({
@@ -1248,9 +1240,7 @@ var ENGINE = {
         ).then(function (obj) {
           obj.forEach(function (el) {
             ENGINE.imgToSprite(el);
-            //to asset
             ENGINE.spriteToAsset(el);
-            //console.log("debug el",  el);
           });
         });
         return temp;
@@ -1933,7 +1923,6 @@ var ENGINE = {
       let r =
         (monster.actor.orientationH / 2) * Math.abs(dir.y) +
         (monster.actor.orientationW / 2) * Math.abs(dir.x);
-      //let end = point.translate(dir, r);
       let end = point.translate(dir, monster.r * ENGINE.INI.GRIDPIX);
       CTX.lineTo(end.x, end.y);
       CTX.stroke();
@@ -2046,7 +2035,7 @@ var TEXTPOOL = {
       CTX.globalAlpha =
         (1000 -
           (ENGINE.INI.FADE_FRAMES - TEXTPOOL.pool[q].frame) *
-            (1000 / ENGINE.INI.FADE_FRAMES)) /
+          (1000 / ENGINE.INI.FADE_FRAMES)) /
         1000;
       CTX.fillText(TEXTPOOL.pool[q].text, vx, vy);
       CTX.restore();
@@ -2156,9 +2145,8 @@ class ACTOR {
     }
     switch (this.asset.type) {
       case "4D":
-        this.name = `${this.class}_${this.orientation}_${
-          this[this.orientation + "_index"]
-        }`;
+        this.name = `${this.class}_${this.orientation}_${this[this.orientation + "_index"]
+          }`;
         break;
       case "1D":
         this.name = `${this.class}_${this.linear_index
@@ -2260,14 +2248,6 @@ class _3D_ACTOR {
   }
   changeClass(spriteClass) {
     this.asset = ASSET[spriteClass];
-    /*switch (this.asset.type) {
-      case "4D":
-        this.sequenceLength = this.asset.front.length;
-        break;
-      case "1D":
-        this.sequenceLength = this.asset.linear.length;
-        break;
-    }*/
   }
   updateAnimation(time) {
     this.currentSpriteTime += time;
@@ -2413,7 +2393,6 @@ class _3D_MoveState {
       this.endPos = this.startPos.add(this.dir);
       this.realDir = this.pos.direction(this.endPos);
       this.moving = true;
-      //console.log("next move", this);
     } else throw "Dir null!";
   }
   start() {
@@ -2769,8 +2748,8 @@ class MovingText {
     if (this.last < this.length - 1) {
       while (
         this.cursor +
-          (this.nodes[this.last].offset - this.nodes[this.first].offset) +
-          this.nodes[this.last].width <
+        (this.nodes[this.last].offset - this.nodes[this.first].offset) +
+        this.nodes[this.last].width <
         this.right
       ) {
         this.last++;

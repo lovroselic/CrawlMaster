@@ -21,14 +21,12 @@ dependencies:
 TODO:
 
 knownBugs:
-  to hunt instead to shoot
-  wrong runaway
       
 */
 /////////////////////////////////////////
 
 var AI = {
-  VERSION: "1.00.0.B",
+  VERSION: "1.00",
   CSS: "color: silver",
   referenceEntity: null,
   initialize(ref) {
@@ -120,10 +118,8 @@ var AI = {
     }
     if (Astar === 0) {
       if (enemy.behaviour.complex("passive")) {
-        //needs to be checked!!!
-        enemy.behaviour.cycle("passive"); //really?
+        enemy.behaviour.cycle("passive"); 
         enemy.behaviour.strategy = enemy.behaviour.getPassive();
-        //
         return this.immobile();
       } else {
         //maybe obsolete

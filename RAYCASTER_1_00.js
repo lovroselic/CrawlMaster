@@ -450,17 +450,12 @@ var DECAL = {
   },
   init(map) {
     this.linkMap(map);
-    //this.manage(null, map);
     this.manage(map);
   },
   manage(map) {
     map[this.IA] = new IndexArray(map.width, map.height, 4, 4); // = IA
-    //map[this.IA] = new IndexArray(map.width, map.height, 4, 2); // = IA
     this.poolToIA(map[this.IA]);
   },
-  /*update: function (lapsedTime, map) {
-    this.manage(lapsedTime, map);
-  },*/
   update(map) {
     this.manage(map);
   },
@@ -683,7 +678,7 @@ var ENEMY = {
   }
 };
 var RAYCAST = {
-  VERSION: "0.99.02.B",
+  VERSION: "1.00",
   CSS: "color: gold",
   MAP: null,
   spriteSources: [

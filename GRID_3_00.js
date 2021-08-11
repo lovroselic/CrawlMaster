@@ -16,7 +16,7 @@ known bugs:
 */
 
 var GRID = {
-  VERSION: "3.00.0.B",
+  VERSION: "3.00",
   CSS: "color: #0AA",
   SETTING: {
     ALLOW_CROSS: false,
@@ -243,8 +243,6 @@ var GRID = {
     let path = GRID.raycasting(startGrid, endGrid).slice(1); 
     let candidates = IA.unrollArray(path);
     if (candidates.size > 0) {
-      //debug
-      //console.log("cant shoot enemies beetween", candidates);
       return false;
     } else return true;
   },
@@ -705,7 +703,7 @@ class GridArray {
     }
   }
   importGridMap(map) {
-    //map is maze or dungeon object
+    /** map is maze or dungeon object */
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         let grid = new Grid(x, y);
@@ -845,7 +843,7 @@ class GridArray {
     return NODES;
   }
   findPath_AStar_fast(start, finish, path = [0], type = "value") {
-    /*
+    /** 
     return
     null: no path exist
     0: start is the same as finish
@@ -1402,7 +1400,6 @@ var MINIMAP = {
             break;
           default:
             console.log("ALERT default empty", index, value, clenValue);
-            //CTX.fillStyle = MINIMAP.LEGEND.FOG;
             CTX.fillStyle = "#F00";
             break;
         }
@@ -1422,7 +1419,6 @@ var MINIMAP = {
                 break;
               default:
                 console.log("ALERT default wall", index, value, clenValue);
-                //CTX.fillStyle = MINIMAP.LEGEND.FOG;
                 CTX.fillStyle = "#E00";
                 break;
             }
@@ -1439,7 +1435,6 @@ var MINIMAP = {
 
     //keys
     for (const key in this.DATA.dungeon.keys) {
-      //console.log(key, this.DATA.dungeon.keys[key]);
       if (this.DATA.dungeon.GA.isFog(this.DATA.dungeon.keys[key])) continue;
       CTX.fillStyle = key.toLowerCase();
       CTX.pixelAt(
@@ -1448,8 +1443,7 @@ var MINIMAP = {
         this.DATA.PIX_SIZE
       );
     }
-    //temple ~ 1st aid
-    //hero, PLAYER.pos
+
     CTX.fillStyle = MINIMAP.LEGEND.HERO;
     let heroPos = Grid.toClass(PLAYER.pos);
 
@@ -1473,7 +1467,6 @@ var MINIMAP = {
     }
   },
   reveal(origin, r) {
-    //console.log("MM reveal", arguments);
     let GA = this.DATA.dungeon.GA;
     let map = this.DATA.dungeon;
     let sX = Math.max(0, origin.x - r);

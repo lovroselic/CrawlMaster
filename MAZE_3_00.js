@@ -7,7 +7,7 @@
 ///////////////////////Dungeon.js///////////////
 //                                            //
 //        Procedureal maze and dungeon        //
-//             generation: 3.00.DEV           //
+//             generation: 3.00               //
 //                                            //
 //    dependencies: Prototype LS, ENGINE      //
 ////////////////////////////////////////////////
@@ -125,7 +125,6 @@ class MasterDungeon {
     for (let q = 0, RL = this.rooms.length; q < RL; q++) {
       let room = this.rooms[q];
       if ( !conn.includes(room.type)) continue;
-      //if (room.type !== "common") continue;
       let N;
 
       if (DUNGEON.SINGLE_DOOR) {
@@ -146,17 +145,6 @@ class MasterDungeon {
     }
     return dots;
   }
-
-  /*
-  obsolete method
-  
-  isBridge(grid, v1, v2) {
-    if (this.GA.isWall(grid) && this.hasConnections(grid) === 2) {
-      if (this.GA.isEmpty(grid.add(v1)) && this.GA.isEmpty(grid.add(v2))) {
-        return true;
-      } else return false;
-    } else return false;
-  }*/
   
   connectToGrid(room, N) {
     let connections = this.findConnections(room);
@@ -460,18 +448,6 @@ class MasterDungeon {
       return true;
     } else return false;
   }
-
-  /*
-
-  duplicate method
-
-  recheckDeadEnds() {
-    for (let q = this.deadEnds.length - 1; q >= 0; q--) {
-      let deadEnd = this.deadEnds[q];
-      if (!this.isDeadEnd(deadEnd)) this.deadEnds.splice(q, 1);
-    }
-  }
-  */
 
   isInRoom(grid, room) {
     if (
@@ -1234,7 +1210,6 @@ class Dungeon extends MasterDungeon {
       this.GA.addRoom(stairsDown);
       this.exit = stairsDown;
       
-      //temple, DUNGEON.N_SHRINES
       this.shrines = [];
       let temple = getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
       temple.type = 'temple';
@@ -1473,7 +1448,7 @@ class PacGrid {
     this.map = new Uint8Array(buffer);
   }
   static gridToPacGrid(maze) {
-    //accepts maze, dungeon
+    /**accepts maze, dungeon*/
     let sizeX = parseInt(maze.width, 10);
     let sizeY = parseInt(maze.height, 10);
     let mapBuffer = new ArrayBuffer(sizeX * sizeY);
