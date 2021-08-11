@@ -430,6 +430,8 @@ var LoadPacks = [
   { srcName: "SkeletoneMajor.png", count: 4, name: "SkeletonMajor" },
   { srcName: "LittleOrc64.png", count: 3, name: "LittleOrc" },
   { srcName: "Fairy64.png", count: 3, name: "Fairy" },
+  { srcName: "BlackGhost.png", count: 4, name: "BlackGhost" },
+  
 
   { srcName: "Croc64.png", count: 5, name: "Croc" },
   { srcName: "Knight64.png", count: 4, name: "Knight" },
@@ -447,8 +449,6 @@ var LoadPacks = [
   { srcName: "RedBat.png", count: 3, name: "RedBat" },
   { srcName: "ZombieGirl64.png", count: 4, name: "ZombieGirl" },
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
-  { srcName: "LittleOrc64.png", count: 3, name: "LittleOrc" },
-  { srcName: "BlackGhost.png", count: 4, name: "BlackGhost" },
   
   
 ];

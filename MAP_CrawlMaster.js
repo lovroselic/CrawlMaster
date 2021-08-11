@@ -709,6 +709,26 @@ var MONSTER = {
     inventoryValue: 50,
     behaviourArguments: [10, ["goto", "circler"], 5, ["shoot"]],
   },
+  BlackGhost_BossL4: {
+    class: "BlackGhost",
+    moveSpeed: 1.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 25,
+    defense: 18,
+    magic: 25,
+    health: 40,
+    xp: 250,
+    attackSound: "MonsterAttack1",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 3,
+    inventory: "ShieldSkill",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -864,6 +884,13 @@ var MAP = {
     wall: "DungeonWall2"
   },
   4: {
+    width: 37,
+    height: 37,
+    floor: "Pavement2",
+    ceil: "MorgueFloor",
+    wall: "DungeonWall3"
+  },
+  5: {
     width: 37,
     height: 37,
     floor: "Pavement2",
@@ -1046,7 +1073,7 @@ var MOSTER_LAYOUT = {
       //monster: { Spider: 1 },
       //monster: { SkeletonMajor: 1 },
       //monster: { LittleOrc: 1 },
-      //monster: { Skeletona: 1 },
+      //monster: { BlackGhost_BossL4: 1 },
       //monster: { RoomFairy: 1 },
     },
     corridor: {
@@ -1073,7 +1100,63 @@ var MOSTER_LAYOUT = {
     Gold: {
       N: 2,
       monster: { Sorceress: 1, Aunt: 1,Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
-      boss: { Sorceress_BossL2: 1 }
+      boss: { BlackGhost_BossL4: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { Aunt: 1, Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      boss: { RoomFairy: 1}
+    },
+    firstKey: {
+      N: 2,
+      monster: { Aunt: 1, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
+      boss: { Sorceress: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { Aunt: 2, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
+      boss: {  Sorceress: 1, LittleOrc: 1 }
+    },
+    temple: {
+      N: 1,
+      monster: { SmallEvilBat: 1 }
+    }
+  },
+  5: {
+    start: {
+      N: 1,
+      monster: { SmallEvilBat: 1 },
+      //monster: { Spider: 1 },
+      //monster: { SkeletonMajor: 1 },
+      //monster: { LittleOrc: 1 },
+      //monster: { BlackGhost_BossL4: 1 },
+      //monster: { RoomFairy: 1 },
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        Wizard: 1,
+        SmallEvilBat: 1,
+        Aunt: 1,
+        Spider: 1,
+        SkeletonMajor: 1,
+        LittleOrc: 0.2
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        Wizard: 1,
+        Aunt: 1,
+        Spider:1,
+        SkeletonMajor: 1,
+        LittleOrc: 0.5
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { Sorceress: 1, Aunt: 1,Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      boss: { BlackGhost_BossL4: 1 }
     },
     Silver: {
       N: 2,

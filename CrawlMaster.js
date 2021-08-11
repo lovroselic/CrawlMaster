@@ -812,7 +812,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.36.1.DEV",
+  VERSION: "0.36.3.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1012,6 +1012,36 @@ var HERO = {
     this.defenseExpGoal = 225;
     this.magicExpGoal = 507;
     this.inventory.potion.red = 7;
+    this.inventory.potion.blue = 0;
+    let scrolls = ['Petrify'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth5() {
+    GAME.level = 5;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 312;
+    this.maxHealth = 79;
+    this.maxMana = 75;
+    this.health = 79;
+    this.mana = 44;
+    this.defense = 16;
+    this.reference_defense = this.defense;
+    this.attack = 21;
+    this.reference_attack = this.attack;
+    this.magic = 20;
+    this.reference_magic = this.magic;
+    this.attackExp = 124;
+    this.defenseExp = 18;
+    this.magicExp = 140;
+    this.attackExpGoal = 2570;
+    this.defenseExpGoal = 338;
+    this.magicExpGoal = 1142;
+    this.inventory.potion.red = 4;
     this.inventory.potion.blue = 0;
     let scrolls = ['Petrify'];
     for (let scr of scrolls) {
@@ -1350,7 +1380,6 @@ var GAME = {
 
     GAME.level = 1;
     GAME.upperLimit = GAME.level;
-    //GAME.level = 2;
     GAME.gold = 0;
 
     SPAWN.init();
@@ -1379,8 +1408,10 @@ var GAME = {
     }
 
     if (DEBUG.LOAD) {
+      console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
-      HERO.depth4();
+      console.log("########################");
+      HERO.depth5();
     }
 
     GAME.newGrid();
