@@ -8,10 +8,9 @@
 /*
       
  TODO:
-  high mana cost
-    min 3x cost!!
       
  known bugs: 
+  RAYCASTER: blinking decals
 
   shorts:
     window.PLAYER.pos = new FP_Grid(,);
@@ -629,7 +628,6 @@ class Monster {
   }
   weak() {
     let ratio = this.health / this.fullHealth;
-    //console.log(this, "is weak?", ratio, ratio <= 0.2);
     return ratio <= 0.2;
   }
   petrify() {
@@ -794,7 +792,6 @@ var INI = {
   MIMIMAP_WIDTH: 200,
   INFO_TIMER_ID: "info",
   INFO_TIMER: 3,
-  //HEALTH_INC: 0.4,
   LAMP_PERSISTENCE: 99,
   INVISIBILITY_TIME: 60,
   LUCKY_TIME: 60,
@@ -812,7 +809,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.37.0.DEV",
+  VERSION: "0.38.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -890,7 +887,6 @@ var HERO = {
     this.unlucky();
     this.dead = false;
     this.maxHealth = 15;
-    //this.maxMana = 15;
     this.maxMana = 3 * Missile.calcMana(5);
     this.restore();
     //stats
@@ -1140,7 +1136,7 @@ var HERO = {
     let Type = type.capitalize();
     let max = `max${Type}`;
     this[max] += INI[`${type.toUpperCase()}_INC`];
-    if (type === 'magic'){
+    if (type === 'magic') {
       //CONT
       this[max] = Math.max(this[max], 3 * Missile.calcMana(this.reference_magic));
     }
@@ -1261,7 +1257,6 @@ var SWORD = {
 
     for (let e of enemies) {
       let enemy = ENEMY.POOL[e - 1];
-      //if (enemy.base !== 1) continue; //bat
       let hit = ENGINE.lineIntersectsCircle(
         PLAYER.pos,
         refPoint,
@@ -1702,12 +1697,6 @@ var GAME = {
     MINIMAP.init(map, INI.MIMIMAP_WIDTH, INI.MIMIMAP_HEIGHT);
   },
   newDungeon(waypoint = "entrance") {
-
-    /*
-    dungeon setup
-    raycast setup: done?
-    */
-
     GAME.setlevelTextures(GAME.level);
     var randomDungeon = DUNGEON.create(
       MAP[GAME.level].width,
@@ -2436,7 +2425,7 @@ var TITLE = {
       }, a game by Lovro Selic, ${"\u00A9"} C00lSch00l ${PRG.YEAR
       }.  Music: Laughing Skull written and performed by LaughingSkull, ${"\u00A9"} 2006 Lovro Selic. `;
     text +=
-      "     ENGINE, MAZE, GRID, AI, RAYCASTER and GAME code by Lovro Selic using JavaScript. ";
+      "     ENGINE, MAZE, GRID, AI, RAYCASTER, SAVE GAME and GAME code by Lovro Selic using JavaScript. ";
     text = text.split("").join(String.fromCharCode(8202));
     return text;
   },
@@ -2483,6 +2472,5 @@ $(function () {
   PRG.INIT();
   PRG.setup();
   ENGINE.LOAD.preload();
-  //const BACKUP_MAP = $.extend(true, {}, MAP);
   SAVE_GAME.setKey(PRG.SG);
 });

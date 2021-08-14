@@ -246,6 +246,10 @@ Array.prototype.last = function () {
 Array.prototype.fromBack = function (idx) {
   return this[this.length - idx];
 };
+Array.prototype.unique = function(){
+  let set = new Set(this);
+  return [...set];
+  };
 
 String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.substr(1).toLowerCase();

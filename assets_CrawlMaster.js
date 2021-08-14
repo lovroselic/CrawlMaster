@@ -31,7 +31,10 @@ var LoadTextures = [
   { srcName: "BrokenRuin128.jpg", name: "BrokenRuin" },
   { srcName: "DirtFloor.jpg", name: "DirtFloor" },
   { srcName: "RockCeiling.jpg", name: "RockCeiling" },
-  { srcName: "TiledFloor5.jpg", name: "TiledFloor" }
+  { srcName: "TiledFloor5.jpg", name: "TiledFloor" },
+  { srcName: "Rough1.jpg", name: "Rough" },
+  { srcName: "Wall6.jpg", name: "DungeonWall4" },
+  { srcName: "Tile1.jpg", name: "Tile" },
 ];
 var LoadSprites = [
   { srcName: "CM_title.png", name: "Title" },
@@ -431,8 +434,12 @@ var LoadPacks = [
   { srcName: "LittleOrc64.png", count: 3, name: "LittleOrc" },
   { srcName: "Fairy64.png", count: 3, name: "Fairy" },
   { srcName: "BlackGhost.png", count: 4, name: "BlackGhost" },
+  { srcName: "RedBat.png", count: 3, name: "RedBat" },
+  { srcName: "Badger64.png", count: 3, name: "Badger" },
+  { srcName: "Scary64.png", count: 4, name: "Scary" },
+  { srcName: "ZombieGirl64.png", count: 4, name: "ZombieGirl" },
+  { srcName: "Flamy64.png", count: 4, name: "Flamy" },
   
-
   { srcName: "Croc64.png", count: 5, name: "Croc" },
   { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "Scorpion64.png", count: 6, name: "Scorpion" },
@@ -442,12 +449,7 @@ var LoadPacks = [
   { srcName: "GreenZombie64.png", count: 3, name: "GreenZombie" },
   { srcName: "GreenSkelly64.png", count: 3, name: "GreenSkelly" },
   { srcName: "GreenPuffer64.png", count: 4, name: "GreenPuffer" },
-  { srcName: "Flamy64.png", count: 4, name: "Flamy" },
-  { srcName: "Badger64.png", count: 3, name: "Badger" },
-  { srcName: "Scary64.png", count: 4, name: "Scary" },
   { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon64" },
-  { srcName: "RedBat.png", count: 3, name: "RedBat" },
-  { srcName: "ZombieGirl64.png", count: 4, name: "ZombieGirl" },
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
   
   

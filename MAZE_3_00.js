@@ -1521,7 +1521,7 @@ var PACDUNGEON = {
   }
 };
 var DUNGEON = {
-  VERSION: "3.00.00.A",
+  VERSION: "3.00",
   CSS: "color: #f4ee42",
   LIMIT_ROOMS: false,
   ROOM_LIMIT: null,

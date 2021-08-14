@@ -934,7 +934,9 @@ var RAYCAST = {
     let additionalCellsToCheck = [
       Grid.toClass(PLAYER.pos),
       Grid.toClass(PLAYER.pos.add(PLAYER.dir.rotate(Math.PI / 2))),
-      Grid.toClass(PLAYER.pos.add(PLAYER.dir.rotate(-Math.PI / 2)))
+      Grid.toClass(PLAYER.pos.add(PLAYER.dir.rotate(-Math.PI / 2))),
+      Grid.toClass(PLAYER.pos.add(PLAYER.dir.ortoAlign().rotate(Math.PI / 2))),
+      Grid.toClass(PLAYER.pos.add(PLAYER.dir.ortoAlign().rotate(-Math.PI / 2)))
     ];
 
     for (const cell of additionalCellsToCheck) {
@@ -943,12 +945,15 @@ var RAYCAST = {
         VISIBLE_SPRITE_LIST = VISIBLE_SPRITE_LIST.concat(playerPosCell);
       }
     }
+    VISIBLE_SPRITE_LIST = VISIBLE_SPRITE_LIST.unique();
+
     for (const cell of additionalCellsToCheck) {
       let playerPosCell = RAYCAST.checkDecal(cell);
       if (playerPosCell.length > 0) {
         VISIBLE_DECAL_LIST = VISIBLE_DECAL_LIST.concat(playerPosCell);
       }
     }
+    VISIBLE_DECAL_LIST = VISIBLE_DECAL_LIST.unique();
 
     //expose
     RAYCAST.DATA.Z_BUFFER = Z_BUFFER;

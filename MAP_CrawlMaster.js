@@ -729,6 +729,132 @@ var MONSTER = {
     inventoryValue: 0,
     behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
   },
+  RoomBlackGhost: {
+    class: "BlackGhost",
+    moveSpeed: 1.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 25,
+    defense: 18,
+    magic: 25,
+    health: 40,
+    xp: 250,
+    attackSound: "MonsterAttack1",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 3,
+    inventory: "ShieldSkill",
+    inventoryValue: 0,
+    behaviourArguments: [10, ["goto", "circler"], 5, ["shoot"]],
+  },
+  Fairy: {
+    class: "Fairy",
+    moveSpeed: 2.0,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 15,
+    defense: 10,
+    magic: 20,
+    health: 40,
+    xp: 60,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    mana: 3,
+    caster: true,
+    shootDistance: 4,
+    stalkDistance: 5,
+    inventory: "GoldCoin",
+    inventoryValue: 50,
+    behaviourArguments: [8, ["wanderer"], 4, ["shoot"]],
+  },
+  RedBat: {
+    class: "RedBat",
+    moveSpeed: 3.2,
+    SPRITE_FPS: 30,
+    base: -0.20,
+    attack: 18,
+    defense: 10,
+    magic: 0,
+    health: 25,
+    xp: 20,
+    attackSound: "BatAttack",
+    hurtSound: "BatAttack",
+    behaviourArguments: [Infinity, ["wanderer"], -1],
+  },
+  Badger: {
+    class: "Badger",
+    moveSpeed: 2.8,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 23,
+    defense: 16,
+    magic: 5,
+    health: 30,
+    xp: 42,
+    attackSound: "MonsterAttack2",
+    hurtSound: "PainSqueek",
+    behaviourArguments: [15, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 25
+  },
+  Scary: {
+    class: "Scary",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 21,
+    defense: 15,
+    magic: 20,
+    health: 35,
+    xp: 55,
+    attackSound: "MonsterAttack1",
+    hurtSound: "Ow",
+    mana: 3,
+    caster: true,
+    shootDistance: 4,
+    stalkDistance: 5,
+    inventory: "GoldCoin",
+    inventoryValue: 45,
+    behaviourArguments: [7, ["wanderer"], 4, ["shoot"]],
+  },
+  ZombieGirl: {
+    class: "ZombieGirl",
+    moveSpeed: 2.4,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 22,
+    defense: 17,
+    health: 30,
+    magic: 0,
+    xp: 45,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt3",
+    behaviourArguments: [7, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 40
+  },
+  Flamy_BossL5: {
+    class: "Flamy",
+    moveSpeed: 1.6,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 30,
+    defense: 22,
+    magic: 30,
+    health: 50,
+    xp: 300,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 5,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 4,
+    inventory: "ManaStatus",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 5, ["shoot"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -893,9 +1019,16 @@ var MAP = {
   5: {
     width: 37,
     height: 37,
-    floor: "Pavement2",
-    ceil: "MorgueFloor",
-    wall: "DungeonWall3"
+    floor: "TiledFloor",
+    ceil: "Rough",
+    wall: "DungeonWall4"
+  },
+  6: {
+    width: 37,
+    height: 37,
+    floor: "TiledFloor",
+    ceil: "Rough",
+    wall: "DungeonWall4"
   }
 };
 var MOSTER_LAYOUT = {
@@ -1092,30 +1225,30 @@ var MOSTER_LAYOUT = {
       monster: {
         Wizard: 1,
         Aunt: 1,
-        Spider:1,
+        Spider: 1,
         SkeletonMajor: 1,
         LittleOrc: 0.5
       }
     },
     Gold: {
       N: 2,
-      monster: { Sorceress: 1, Aunt: 1,Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      monster: { Sorceress: 1, Aunt: 1, Spider: 1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
       boss: { BlackGhost_BossL4: 1 }
     },
     Silver: {
       N: 2,
-      monster: { Aunt: 1, Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
-      boss: { RoomFairy: 1}
+      monster: { Aunt: 1, Spider: 1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
+      boss: { RoomFairy: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { Aunt: 1, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
+      monster: { Aunt: 1, Spider: 1, SkeletonMajor: 2, LittleOrc: 1 },
       boss: { Sorceress: 1 }
     },
     Red: {
       N: 2,
-      monster: { Aunt: 2, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
-      boss: {  Sorceress: 1, LittleOrc: 1 }
+      monster: { Aunt: 2, Spider: 1, SkeletonMajor: 2, LittleOrc: 1 },
+      boss: { Sorceress: 1, LittleOrc: 1 }
     },
     temple: {
       N: 1,
@@ -1125,8 +1258,65 @@ var MOSTER_LAYOUT = {
   5: {
     start: {
       N: 1,
-      monster: { SmallEvilBat: 1 },
-      //monster: { Spider: 1 },
+      monster: { RedBat: 1 },
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        Spider: 1,
+        SkeletonMajor: 1,
+        LittleOrc: 1,
+        RedBat: 1,
+        Badger: 2,
+        Sorceress: 1,
+        Scary: 0.2,
+        Fairy: 0.5
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        Spider: 1,
+        SkeletonMajor: 2,
+        LittleOrc: 1,
+        RedBat: 1,
+        Badger: 2,
+        Sorceress: 1,
+        Scary: 0.5,
+        ZombieGirl: 0.2,
+        Fairy: 1
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { LittleOrc: 1, RoomFairy: 1, RoomBlackGhost: 1, Scary: 2, ZombieGirl: 2 },
+      boss: { Flamy_BossL5: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { SkeletonMajor: 0.5, LittleOrc: 1, RoomFairy: 1, Badger: 0.5, Scary: 2, ZombieGirl: 2 },
+      boss: { RoomBlackGhost: 1 }
+    },
+    firstKey: {
+      N: 2,
+      monster: { Spider: 1, SkeletonMajor: 2, LittleOrc: 3, Badger: 1, Scary: 1, ZombieGirl: 0.5, Fairy: 1 },
+      boss: { Sorceress: 1, Scary: 2, Fairy: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { SkeletonMajor: 2, LittleOrc: 1, ZombieGirl: 1, Fairy: 1 },
+      boss: { LittleOrc: 1, Scary: 2 }
+    },
+    temple: {
+      N: 1,
+      monster: { RedBat: 1 }
+    }
+  },
+  6: {
+    start: {
+      N: 1,
+      monster: { RedBat: 1 },
+      //monster: { Flamy_BossL5: 1 },
       //monster: { SkeletonMajor: 1 },
       //monster: { LittleOrc: 1 },
       //monster: { BlackGhost_BossL4: 1 },
@@ -1135,47 +1325,51 @@ var MOSTER_LAYOUT = {
     corridor: {
       N: 25,
       monster: {
-        Wizard: 1,
-        SmallEvilBat: 1,
-        Aunt: 1,
         Spider: 1,
         SkeletonMajor: 1,
-        LittleOrc: 0.2
+        LittleOrc: 1,
+        RedBat: 1,
+        Badger: 2,
+        Sorceress: 1,
+        Scary: 0.2
       }
     },
     common: {
       N: 2,
       monster: {
-        Wizard: 1,
-        Aunt: 1,
-        Spider:1,
-        SkeletonMajor: 1,
-        LittleOrc: 0.5
+        Spider: 1,
+        SkeletonMajor: 2,
+        LittleOrc: 1,
+        RedBat: 1,
+        Badger: 2,
+        Sorceress: 1,
+        Scary: 0.5,
+        ZombieGirl: 0.2
       }
     },
     Gold: {
       N: 2,
-      monster: { Sorceress: 1, Aunt: 1,Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
-      boss: { BlackGhost_BossL4: 1 }
+      monster: { LittleOrc: 1, RoomFairy: 1, RoomBlackGhost: 1, Scary: 2, ZombieGirl: 2 },
+      boss: { Flamy_BossL5: 1 }
     },
     Silver: {
       N: 2,
-      monster: { Aunt: 1, Spider:1, SkeletonMajor: 1, LittleOrc: 1, RoomFairy: 1 },
-      boss: { RoomFairy: 1}
+      monster: { SkeletonMajor: 0.5, LittleOrc: 1, RoomFairy: 1, Badger: 0.5, Scary: 2, ZombieGirl: 2 },
+      boss: { RoomBlackGhost: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { Aunt: 1, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
-      boss: { Sorceress: 1 }
+      monster: { Spider: 1, SkeletonMajor: 2, LittleOrc: 3, Badger: 1, Scary: 1, ZombieGirl: 0.5 },
+      boss: { Sorceress: 1, Scary: 2 }
     },
     Red: {
       N: 2,
-      monster: { Aunt: 2, Spider:1, SkeletonMajor: 2, LittleOrc: 1 },
-      boss: {  Sorceress: 1, LittleOrc: 1 }
+      monster: { SkeletonMajor: 2, LittleOrc: 1, ZombieGirl: 1 },
+      boss: { LittleOrc: 1, Scary: 2 }
     },
     temple: {
       N: 1,
-      monster: { SmallEvilBat: 1 }
+      monster: { RedBat: 1 }
     }
   },
 };
