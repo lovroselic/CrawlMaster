@@ -394,7 +394,26 @@ var LoadSprites = [
   { srcName: "AA40.png", name: "AA40" },
   { srcName: "SeaWolf.png", name: "SeaWolf" },
   { srcName: "GIJoe10.png", name: "GIJoe10" },
-  { srcName: "CompassRose.png", name: "CompassRose" }
+  { srcName: "CompassRose.png", name: "CompassRose" },
+
+  { srcName: "Hobbit1.png", name: "Hobbit1" },
+  { srcName: "Hobbit3.png", name: "Hobbit3" },
+  { srcName: "Ghostbusters2.png", name: "Ghostbusters2" },
+  { srcName: "Commando3.png", name: "Commando3" },
+  { srcName: "EOB20.png", name: "EOB20" },
+  { srcName: "Hobbit6.png", name: "Hobbit6" },
+  { srcName: "Hobbit7.png", name: "Hobbit7" },
+  { srcName: "Hobbit8.png", name: "Hobbit8" },
+  { srcName: "Hobbit9.png", name: "Hobbit9" },
+  { srcName: "AticAtac1.png", name: "AticAtac1" },
+  { srcName: "Infiltrator1.png", name: "Infiltrator1" },
+  { srcName: "ManicMiner2.png", name: "ManicMiner2" },
+  { srcName: "ManicMiner3.png", name: "ManicMiner3" },
+  { srcName: "Prince3.png", name: "Prince3" },
+  { srcName: "Infiltrator2.png", name: "Infiltrator2" },
+
+  { srcName: "Ivy3.png", name: "Ivy3" },
+  { srcName: "Ivy4.png", name: "Ivy4" },
 ];
 var LoadSequences = [
   { srcName: "SHIP_exp", name: "BigExplosion", type: "png", count: 8 },

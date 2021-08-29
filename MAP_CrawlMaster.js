@@ -270,7 +270,9 @@ var DECAL_PAINTINGS = [
   "AA41",
   "AA40",
   "SeaWolf",
-  "GIJoe10"
+  "GIJoe10",
+  "Hobbit1", "Hobbit3", "Ghostbusters2", "Commando3", "EOB20", "Hobbit6", "Hobbit7", "Hobbit8", "Hobbit9", "AticAtac1", "Infiltrator1", "ManicMiner2",
+   "ManicMiner3", "Prince3", "Infiltrator2"
 ];
 //console.log("DECAL_PAINTINGS", DECAL_PAINTINGS.sort());
 var DECAL_CRESTS = [
@@ -302,7 +304,7 @@ var DECAL_CRESTS = [
   "WallSkell",
   "Crack7",
   "Crack6",
-  "KnightStatue"
+  "KnightStatue", "Ivy3", "Ivy4"
 ];
 //console.log("DECAL_CRESTS", DECAL_CRESTS.sort());
 
@@ -1513,7 +1515,7 @@ var MOSTER_LAYOUT = {
         Scary: 0.7,
         ZombieGirl: 1,
         WhiteWolf: 1,
-        Fairy: 1.2,
+        Fairy: 1,
       }
     },
     common: {
@@ -1547,7 +1549,7 @@ var MOSTER_LAYOUT = {
     },
     firstKey: {
       N: 2,
-      monster: { Badger: 1, Scary: 1, ZombieGirl: 1, SkeletonMajor: 1, WhiteWolf: 1, Fairy: 1, BlackWolf: 1, GreenSkelly: 1},
+      monster: { Badger: 1, Scary: 1, ZombieGirl: 1, SkeletonMajor: 1, WhiteWolf: 1, Fairy: 1, BlackWolf: 1, GreenSkelly: 1 },
       boss: { Scary: 1, Fairy: 1.1, }
     },
     temple: {
@@ -1610,7 +1612,7 @@ var MOSTER_LAYOUT = {
     },
     firstKey: {
       N: 2,
-      monster: { Badger: 1, Scary: 1, ZombieGirl: 1, SkeletonMajor: 1, WhiteWolf: 1, Fairy: 1, BlackWolf: 1, GreenSkelly: 1},
+      monster: { Badger: 1, Scary: 1, ZombieGirl: 1, SkeletonMajor: 1, WhiteWolf: 1, Fairy: 1, BlackWolf: 1, GreenSkelly: 1 },
       boss: { Scary: 1, Fairy: 1.1, }
     },
     temple: {
