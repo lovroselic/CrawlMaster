@@ -7,13 +7,14 @@
 /////////////////////////////////////////////////
 /*
       
- TODO:
+TODO:
+  monster animation when attacking?
       
- known bugs: 
-  RAYCASTER: blinking decals
+known bugs: 
+  
 
-  shorts:
-    window.PLAYER.pos = new FP_Grid(,);
+shorts:
+  window.PLAYER.pos = new FP_Grid(,);
 
  */
 ////////////////////////////////////////////////////
@@ -809,7 +810,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.38.0.DEV",
+  VERSION: "0.38.4.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1021,8 +1022,7 @@ var HERO = {
     GAME.level = 5;
     GAME.upperLimit = GAME.level;
     GAME.gold = 312;
-    this.maxHealth = 79;
-    this.maxMana = 75;
+    
     this.health = 79;
     this.mana = 44;
     this.defense = 16;
@@ -1031,6 +1031,8 @@ var HERO = {
     this.reference_attack = this.attack;
     this.magic = 20;
     this.reference_magic = this.magic;
+    this.maxHealth = 79;
+    this.maxMana = 3 * Missile.calcMana(this.magic);
     this.attackExp = 124;
     this.defenseExp = 18;
     this.magicExp = 140;
@@ -1040,6 +1042,37 @@ var HERO = {
     this.inventory.potion.red = 4;
     this.inventory.potion.blue = 0;
     let scrolls = ['Petrify'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth6() {
+    GAME.level = 6;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 647;
+    
+    this.health = 87;
+    this.mana = 36;
+    this.defense = 20;
+    this.reference_defense = this.defense;
+    this.attack = 22;
+    this.reference_attack = this.attack;
+    this.magic = 23;
+    this.reference_magic = this.magic;
+    this.maxHealth = 91;
+    this.maxMana = 108;
+    this.attackExp = 2350;
+    this.defenseExp = 2;
+    this.magicExp = 417;
+    this.attackExpGoal = 2570;
+    this.defenseExpGoal = 507;
+    this.magicExpGoal = 1713;
+    this.inventory.potion.red = 2;
+    this.inventory.potion.blue = 1;
+    let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1135,11 +1168,10 @@ var HERO = {
   incStatus(type) {
     let Type = type.capitalize();
     let max = `max${Type}`;
-    this[max] += INI[`${type.toUpperCase()}_INC`];
-    if (type === 'magic') {
-      //CONT
+    if (type === 'Magic') {
       this[max] = Math.max(this[max], 3 * Missile.calcMana(this.reference_magic));
     }
+    this[max] += INI[`${type.toUpperCase()}_INC`];
     this[type] = this[max];
     TITLE.status();
   },
@@ -1406,7 +1438,7 @@ var GAME = {
       console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
-      HERO.depth5();
+      HERO.depth6();
     }
 
     GAME.newGrid();

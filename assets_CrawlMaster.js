@@ -439,18 +439,22 @@ var LoadPacks = [
   { srcName: "Scary64.png", count: 4, name: "Scary" },
   { srcName: "ZombieGirl64.png", count: 4, name: "ZombieGirl" },
   { srcName: "Flamy64.png", count: 4, name: "Flamy" },
+  { srcName: "WhiteWolf64.png", count: 4, name: "WhiteWolf" },
+  { srcName: "SkeletonGeneral.png", count: 3, name: "SkeletonGeneral" },
+  { srcName: "ShabbySkeleton.png", count: 3, name: "ShabbySkeleton" },
+  { srcName: "Black Wolf64.png", count: 3, name: "BlackWolf" },
+  { srcName: "GreenSkelly64.png", count: 3, name: "GreenSkelly" },
   
   { srcName: "Croc64.png", count: 5, name: "Croc" },
   { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "Scorpion64.png", count: 6, name: "Scorpion" },
-  { srcName: "WhiteWolf64.png", count: 4, name: "WhiteWolf" },
-  { srcName: "Black Wolf64.png", count: 3, name: "BlackWolf" },
   { srcName: "BlueDevil64.png", count: 4, name: "BlueDevil" },
   { srcName: "GreenZombie64.png", count: 3, name: "GreenZombie" },
-  { srcName: "GreenSkelly64.png", count: 3, name: "GreenSkelly" },
   { srcName: "GreenPuffer64.png", count: 4, name: "GreenPuffer" },
   { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon64" },
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
+  
+  
   
   
 ];
