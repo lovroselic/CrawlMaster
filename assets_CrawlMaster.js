@@ -395,7 +395,6 @@ var LoadSprites = [
   { srcName: "SeaWolf.png", name: "SeaWolf" },
   { srcName: "GIJoe10.png", name: "GIJoe10" },
   { srcName: "CompassRose.png", name: "CompassRose" },
-
   { srcName: "Hobbit1.png", name: "Hobbit1" },
   { srcName: "Hobbit3.png", name: "Hobbit3" },
   { srcName: "Ghostbusters2.png", name: "Ghostbusters2" },
@@ -411,7 +410,6 @@ var LoadSprites = [
   { srcName: "ManicMiner3.png", name: "ManicMiner3" },
   { srcName: "Prince3.png", name: "Prince3" },
   { srcName: "Infiltrator2.png", name: "Infiltrator2" },
-
   { srcName: "Ivy3.png", name: "Ivy3" },
   { srcName: "Ivy4.png", name: "Ivy4" },
 ];
@@ -463,14 +461,14 @@ var LoadPacks = [
   { srcName: "ShabbySkeleton.png", count: 3, name: "ShabbySkeleton" },
   { srcName: "Black Wolf64.png", count: 3, name: "BlackWolf" },
   { srcName: "GreenSkelly64.png", count: 3, name: "GreenSkelly" },
-  
-  { srcName: "Croc64.png", count: 5, name: "Croc" },
-  { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "Scorpion64.png", count: 6, name: "Scorpion" },
-  { srcName: "BlueDevil64.png", count: 4, name: "BlueDevil" },
   { srcName: "GreenZombie64.png", count: 3, name: "GreenZombie" },
+  { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon" },
+  { srcName: "Croc64.png", count: 5, name: "Croc" },
+  { srcName: "BlueDevil64.png", count: 4, name: "BlueDevil" },
+  
+  { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "GreenPuffer64.png", count: 4, name: "GreenPuffer" },
-  { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon64" },
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
   
   

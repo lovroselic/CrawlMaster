@@ -810,7 +810,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.39.0.DEV",
+  VERSION: "0.39.2.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1073,6 +1073,37 @@ var HERO = {
     this.inventory.potion.red = 2;
     this.inventory.potion.blue = 1;
     let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth7() {
+    GAME.level = 7;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 136;
+    
+    this.health = 71;
+    this.mana = 39;
+    this.defense = 24;
+    this.reference_defense = this.defense;
+    this.attack = 26;
+    this.reference_attack = this.attack;
+    this.magic = 26;
+    this.reference_magic = this.magic;
+    this.maxHealth = 99;
+    this.maxMana = 123;
+    this.attackExp = 2786;
+    this.defenseExp = 195;
+    this.magicExp = 551;
+    this.attackExpGoal = 3855;
+    this.defenseExpGoal = 507;
+    this.magicExpGoal = 2570;
+    this.inventory.potion.red = 5;
+    this.inventory.potion.blue = 0;
+    let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon','DestroyArmor'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1438,7 +1469,7 @@ var GAME = {
       console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
-      HERO.depth6();
+      HERO.depth7();
     }
 
     GAME.newGrid();

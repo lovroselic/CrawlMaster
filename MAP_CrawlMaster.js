@@ -272,7 +272,7 @@ var DECAL_PAINTINGS = [
   "SeaWolf",
   "GIJoe10",
   "Hobbit1", "Hobbit3", "Ghostbusters2", "Commando3", "EOB20", "Hobbit6", "Hobbit7", "Hobbit8", "Hobbit9", "AticAtac1", "Infiltrator1", "ManicMiner2",
-   "ManicMiner3", "Prince3", "Infiltrator2"
+  "ManicMiner3", "Prince3", "Infiltrator2"
 ];
 //console.log("DECAL_PAINTINGS", DECAL_PAINTINGS.sort());
 var DECAL_CRESTS = [
@@ -931,8 +931,8 @@ var MONSTER = {
     caster: true,
     shootDistance: 5,
     stalkDistance: 4,
-    inventory: "GoldCoin",
-    inventoryValue: 100,
+    inventory: "Scroll",
+    inventoryValue: 0,
     behaviourArguments: [10, ["advancer"], 5, ["shoot"]],
   },
   WhiteWolf: {
@@ -1030,6 +1030,134 @@ var MONSTER = {
     behaviourArguments: [8, ["wanderer"], 4, ["hunt"]],
     inventory: "GoldCoin",
     inventoryValue: 50
+  },
+  Scorpion: {
+    class: "Scorpion",
+    moveSpeed: 2.1,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 28,
+    defense: 20,
+    magic: 10,
+    health: 45,
+    xp: 80,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [5, ["wanderer"], 3, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 50
+  },
+  GreenZombie: {
+    class: "GreenZombie",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 30,
+    defense: 24,
+    magic: 0,
+    health: 50,
+    xp: 100,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 5, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 60
+  },
+  SmallDragon: {
+    class: "SmallDragon",
+    moveSpeed: 3.5,
+    SPRITE_FPS: 30,
+    base: 0,
+    attack: 27,
+    defense: 22,
+    magic: 22,
+    health: 50,
+    xp: 100,
+    attackSound: "MonsterAttack2",
+    hurtSound: "PainSqueek",
+    mana: 5,
+    caster: true,
+    shootDistance: 5,
+    stalkDistance: 3,
+    inventory: "BluePotion",
+    inventoryValue: 0,
+    behaviourArguments: [10, ["advancer"], 5, ["shoot"]],
+  },
+  Croc: {
+    class: "Croc",
+    moveSpeed: 2.4,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 29,
+    defense: 23,
+    magic: 5,
+    health: 50,
+    xp: 100,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [5, ["wanderer"], 3, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 50
+  },
+  BlueDevil_BossL7: {
+    class: "BlueDevil",
+    moveSpeed: 1.9,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 32,
+    defense: 25,
+    magic: 35,
+    health: 60,
+    xp: 450,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "SwordSkill",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 6, ["shoot"]],
+  },
+  RoomBlueDevil: {
+    class: "BlueDevil",
+    moveSpeed: 1.9,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 32,
+    defense: 25,
+    magic: 35,
+    health: 60,
+    xp: 400,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "SwordSkill",
+    inventoryValue: 0,
+    behaviourArguments: [10, ["goto", "circler"], 6, ["shoot"]],
+  },
+  BlueDevil: {
+    class: "BlueDevil",
+    moveSpeed: 1.9,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 32,
+    defense: 25,
+    magic: 35,
+    health: 60,
+    xp: 500,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "SwordSkill",
+    inventoryValue: 0,
+    behaviourArguments: [10, ["wanderer"], 6, ["shoot"]],
   },
 };
 var MISSILE_TYPE = {
@@ -1209,9 +1337,16 @@ var MAP = {
   7: {
     width: 37,
     height: 37,
-    floor: "GreyDungeonFloor",
-    ceil: "RockCeiling",
-    wall: "CastleWall"
+    floor: "Tile",
+    ceil: "ThatchFloor",
+    wall: "BlackBrickWall"
+  },
+  8: {
+    width: 37,
+    height: 37,
+    floor: "DirtFloor",
+    ceil: "ThatchFloor",
+    wall: "BlackBrickWall"
   }
 };
 var MOSTER_LAYOUT = {
@@ -1560,64 +1695,60 @@ var MOSTER_LAYOUT = {
   7: {
     start: {
       N: 1,
-      monster: { RedBat: 1, SkeletonMajor: 1 },
-      //monster: { GreenSkelly: 1 },
-      //monster: { SkeletonMajor: 1 },
-      //monster: { LittleOrc: 1 },
-      //monster: { BlackGhost_BossL4: 1 },
-      //monster: { RoomFairy: 1 },
+      monster: { ZombieGirl: 1 },
+      //monster: { Flamy: 1 },
     },
     corridor: {
       N: 25,
       monster: {
-        Spider: 0.5,
-        LittleOrc: 0.5,
-        RedBat: 1,
-        Badger: 1,
-        Sorceress: 0.5,
-        Scary: 0.7,
-        ZombieGirl: 1,
+        Scary: 1,
+        ZombieGirl:1,
         WhiteWolf: 1,
-        Fairy: 1.2,
+        BlackWolf: 1,
+        Fairy: 1,
+        SkeletonGeneral: 1,
+        GreenSkelly: 1,
+        Scorpion: 1,
+        
       }
     },
     common: {
       N: 2,
       monster: {
-        Badger: 1,
-        Sorceress: 0.5,
-        Scary: 0.9,
-        ZombieGirl: 1,
-        WhiteWolf: 1,
-        SkeletonGeneral: 0.4,
-        Fairy: 1,
+        Scary: 0.8,
+        SkeletonGeneral: 1,
+        Fairy: 0.6,
         BlackWolf: 1,
-        GreenSkelly: 0.5
+        GreenSkelly: 1,
+        Scorpion: 1,
+        SmallDragon: 0.3,
+        GreenZombie: 0.4,
+        Croc: 0.3
       }
     },
     Gold: {
       N: 2,
-      monster: { RoomFairy: 1, RoomBlackGhost: 1, SkeletonGeneral: 1, GreenSkelly: 1 },
-      boss: { ShabbySkeleton_BossL6: 1 }
+      monster: { ShabbySkeleton: 1, BlackGhost: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1 },
+      boss: { BlueDevil_BossL7: 1 }
     },
     Silver: {
       N: 2,
-      monster: { RoomFairy: 1, Scary: 1, ZombieGirl: 1, SkeletonGeneral: 1, BlackWolf: 1, GreenSkelly: 1 },
-      boss: { RoomBlackGhost: 1 }
+      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1, ShabbySkeleton: 1, Croc: 1 },
+      boss: { ShabbySkeleton: 1 }
     },
     Red: {
       N: 2,
-      monster: { ZombieGirl: 1, Badger: 1, WhiteWolf: 1, SkeletonGeneral: 1, BlackWolf: 1, GreenSkelly: 1 },
-      boss: { Scary: 1.1, SkeletonGeneral: 1, Fairy: 1, }
+      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon:1, Croc: 1 },
+      boss: { RoomFlamy: 1 }
     },
     firstKey: {
       N: 2,
-      monster: { Badger: 1, Scary: 1, ZombieGirl: 1, SkeletonMajor: 1, WhiteWolf: 1, Fairy: 1, BlackWolf: 1, GreenSkelly: 1 },
-      boss: { Scary: 1, Fairy: 1.1, }
+      monster: { SkeletonGeneral: 1, Scorpion: 1, GreenZombie: 1, Croc: 1 },
+      boss: { BlackGhost: 1 }
     },
     temple: {
       N: 1,
-      monster: { SkeletonMajor: 1, Badger: 1 }
+      monster: { SkeletonGeneral: 1 }
     }
   },
 };
