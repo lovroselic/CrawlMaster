@@ -1344,9 +1344,16 @@ var MAP = {
   8: {
     width: 37,
     height: 37,
-    floor: "DirtFloor",
-    ceil: "ThatchFloor",
-    wall: "BlackBrickWall"
+    floor: "RockWall",
+    ceil: "Pavement2",
+    wall: "BrickWall2"
+  },
+  9: {
+    width: 37,
+    height: 37,
+    floor: "RockWall",
+    ceil: "Pavement2",
+    wall: "BrickWall2"
   }
 };
 var MOSTER_LAYOUT = {
@@ -1745,6 +1752,61 @@ var MOSTER_LAYOUT = {
       N: 2,
       monster: { SkeletonGeneral: 1, Scorpion: 1, GreenZombie: 1, Croc: 1 },
       boss: { BlackGhost: 1 }
+    },
+    temple: {
+      N: 1,
+      monster: { SkeletonGeneral: 1 }
+    }
+  },
+  8: {
+    start: {
+      N: 1,
+      monster: { GreenSkelly: 1 },
+      //monster: { Flamy: 1 },
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        SkeletonGeneral: 0.5,
+        GreenSkelly: 0.5,
+        Scorpion: 1,
+        Scary: 1,
+        Fairy: 1,
+        BlackGhost: 0.4,
+        Flamy: 0.4,
+        
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        Scorpion: 1,
+        SmallDragon: 1,
+        GreenZombie: 0.8,
+        Croc: 1,
+        BlackGhost: 1,
+        Flamy: 1,
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { ShabbySkeleton: 1, BlackGhost: 0.5, GreenZombie: 1, Flamy: 1, SmallDragon: 1 },
+      boss: { BlueDevil_BossL7: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1, ShabbySkeleton: 1, Croc: 1 },
+      boss: { RoomBlueDevil: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon:1, Croc: 1, ShabbySkeleton: 1  },
+      boss: { SmallDragon:1, ShabbySkeleton: 1  }
+    },
+    firstKey: {
+      N: 2,
+      monster: {  Scorpion: 1, GreenZombie: 1, Croc: 1, BlackGhost: 1, ShabbySkeleton: 1  },
+      boss: { SmallDragon:1, ShabbySkeleton: 1  }
     },
     temple: {
       N: 1,

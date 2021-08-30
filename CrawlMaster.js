@@ -810,7 +810,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.39.2.DEV",
+  VERSION: "0.40.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1104,6 +1104,38 @@ var HERO = {
     this.inventory.potion.red = 5;
     this.inventory.potion.blue = 0;
     let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon','DestroyArmor'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth8() {
+    GAME.level = 8;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 640;
+    
+    this.health = 82;
+    this.mana = 56;
+    this.defense = 27;
+    this.reference_defense = this.defense;
+    this.attack = 30;
+    this.reference_attack = this.attack;
+    this.magic = 29;
+    this.reference_magic = this.magic;
+    this.maxHealth = 107;
+    this.maxMana = 138;
+    this.attackExp = 1656;
+    this.defenseExp = 426;
+    this.magicExp = 941;
+    this.attackExpGoal = 5783;
+    this.defenseExpGoal = 507;
+    this.magicExpGoal = 3855;
+    this.inventory.potion.red = 6;
+    this.inventory.potion.blue = 0;
+    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon',
+    'BoostWeapon','DestroyArmor', 'DestroyArmor','DestroyArmor','Cripple', 'HalfLife'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1430,7 +1462,8 @@ var GAME = {
     ENGINE.GAME.start();
     MINIMAP.setOffset(TITLE.stack.minimapX, TITLE.stack.minimapY);
     $("#pause").prop("disabled", false);
-    $("#startAnimation").prop("disabled", false);
+    $("#pause").off();
+    //$("#startAnimation").prop("disabled", false);
     GAME.paused = false;
     ENGINE.watchVisibility(GAME.lostFocus);
     GAME.prepareForRestart();
@@ -1469,7 +1502,7 @@ var GAME = {
       console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
-      HERO.depth7();
+      HERO.depth8();
     }
 
     GAME.newGrid();
