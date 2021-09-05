@@ -1063,6 +1063,22 @@ var MONSTER = {
     inventory: "GoldCoin",
     inventoryValue: 60
   },
+  ArmoredSkelly: {
+    class: "ArmoredSkelly",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 33,
+    defense: 28,
+    magic: 0,
+    health: 55,
+    xp: 120,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt",
+    behaviourArguments: [8, ["wanderer"], 6, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 70
+  },
   SmallDragon: {
     class: "SmallDragon",
     moveSpeed: 3.5,
@@ -1158,6 +1174,58 @@ var MONSTER = {
     inventory: "SwordSkill",
     inventoryValue: 0,
     behaviourArguments: [10, ["wanderer"], 6, ["shoot"]],
+  },
+  Hudobec: {
+    class: "Hudobec",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 35,
+    defense: 30,
+    health: 50,
+    magic: 10,
+    xp: 125,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 80
+  },
+  Ninja: {
+    class: "Ninja",
+    moveSpeed: 3.0,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 40,
+    defense: 10,
+    magic: 0,
+    health: 60,
+    xp: 100,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    inventory: "GoldCoin",
+    inventoryValue: 20,
+    behaviourArguments: [16, ["wanderer"], 8, ["follower"]],
+  },
+  RedDevil_BossL8: {
+    class: "RedDevil",
+    moveSpeed: 2.1,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 36,
+    defense: 30,
+    magic: 40,
+    health: 70,
+    xp: 500,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "MagicSkill",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 6, ["shoot"]],
   },
 };
 var MISSILE_TYPE = {
@@ -1709,14 +1777,14 @@ var MOSTER_LAYOUT = {
       N: 25,
       monster: {
         Scary: 1,
-        ZombieGirl:1,
+        ZombieGirl: 1,
         WhiteWolf: 1,
         BlackWolf: 1,
         Fairy: 1,
         SkeletonGeneral: 1,
         GreenSkelly: 1,
         Scorpion: 1,
-        
+
       }
     },
     common: {
@@ -1745,7 +1813,7 @@ var MOSTER_LAYOUT = {
     },
     Red: {
       N: 2,
-      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon:1, Croc: 1 },
+      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1, Croc: 1 },
       boss: { RoomFlamy: 1 }
     },
     firstKey: {
@@ -1762,51 +1830,61 @@ var MOSTER_LAYOUT = {
     start: {
       N: 1,
       monster: { GreenSkelly: 1 },
-      //monster: { Flamy: 1 },
+      //monster: { RedDevil_BossL8: 1 },
+      //monster: { Hudobec: 1 },
     },
     corridor: {
       N: 25,
       monster: {
         SkeletonGeneral: 0.5,
         GreenSkelly: 0.5,
-        Scorpion: 1,
+        Scorpion: 1.1,
         Scary: 1,
         Fairy: 1,
-        BlackGhost: 0.4,
+        BlackGhost: 0.6,
         Flamy: 0.4,
-        
+        Croc: 1,
+        SmallDragon: 1,
+        Ninja: 0.5,
+        ArmoredSkelly: 0.5,
+        Hudobec: 0.2,
+
       }
     },
     common: {
       N: 2,
       monster: {
-        Scorpion: 1,
+        Scorpion: 1.1,
         SmallDragon: 1,
         GreenZombie: 0.8,
         Croc: 1,
         BlackGhost: 1,
         Flamy: 1,
+        ArmoredSkelly: 1,
+        Hudobec: 0.8,
+        Ninja: 0.7,
+        ShabbySkeleton: 0.8
       }
     },
     Gold: {
       N: 2,
-      monster: { ShabbySkeleton: 1, BlackGhost: 0.5, GreenZombie: 1, Flamy: 1, SmallDragon: 1 },
-      boss: { BlueDevil_BossL7: 1 }
+      monster: { ShabbySkeleton: 1, BlackGhost: 0.5, GreenZombie: 1, Flamy: 1, SmallDragon: 1.2, ArmoredSkelly: 1.3, Hudobec: 1.2, Ninja: 1.3 },
+      boss: { RedDevil_BossL8: 1 }
     },
     Silver: {
       N: 2,
-      monster: { BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1, ShabbySkeleton: 1, Croc: 1 },
+      monster: { BlackGhost: 1, Scorpion: 0.8, GreenZombie: 1, Flamy: 1, SmallDragon: 1.1, ShabbySkeleton: 1, Croc: 0.6, ArmoredSkelly: 1.1, Hudobec: 1, Ninja: 1 },
       boss: { RoomBlueDevil: 1 }
     },
     Red: {
       N: 2,
-      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon:1, Croc: 1, ShabbySkeleton: 1  },
-      boss: { SmallDragon:1, ShabbySkeleton: 1  }
+      monster: { SkeletonGeneral: 1, BlackGhost: 1, Scorpion: 1, GreenZombie: 1, Flamy: 1, SmallDragon: 1, Croc: 0.8, ShabbySkeleton: 1, ArmoredSkelly: 1, Hudobec: 0.8, Ninja: 0.9 },
+      boss: { ShabbySkeleton: 1 }
     },
     firstKey: {
       N: 2,
-      monster: {  Scorpion: 1, GreenZombie: 1, Croc: 1, BlackGhost: 1, ShabbySkeleton: 1  },
-      boss: { SmallDragon:1, ShabbySkeleton: 1  }
+      monster: { Scorpion: 1, GreenZombie: 1, Croc: 1, BlackGhost: 1, ShabbySkeleton: 1, ArmoredSkelly: 1, Hudobec: 0.7, Ninja: 0.8 },
+      boss: { SmallDragon: 1 }
     },
     temple: {
       N: 1,

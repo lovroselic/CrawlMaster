@@ -466,14 +466,18 @@ var LoadPacks = [
   { srcName: "SmallDragon64.png", count: 3, name: "SmallDragon" },
   { srcName: "Croc64.png", count: 5, name: "Croc" },
   { srcName: "BlueDevil64.png", count: 4, name: "BlueDevil" },
+  { srcName: "ArmoredSkelly.png", count: 3, name: "ArmoredSkelly" },
+  { srcName: "Hudobec.png", count: 3, name: "Hudobec" },
+  { srcName: "Ninja.png", count: 4, name: "Ninja" },
+  { srcName: "RedDevil.png", count: 4, name: "RedDevil" },
   
   { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "GreenPuffer64.png", count: 4, name: "GreenPuffer" },
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
-  
-  
-  
-  
+  { srcName: "Death2_pack.png", count: 4, name: "Death2" },
+  { srcName: "Death1_pack.png", count: 4, name: "Death1" },
+  { srcName: "SmallSkelly.png", count: 4, name: "SmallSkelly" },
+  { srcName: "RedBull.png", count: 3, name: "RedBull" },
 ];
 var LoadRotated = [];
 var LoadExtWasm = [];
