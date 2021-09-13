@@ -810,7 +810,7 @@ var INI = {
   MM_reveal_radius: 4
 };
 var PRG = {
-  VERSION: "0.40.1.DEV",
+  VERSION: "0.40.2.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1136,6 +1136,70 @@ var HERO = {
     this.inventory.potion.blue = 0;
     let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon',
     'BoostWeapon','DestroyArmor', 'DestroyArmor','DestroyArmor','Cripple', 'HalfLife'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth9() {
+    GAME.level = 9;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 89;
+    
+    this.health = 115;
+    this.mana = 148;
+    this.defense = 37;
+    this.reference_defense = this.defense;
+    this.attack = 34;
+    this.reference_attack = this.attack;
+    this.magic = 33;
+    this.reference_magic = this.magic;
+    this.maxHealth = 115;
+    this.maxMana = 148;
+    this.attackExp = 923;
+    this.defenseExp = 165;
+    this.magicExp = 101;
+    this.attackExpGoal = 8675;
+    this.defenseExpGoal = 761;
+    this.magicExpGoal = 5783;
+    this.inventory.potion.red = 5;
+    this.inventory.potion.blue = 2;
+    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon',
+    'BoostWeapon','BoostWeapon','DestroyArmor', 'Cripple', 'Cripple','Cripple','HalfLife', 'Invisibility'];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
+  },
+  depth10() {
+    GAME.level = 10;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 66;
+    
+    this.health = 119;
+    this.mana = 153;
+    this.defense = 39;
+    this.reference_defense = this.defense;
+    this.attack = 41;
+    this.reference_attack = this.attack;
+    this.magic = 35;
+    this.reference_magic = this.magic;
+    this.maxHealth = 119;
+    this.maxMana = 153;
+    this.attackExp = 7069;
+    this.defenseExp = 366;
+    this.magicExp = 4990;
+    this.attackExpGoal = 8675;
+    this.defenseExpGoal = 761;
+    this.magicExpGoal = 5783;
+    this.inventory.potion.red = 8;
+    this.inventory.potion.blue = 0;
+    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon','DestroyWeapon',
+    'BoostWeapon','BoostWeapon','DestroyArmor', 'Cripple', 'Cripple','Cripple','HalfLife', 'Invisibility','Invisibility','DrainMana'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1502,7 +1566,7 @@ var GAME = {
       console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
-      HERO.depth8();
+      HERO.depth10();
     }
 
     GAME.newGrid();

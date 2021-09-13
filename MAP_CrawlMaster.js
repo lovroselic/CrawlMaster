@@ -1227,6 +1227,154 @@ var MONSTER = {
     inventoryValue: 0,
     behaviourArguments: [Infinity, ["goto", "circler"], 6, ["shoot"]],
   },
+  RoomRedDevil: {
+    class: "RedDevil",
+    moveSpeed: 2.1,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 36,
+    defense: 30,
+    magic: 40,
+    health: 70,
+    xp: 400,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "MagicSkill",
+    inventoryValue: 0,
+    behaviourArguments: [9, ["goto", "circler"], 6, ["shoot"]],
+  },
+  RedDevil: {
+    class: "RedDevil",
+    moveSpeed: 2.1,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 36,
+    defense: 30,
+    magic: 40,
+    health: 70,
+    xp: 300,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "GoldCoin",
+    inventoryValue: 100,
+    behaviourArguments: [9, ["wanderer"], 6, ["shoot"]],
+  },
+  GreenPuffer: {
+    class: "GreenPuffer",
+    moveSpeed: 2.3,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 40,
+    defense: 32,
+    health: 60,
+    magic: 10,
+    xp: 140,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 4, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 100
+  },
+  Knight: {
+    class: "Knight",
+    moveSpeed: 2.2,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 44,
+    defense: 35,
+    magic: 0,
+    health: 60,
+    xp: 150,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    inventory: "GoldCoin",
+    inventoryValue: 100,
+    behaviourArguments: [6, ["wanderer"], 4, ["follower"]],
+  },
+  SmallSkelly: {
+    class: "SmallSkelly",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 42,
+    defense: 33,
+    magic: 0,
+    health: 55,
+    xp: 130,
+    attackSound: "MonsterAttack2",
+    hurtSound: "MonsterHurt",
+    behaviourArguments: [8, ["wanderer"], 6, ["hunt"]],
+    inventory: "GoldCoin",
+    inventoryValue: 70
+  },
+  RedBull_BossL9: {
+    class: "RedBull",
+    moveSpeed: 2.3,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 50,
+    defense: 40,
+    magic: 45,
+    health: 80,
+    xp: 1000,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "SwordSkill",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["goto", "circler"], 6, ["shoot"]],
+  },
+  RoomRedBull: {
+    class: "RedBull",
+    moveSpeed: 2.3,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 50,
+    defense: 40,
+    magic: 45,
+    health: 80,
+    xp: 500,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "SwordSkill",
+    inventoryValue: 0,
+    behaviourArguments: [4, ["goto", "circler"], 6, ["shoot"]],
+  },
+  RedBull: {
+    class: "RedBull",
+    moveSpeed: 2.3,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 50,
+    defense: 40,
+    magic: 45,
+    health: 80,
+    xp: 250,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 4,
+    caster: true,
+    shootDistance: 6,
+    stalkDistance: 4,
+    inventory: "RedPotion",
+    inventoryValue: 0,
+    behaviourArguments: [4, ["wanderer"], 6, ["shoot"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -1419,9 +1567,16 @@ var MAP = {
   9: {
     width: 37,
     height: 37,
-    floor: "RockWall",
-    ceil: "Pavement2",
-    wall: "BrickWall2"
+    floor: "TlakFloor3",
+    ceil: "ThatchFloor",
+    wall: "StoneFloor"
+  },
+  10: {
+    width: 37,
+    height: 37,
+    floor: "GreyDungeonFloor",
+    ceil: "RockWall",
+    wall: "StoneFloor3"
   }
 };
 var MOSTER_LAYOUT = {
@@ -1889,6 +2044,118 @@ var MOSTER_LAYOUT = {
     temple: {
       N: 1,
       monster: { SkeletonGeneral: 1 }
+    }
+  },
+  9: {
+    start: {
+      N: 1,
+      monster: { Hudobec: 1, ArmoredSkelly: 1 },
+      //monster: {SmallSkelly: 1}
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        Flamy: 1,
+        SmallDragon: 1,
+        Ninja: 1,
+        GreenPuffer: 0.5,
+        ArmoredSkelly: 1,
+        Knight: 0.1,
+        SmallSkelly: 0.8
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        SmallDragon: 1,
+        Flamy: 1,
+        Ninja: 1,
+        BlueDevil: 1,
+        GreenPuffer: 1,
+        ArmoredSkelly: 0.5,
+        Knight: 0.5,
+        SmallSkelly: 1
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { SmallDragon: 1.2, Ninja: 1.3, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.2, SmallSkelly: 1.3 },
+      boss: { RedBull_BossL9: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { Flamy: 1, SmallDragon: 1.1, Ninja: 1, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.1, SmallSkelly: 1.2 },
+      boss: { Knight: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { Flamy: 1, SmallDragon: 1, Ninja: 0.9, BlueDevil: 1, GreenPuffer: 1, Knight: 1, SmallSkelly: 1 },
+      boss: { SmallSkelly: 1 }
+    },
+    firstKey: {
+      N: 2,
+      monster: { Ninja: 0.8, GreenPuffer: 1, Knight: 0.4, SmallSkelly: 0.8 },
+      boss: { RoomBlueDevil: 1 }
+    },
+    temple: {
+      N: 1,
+      monster: { Hudobec: 1, ArmoredSkelly: 1, }
+    }
+  },
+  10: {
+    start: {
+      N: 1,
+      monster: { Hudobec: 1, ArmoredSkelly: 1 },
+      //monster: {SmallSkelly: 1}
+    },
+    corridor: {
+      N: 25,
+      monster: {
+        Flamy: 1,
+        SmallDragon: 1,
+        Ninja: 1,
+        GreenPuffer: 0.5,
+        ArmoredSkelly: 1,
+        Knight: 0.1,
+        SmallSkelly: 0.8
+      }
+    },
+    common: {
+      N: 2,
+      monster: {
+        SmallDragon: 1,
+        Flamy: 1,
+        Ninja: 1,
+        BlueDevil: 1,
+        GreenPuffer: 1,
+        ArmoredSkelly: 0.5,
+        Knight: 0.5,
+        SmallSkelly: 1
+      }
+    },
+    Gold: {
+      N: 2,
+      monster: { SmallDragon: 1.2, Ninja: 1.3, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.2, SmallSkelly: 1.3 },
+      boss: { RedBull_BossL9: 1 }
+    },
+    Silver: {
+      N: 2,
+      monster: { Flamy: 1, SmallDragon: 1.1, Ninja: 1, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.1, SmallSkelly: 1.2 },
+      boss: { Knight: 1 }
+    },
+    Red: {
+      N: 2,
+      monster: { Flamy: 1, SmallDragon: 1, Ninja: 0.9, BlueDevil: 1, GreenPuffer: 1, Knight: 1, SmallSkelly: 1 },
+      boss: { SmallSkelly: 1 }
+    },
+    firstKey: {
+      N: 2,
+      monster: { Ninja: 0.8, GreenPuffer: 1, Knight: 0.4, SmallSkelly: 0.8 },
+      boss: { RoomBlueDevil: 1 }
+    },
+    temple: {
+      N: 1,
+      monster: { Hudobec: 1, ArmoredSkelly: 1, }
     }
   },
 };
