@@ -246,10 +246,10 @@ Array.prototype.last = function () {
 Array.prototype.fromBack = function (idx) {
   return this[this.length - idx];
 };
-Array.prototype.unique = function(){
+Array.prototype.unique = function () {
   let set = new Set(this);
   return [...set];
-  };
+};
 
 String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.substr(1).toLowerCase();
@@ -285,8 +285,8 @@ class Grid {
   static toCenter(grid) {
     return new FP_Grid(grid.x + 0.5, grid.y + 0.5);
   }
-  add(vector) {
-    return new Grid(this.x + vector.x, this.y + vector.y);
+  add(vector, mul = 1) {
+    return new Grid(this.x + vector.x * mul, this.y + vector.y * mul);
   }
   isInAt(dirArray) {
     for (let q = 0; q < dirArray.length; q++) {

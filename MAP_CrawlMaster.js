@@ -2175,11 +2175,10 @@ var SPAWN = {
       ASSET[sprite] = new LiveSPRITE("1D", [SPRITE[sprite]]);
     }
   },
-  dungeonObjects(map, level, upperLimit) {
+  stairs(map, level, upperLimit){
     map.entranceVector = map.deadEndDirection(map.entrance);
     let upGrid = map.entrance.add(map.entranceVector.mirror());
     let stairsUp;
-    //if (level > 1)
     if (level > upperLimit) {
       stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.UP);
       map.GA.addStair(upGrid);
@@ -2198,6 +2197,30 @@ var SPAWN = {
     );
     map.GA.addStair(downGrid);
     DECAL.add(stairsDown);
+  },
+  dungeonObjects(map, level, upperLimit) {
+    this.stairs(map, level, upperLimit);
+    /*map.entranceVector = map.deadEndDirection(map.entrance);
+    let upGrid = map.entrance.add(map.entranceVector.mirror());
+    let stairsUp;
+    if (level > upperLimit) {
+      stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.UP);
+      map.GA.addStair(upGrid);
+    } else {
+      stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.GATE);
+    }
+
+    DECAL.add(stairsUp);
+
+    map.exitVector = map.deadEndDirection(map.exit);
+    let downGrid = map.exit.add(map.exitVector.mirror());
+    let stairsDown = new Staircase(
+      downGrid,
+      map.exitVector,
+      STAIRCASE_TYPE.DOWN
+    );
+    map.GA.addStair(downGrid);
+    DECAL.add(stairsDown);*/
 
     //keys and gates
     let gateCounter = 0;
@@ -2259,6 +2282,18 @@ var SPAWN = {
       map.keys.Silver,
       map.keys.Gold
     ];
+  },
+  arena(map, level, upperLimit){
+    console.log("spawning ARENA level...", level);
+    let t0 = performance.now();
+
+    //dungeon objects
+    this.stairs(map, level, upperLimit);
+
+    console.log(
+      `%cLevel ${GAME.level} spawned in ${performance.now() - t0} ms`,
+      "color: orange"
+    );
   },
   spawn(map, level, upperLimit) {
     console.log("spawning level...", level);

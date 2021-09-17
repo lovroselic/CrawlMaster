@@ -21,11 +21,11 @@ known bugs:
 
 
 class Room {
-  constructor(id, area) {
+  constructor(id, area, type = "common") {
     this.id = id;
     this.area = area;
     this.squareSize = area.w * area.h;
-    this.type = "common";
+    this.type = type;
     this.door = [];
     this.reservedCount = 0;
   }
@@ -124,7 +124,7 @@ class MasterDungeon {
     const conn = ["common", "temple"];
     for (let q = 0, RL = this.rooms.length; q < RL; q++) {
       let room = this.rooms[q];
-      if ( !conn.includes(room.type)) continue;
+      if (!conn.includes(room.type)) continue;
       let N;
 
       if (DUNGEON.SINGLE_DOOR) {
@@ -145,7 +145,6 @@ class MasterDungeon {
     }
     return dots;
   }
-  
   connectToGrid(room, N) {
     let connections = this.findConnections(room);
     let NoOfDoors = Math.min(N, connections.length);
@@ -448,7 +447,6 @@ class MasterDungeon {
       return true;
     } else return false;
   }
-
   isInRoom(grid, room) {
     if (
       grid.x >= room.area.x &&
@@ -1147,11 +1145,11 @@ class MasterDungeon {
     }
     return decalGrids;
   }
-  freeDeadEnds(N){
+  freeDeadEnds(N) {
     let DE = [];
-    for (let de of this.deadEnds){
+    for (let de of this.deadEnds) {
       if (DE.length >= N) return DE;
-      if (this.GA.notReserved(de)){
+      if (this.GA.notReserved(de)) {
         DE.push(de);
         this.GA.reserve(de);
       }
@@ -1167,6 +1165,61 @@ class Maze extends MasterDungeon {
     this.carveMaze(start);
     console.log(
       `%cMaze construction ${performance.now() - t0} ms.`,
+      DUNGEON.CSS
+    );
+  }
+}
+class Arena extends MasterDungeon {
+  constructor(sizeX, sizeY) {
+    let t0 = performance.now();
+    super(sizeX, sizeY);
+    this.type = "ARENA";
+
+    //
+    this.GA.massClear();
+    this.GA.border(2);
+
+    //set entrance, randomly on top
+    this.entrance = new Grid(RND(this.minX, this.maxX), this.minY);
+    this.GA.toStair(this.entrance);
+
+    //center room with downstairs
+    let center = new Grid((this.width / 2) | 0, (this.height / 2) | 0);
+    console.log("center", center);
+    let topLeft = center.add(new Vector(-ARENA.CENTRAL_ROOM_WALL_WIDTH, -ARENA.CENTRAL_ROOM_WALL_WIDTH));
+    console.log('topLeft', topLeft);
+    let W = 2 * ARENA.CENTRAL_ROOM_WALL_WIDTH + ARENA.CENTRAL_ROOM_SIZE;
+    this.GA.rect(topLeft.x, topLeft.y, W, W, 2);
+    console.log(topLeft.x, topLeft.y, W, W, 2);
+    let room = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
+    let RoomObj = new Room(this.rooms.length + 1, room, DUNGEON.LOCK_LEVELS[0]);
+
+
+    let centeringVector = new Vector((ARENA.CENTRAL_ROOM_SIZE / 2) | 0, 0);
+    console.log('centeringVector', centeringVector);
+    //exit
+    this.exit = center.add(UP).add(centeringVector);
+    this.GA.toStair(this.exit);
+
+    //corridor + door
+    //this.GA.toRoom(center);
+    for (let x = 0; x < ARENA.CENTRAL_ROOM_SIZE; x++) {
+      for (let y = 0; y < ARENA.CENTRAL_ROOM_SIZE; y++) {
+        this.GA.toRoom(center.add(new Vector(x, y)));
+      }
+    }
+
+    //
+    this.GA.toRoom(center.add(DOWN, ARENA.CENTRAL_ROOM_SIZE).add(centeringVector));
+    let door = center.add(DOWN, ARENA.CENTRAL_ROOM_SIZE + 1).add(centeringVector);
+    this.GA.toDoor(door);
+    RoomObj.door.push(door);
+    this.rooms.push(RoomObj);
+
+
+    this.density = this.measureDensity();
+    console.log(
+      `%cArena construction ${performance.now() - t0} ms.`,
       DUNGEON.CSS
     );
   }
@@ -1202,18 +1255,18 @@ class Dungeon extends MasterDungeon {
       this.GA.toStair(stairsUp);
       this.GA.addRoom(stairsUp);
       this.entrance = stairsUp;
-      
+
       let exitRoom = getRoom(this.rooms, "common");
       exitRoom.type = DUNGEON.LOCK_LEVELS[0];
       let stairsDown = this.randomUnusedEntry(exitRoom);
       this.GA.toStair(stairsDown);
       this.GA.addRoom(stairsDown);
       this.exit = stairsDown;
-      
+
       this.shrines = [];
       let temple = getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
       temple.type = 'temple';
-      for (let i = 0; i < DUNGEON.N_SHRINES; i++){
+      for (let i = 0; i < DUNGEON.N_SHRINES; i++) {
         let shrine = this.randomUnusedEntry(temple);
         this.shrines.push(shrine);
         this.GA.carveDot(shrine);
@@ -1516,8 +1569,17 @@ var MAZE = {
   }
 };
 var PACDUNGEON = {
-  create: function (sizeX, sizeY) {
+  create(sizeX, sizeY) {
     return new PacDungeon(sizeX, sizeY);
+  }
+};
+var ARENA = {
+  //CENTRAL_ROOM_SIZE: 1,
+  CENTRAL_ROOM_SIZE: 3,
+  CENTRAL_ROOM_WALL_WIDTH: 2,
+  create(sizeX, sizeY) {
+    var arena = new Arena(sizeX, sizeY);
+    return arena;
   }
 };
 var DUNGEON = {

@@ -20,7 +20,7 @@ shorts:
 ////////////////////////////////////////////////////
 
 var DEBUG = {
-  _2D_display: false,
+  _2D_display: true,
   FPS: true,
   SETTING: true,
   BUTTONS: true,
@@ -807,10 +807,11 @@ var INI = {
   SCROLL_RANGE: 3,
   CRIPPLE_SPEED: 0.5,
   BOOST_TIME: 59,
-  MM_reveal_radius: 4
+  MM_reveal_radius: 4,
+  FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.40.2.DEV",
+  VERSION: "0.41.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1567,6 +1568,7 @@ var GAME = {
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
       HERO.depth10();
+      //HERO.depth9();
     }
 
     GAME.newGrid();
@@ -1858,10 +1860,20 @@ var GAME = {
   },
   newDungeon(waypoint = "entrance") {
     GAME.setlevelTextures(GAME.level);
-    var randomDungeon = DUNGEON.create(
-      MAP[GAME.level].width,
-      MAP[GAME.level].height
-    );
+    let randomDungeon;
+    if (GAME.level < INI.FINAL_LEVEL){
+      randomDungeon = DUNGEON.create(
+        MAP[GAME.level].width,
+        MAP[GAME.level].height
+      );
+    } else if (GAME.level === INI.FINAL_LEVEL){
+      console.log("newDungeon: CREATE FINAL LEVEL");
+      randomDungeon = ARENA.create(
+        MAP[GAME.level].width,
+        MAP[GAME.level].height
+      );
+    }
+    
 
     MAP[GAME.level].DUNGEON = randomDungeon;
     console.log("creating random dungeon", MAP[GAME.level].DUNGEON);
@@ -1997,7 +2009,13 @@ var GAME = {
     FORM.set("WINDOW", "mouse");
   },
   configDungeon(waypoint = "entrance") {
-    SPAWN.spawn(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
+    if (MAP[GAME.level].DUNGEON.type === "DUNGEON"){
+      SPAWN.spawn(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
+    } else{
+      console.log("..spawning for arena");
+      SPAWN.arena(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
+    }
+    
     PLAYER.initialize(
       Grid.toCenter(MAP[GAME.level].DUNGEON[waypoint]),
       FP_Vector.toClass(MAP[GAME.level].DUNGEON[`${waypoint}Vector`])

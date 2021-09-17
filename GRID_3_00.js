@@ -240,7 +240,7 @@ var GRID = {
   },
   freedom(startGrid, endGrid, IA) {
     if (GRID.same(startGrid, endGrid)) return true;
-    let path = GRID.raycasting(startGrid, endGrid).slice(1); 
+    let path = GRID.raycasting(startGrid, endGrid).slice(1);
     let candidates = IA.unrollArray(path);
     if (candidates.size > 0) {
       return false;
@@ -553,6 +553,11 @@ class GridArray {
       this.map[i] |= bin;
     }
   }
+  massClear() {
+    for (let i = 0; i < this.map.length; i++) {
+      this.map[i] = 0;
+    }
+  }
   linkToEntity(entities) {
     for (const entity of entities) {
       entity.MoveState.gridArray = this;
@@ -670,6 +675,9 @@ class GridArray {
   notReserved(grid) {
     return !this.isReserved(grid);
   }
+  toEmpty(grid){
+    this.setValue(grid, MAPDICT.EMPTY);
+  }
   isEmpty(grid) {
     return this.check(grid, MAPDICT.WALL) === MAPDICT.EMPTY;
   }
@@ -688,19 +696,26 @@ class GridArray {
   clearFog(grid) {
     this.clear(grid, MAPDICT.FOG);
   }
-  border(set = MAPDICT.WALL) {
-    for (let x = 0; x < this.width; x++) {
-      let grid1 = new Grid(x, 0);
-      let grid2 = new Grid(x, this.height - 1);
-      this.set(grid1, set);
-      this.set(grid2, set);
+  rect(X, Y, W, H, width = 1, set = MAPDICT.WALL) {
+    for (let x = X; x < X + W; x++) {
+      for (let w = 0; w < width; w++) {
+        let grid1 = new Grid(x, Y + w);
+        let grid2 = new Grid(x, Y + H - 1 - w);
+        this.set(grid1, set);
+        this.set(grid2, set);
+      }
     }
-    for (let y = 0; y < this.height; y++) {
-      let grid1 = new Grid(0, y);
-      let grid2 = new Grid(this.width - 1, y);
-      this.set(grid1, set);
-      this.set(grid2, set);
+    for (let y = Y; y < Y + H; y++) {
+      for (let w = 0; w < width; w++) {
+        let grid1 = new Grid(X + w, y);
+        let grid2 = new Grid(X + W - 1 - w, y);
+        this.set(grid1, set);
+        this.set(grid2, set);
+      }
     }
+  }
+  border(width = 1, set = MAPDICT.WALL) {
+    this.rect(0, 0, this.width, this.height, width, set);
   }
   importGridMap(map) {
     /** map is maze or dungeon object */
@@ -1393,6 +1408,7 @@ var MINIMAP = {
             CTX.fillStyle = MINIMAP.LEGEND.DOOR;
             break;
           case MAPDICT.STAIR + MAPDICT.ROOM:
+          case MAPDICT.STAIR:
             CTX.fillStyle = MINIMAP.LEGEND.STAIR;
             break;
           case MAPDICT.SHRINE + MAPDICT.ROOM:
