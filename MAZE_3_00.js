@@ -1156,6 +1156,72 @@ class MasterDungeon {
     }
     return DE;
   }
+  /** from functions */
+  splitArea(area, iteration){
+    var root = new Tree(area);
+      if (area.w <= 2 * DUNGEON.PAD && area.h <= 2 * DUNGEON.PAD) return root;
+      if (area.w > DUNGEON.FREE || area.h > DUNGEON.FREE) {
+        if (iteration !== 0) {
+          var splitRoot = this.randomSplit(area);
+          root.left = this.splitArea(splitRoot[0], iteration - 1);
+          root.right = this.splitArea(splitRoot[1], iteration - 1);
+        }
+      }
+      return root;
+  }
+  /** */
+  randomSplit(area) {
+    if (area.w <= 2 * DUNGEON.PAD) {
+      return horizontal(area);
+    } else if (area.h <= 2 * DUNGEON.PAD) {
+      return vertical(area);
+    } else if (coinFlip()) {
+      return horizontal(area);
+    } else return vertical(area);
+
+    function horizontal(area) {
+      let r1, r2;
+      r1 = new Area(
+        area.x,
+        area.y,
+        area.w,
+        RND(DUNGEON.PAD, area.h - DUNGEON.PAD)
+      );
+      r2 = new Area(area.x, area.y + r1.h, area.w, area.h - r1.h);
+      return [r1, r2];
+    }
+    function vertical(area) {
+      let r1, r2;
+      r1 = new Area(
+        area.x,
+        area.y,
+        RND(DUNGEON.PAD, area.w - DUNGEON.PAD),
+        area.h
+      );
+      r2 = new Area(area.x + r1.w, area.y, area.w - r1.w, area.h);
+      return [r1, r2];
+    }
+  }
+  /** */
+  getRoom(rooms, type, size = 4) {
+    let sieveSize = [];
+    let sieveType = [];
+    for (let q = 0; q < rooms.length; q++) {
+      if (rooms[q].type === type) {
+        sieveType.push(q);
+        if (rooms[q].squareSize >= size) {
+          sieveSize.push(q);
+        }
+      }
+    }
+    if (sieveType.length === 0) return null;
+    if (sieveSize.length > 0) {
+      return rooms[sieveSize.chooseRandom()];
+    } else {
+      return rooms[sieveType.chooseRandom()];
+    }
+  }
+
 }
 class Maze extends MasterDungeon {
   constructor(sizeX, sizeY, start) {
@@ -1191,10 +1257,8 @@ class Arena extends MasterDungeon {
     let W = 2 * ARENA.CENTRAL_ROOM_WALL_WIDTH + ARENA.CENTRAL_ROOM_SIZE;
     this.GA.rect(topLeft.x, topLeft.y, W, W, 2);
     console.log(topLeft.x, topLeft.y, W, W, 2);
-    let room = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
-    let RoomObj = new Room(this.rooms.length + 1, room, DUNGEON.LOCK_LEVELS[0]);
-
-
+    let roomArea = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
+    let RoomObj = new Room(this.rooms.length + 1, roomArea, DUNGEON.LOCK_LEVELS[0]);
     let centeringVector = new Vector((ARENA.CENTRAL_ROOM_SIZE / 2) | 0, 0);
     console.log('centeringVector', centeringVector);
     //exit
@@ -1238,7 +1302,7 @@ class Dungeon extends MasterDungeon {
         this.maxX - this.minX + 1,
         this.maxY - this.minY + 1
       );
-      this.areaTree = splitArea(this.mainArea, DUNGEON.ITERATIONS);
+      this.areaTree = this.splitArea(this.mainArea, DUNGEON.ITERATIONS);
       this.areas = this.areaTree.getLeafs();
       this.rooms = this.makeRooms();
     }
@@ -1246,7 +1310,7 @@ class Dungeon extends MasterDungeon {
     if (this.rooms[0].squareSize < DUNGEON.BIG_ROOM) {
       DUNGEON.BIG_ROOM = this.rooms[0].squareSize;
     }
-    let startingRoom = getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
+    let startingRoom = this.getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
     startingRoom.type = "start";
 
     //staircase up, down,
@@ -1256,7 +1320,7 @@ class Dungeon extends MasterDungeon {
       this.GA.addRoom(stairsUp);
       this.entrance = stairsUp;
 
-      let exitRoom = getRoom(this.rooms, "common");
+      let exitRoom = this.getRoom(this.rooms, "common");
       exitRoom.type = DUNGEON.LOCK_LEVELS[0];
       let stairsDown = this.randomUnusedEntry(exitRoom);
       this.GA.toStair(stairsDown);
@@ -1264,7 +1328,7 @@ class Dungeon extends MasterDungeon {
       this.exit = stairsDown;
 
       this.shrines = [];
-      let temple = getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
+      let temple = this.getRoom(this.rooms, "common", DUNGEON.BIG_ROOM);
       temple.type = 'temple';
       for (let i = 0; i < DUNGEON.N_SHRINES; i++) {
         let shrine = this.randomUnusedEntry(temple);
@@ -1296,7 +1360,7 @@ class Dungeon extends MasterDungeon {
       for (let r = 0; r < DUNGEON.LOCK_LEVEL; r++) {
         let room;
         if (r > 0) {
-          room = getRoom(this.rooms, "common");
+          room = this.getRoom(this.rooms, "common");
           room.type = DUNGEON.LOCK_LEVELS[r];
         } else {
           room = this.findRoom(DUNGEON.LOCK_LEVELS[0]);
@@ -1306,7 +1370,7 @@ class Dungeon extends MasterDungeon {
       }
 
       //keys
-      let firstKeyRoom = getRoom(this.rooms, "common");
+      let firstKeyRoom = this.getRoom(this.rooms, "common");
       if (firstKeyRoom === undefined || firstKeyRoom === null) {
         throw "firstKeyRoom is undefined. need more rooms!";
       }
@@ -1339,69 +1403,6 @@ class Dungeon extends MasterDungeon {
       DUNGEON.CSS
     );
     return;
-
-    function splitArea(area, iteration) {
-      var root = new Tree(area);
-      if (area.w <= 2 * DUNGEON.PAD && area.h <= 2 * DUNGEON.PAD) return root;
-      if (area.w > DUNGEON.FREE || area.h > DUNGEON.FREE) {
-        if (iteration !== 0) {
-          var splitRoot = randomSplit(area);
-          root.left = splitArea(splitRoot[0], iteration - 1);
-          root.right = splitArea(splitRoot[1], iteration - 1);
-        }
-      }
-      return root;
-    }
-    function randomSplit(area) {
-      if (area.w <= 2 * DUNGEON.PAD) {
-        return horizontal(area);
-      } else if (area.h <= 2 * DUNGEON.PAD) {
-        return vertical(area);
-      } else if (coinFlip()) {
-        return horizontal(area);
-      } else return vertical(area);
-
-      function horizontal(area) {
-        let r1, r2;
-        r1 = new Area(
-          area.x,
-          area.y,
-          area.w,
-          RND(DUNGEON.PAD, area.h - DUNGEON.PAD)
-        );
-        r2 = new Area(area.x, area.y + r1.h, area.w, area.h - r1.h);
-        return [r1, r2];
-      }
-      function vertical(area) {
-        let r1, r2;
-        r1 = new Area(
-          area.x,
-          area.y,
-          RND(DUNGEON.PAD, area.w - DUNGEON.PAD),
-          area.h
-        );
-        r2 = new Area(area.x + r1.w, area.y, area.w - r1.w, area.h);
-        return [r1, r2];
-      }
-    }
-    function getRoom(rooms, type, size = 4) {
-      let sieveSize = [];
-      let sieveType = [];
-      for (let q = 0; q < rooms.length; q++) {
-        if (rooms[q].type === "common") {
-          sieveType.push(q);
-          if (rooms[q].squareSize >= size) {
-            sieveSize.push(q);
-          }
-        }
-      }
-      if (sieveType.length === 0) return null;
-      if (sieveSize.length > 0) {
-        return rooms[sieveSize.chooseRandom()];
-      } else {
-        return rooms[sieveType.chooseRandom()];
-      }
-    }
   }
 }
 class PacDungeon extends MasterDungeon {
