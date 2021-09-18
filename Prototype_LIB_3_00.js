@@ -36,7 +36,7 @@ changelog:
     else return -1;
   }
   function probable(x) {
-    let flip = RND(0, 99);
+    let flip = RND(0, 100);
     if (flip <= x) return true;
     return false;
   }

@@ -811,7 +811,7 @@ var INI = {
   FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.41.1.DEV",
+  VERSION: "0.41.4.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",

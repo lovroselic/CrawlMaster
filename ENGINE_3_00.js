@@ -458,6 +458,7 @@ var ENGINE = {
     var h2 = parseInt(actor2.height / 2, 10);
 
     if (X >= w1 + w2 || Y >= h1 + h2) return false;
+
     if (ENGINE.pixelPerfectCollision) {
       return ENGINE.pixPerfectCollision(actor1, actor2);
     } else return true;
@@ -2778,6 +2779,9 @@ class Area {
     this.w = w;
     this.h = h;
   }
+  gridWithin(grid){
+    return this.within(grid.x, grid.y);
+  }
   within(X, Y) {
     if (
       X >= this.x &&
@@ -2787,6 +2791,13 @@ class Area {
     ) {
       return true;
     } else return false;
+  }
+  overlap(area){
+    if (this.x > area.x + area.w) return false;
+    if (this.x + this.w < area.x) return false;
+    if (this.y > area.y + area.h) return false;
+    if (this.y + this.h < area.y) return false;
+    return true;
   }
 }
 class Button {

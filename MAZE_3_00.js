@@ -1156,53 +1156,50 @@ class MasterDungeon {
     }
     return DE;
   }
-  /** from functions */
-  splitArea(area, iteration){
+  splitArea(area, iteration, parent) {
     var root = new Tree(area);
-      if (area.w <= 2 * DUNGEON.PAD && area.h <= 2 * DUNGEON.PAD) return root;
-      if (area.w > DUNGEON.FREE || area.h > DUNGEON.FREE) {
-        if (iteration !== 0) {
-          var splitRoot = this.randomSplit(area);
-          root.left = this.splitArea(splitRoot[0], iteration - 1);
-          root.right = this.splitArea(splitRoot[1], iteration - 1);
-        }
+    if (area.w <= 2 * parent.PAD && area.h <= 2 * parent.PAD) return root;
+    if (area.w > parent.FREE || area.h > parent.FREE) {
+      if (iteration !== 0) {
+        var splitRoot = this.randomSplit(area, parent);
+        root.left = this.splitArea(splitRoot[0], iteration - 1, parent);
+        root.right = this.splitArea(splitRoot[1], iteration - 1, parent);
       }
-      return root;
+    }
+    return root;
   }
-  /** */
-  randomSplit(area) {
-    if (area.w <= 2 * DUNGEON.PAD) {
-      return horizontal(area);
-    } else if (area.h <= 2 * DUNGEON.PAD) {
-      return vertical(area);
+  randomSplit(area, parent) {
+    if (area.w <= 2 * parent.PAD) {
+      return horizontal(area, parent);
+    } else if (area.h <= 2 * parent.PAD) {
+      return vertical(area, parent);
     } else if (coinFlip()) {
-      return horizontal(area);
-    } else return vertical(area);
+      return horizontal(area, parent);
+    } else return vertical(area, parent);
 
-    function horizontal(area) {
+    function horizontal(area, parent) {
       let r1, r2;
       r1 = new Area(
         area.x,
         area.y,
         area.w,
-        RND(DUNGEON.PAD, area.h - DUNGEON.PAD)
+        RND(parent.PAD, area.h - parent.PAD)
       );
       r2 = new Area(area.x, area.y + r1.h, area.w, area.h - r1.h);
       return [r1, r2];
     }
-    function vertical(area) {
+    function vertical(area, parent) {
       let r1, r2;
       r1 = new Area(
         area.x,
         area.y,
-        RND(DUNGEON.PAD, area.w - DUNGEON.PAD),
+        RND(parent.PAD, area.w - parent.PAD),
         area.h
       );
       r2 = new Area(area.x + r1.w, area.y, area.w - r1.w, area.h);
       return [r1, r2];
     }
   }
-  /** */
   getRoom(rooms, type, size = 4) {
     let sieveSize = [];
     let sieveType = [];
@@ -1221,7 +1218,6 @@ class MasterDungeon {
       return rooms[sieveType.chooseRandom()];
     }
   }
-
 }
 class Maze extends MasterDungeon {
   constructor(sizeX, sizeY, start) {
@@ -1240,8 +1236,6 @@ class Arena extends MasterDungeon {
     let t0 = performance.now();
     super(sizeX, sizeY);
     this.type = "ARENA";
-
-    //
     this.GA.massClear();
     this.GA.border(2);
 
@@ -1251,41 +1245,101 @@ class Arena extends MasterDungeon {
 
     //center room with downstairs
     let center = new Grid((this.width / 2) | 0, (this.height / 2) | 0);
-    console.log("center", center);
     let topLeft = center.add(new Vector(-ARENA.CENTRAL_ROOM_WALL_WIDTH, -ARENA.CENTRAL_ROOM_WALL_WIDTH));
-    console.log('topLeft', topLeft);
     let W = 2 * ARENA.CENTRAL_ROOM_WALL_WIDTH + ARENA.CENTRAL_ROOM_SIZE;
     this.GA.rect(topLeft.x, topLeft.y, W, W, 2);
-    console.log(topLeft.x, topLeft.y, W, W, 2);
     let roomArea = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
+    let ignoreArea = new Area(topLeft.x, topLeft.y, W, W);
     let RoomObj = new Room(this.rooms.length + 1, roomArea, DUNGEON.LOCK_LEVELS[0]);
     let centeringVector = new Vector((ARENA.CENTRAL_ROOM_SIZE / 2) | 0, 0);
-    console.log('centeringVector', centeringVector);
     //exit
     this.exit = center.add(UP).add(centeringVector);
     this.GA.toStair(this.exit);
 
     //corridor + door
-    //this.GA.toRoom(center);
     for (let x = 0; x < ARENA.CENTRAL_ROOM_SIZE; x++) {
       for (let y = 0; y < ARENA.CENTRAL_ROOM_SIZE; y++) {
         this.GA.toRoom(center.add(new Vector(x, y)));
       }
     }
-
-    //
     this.GA.toRoom(center.add(DOWN, ARENA.CENTRAL_ROOM_SIZE).add(centeringVector));
     let door = center.add(DOWN, ARENA.CENTRAL_ROOM_SIZE + 1).add(centeringVector);
     this.GA.toDoor(door);
     RoomObj.door.push(door);
     this.rooms.push(RoomObj);
 
-
+    //areas
+    this.mainArea = new Area(this.minX + 3, this.minY + 3, this.maxX - this.minX - 6, this.maxY - this.minY - 6);
+    this.areaTree = this.splitArea(this.mainArea, ARENA.ITERATIONS, ARENA);
+    this.areas = this.areaTree.getLeafs();
+    for (let i = this.areas.length - 1; i >= 0; i--) {
+      if (this.areas[i].overlap(ignoreArea)) {
+        this.areas.splice(i, 1);
+      }
+    }
+    this.createChunks();
     this.density = this.measureDensity();
+
+    delete this.areas;
+    delete this.areaTree;
+
     console.log(
       `%cArena construction ${performance.now() - t0} ms.`,
       DUNGEON.CSS
     );
+  }
+  createChunks() {
+    this.downSizeAreas();
+    for (let area of this.areas) {
+      this.makeChunk(area);
+    }
+  }
+  makeChunk(area) {
+    let maxSurface = area.h * area.w;
+    let surface = 0;
+    let cursor = new Grid(RND(area.x, area.x + area.w - 1), RND(area.y, area.y + area.h - 1));
+    do {
+      this.GA.toWall(cursor);
+      surface++;
+      let completeness = surface/maxSurface;
+      if (completeness / 2 > Math.random()) break;
+      let candidates = [];
+      for (let dir of ENGINE.directions) {
+        candidates.push(cursor.add(dir));
+      }
+      candidates = candidates.filter(area.gridWithin, area);
+      candidates = candidates.filter(this.GA.isEmpty, this.GA);
+      if (candidates.length === 0) break;
+      cursor = candidates.chooseRandom();
+    } while (true);
+  }
+  downSizeAreas() {
+    for (let area of this.areas) {
+      let Wsize = RND(ARENA.MIN_SIZE, ARENA.MAX_SIZE);
+      let Hsize = RND(ARENA.MIN_SIZE, ARENA.MAX_SIZE);
+      area.x++;
+      area.y++;
+      area.h--;
+      area.w--;
+      while (area.h > Hsize) {
+        let toss = coinFlip();
+        if (toss) {
+          area.y++;
+          area.h--;
+        } else {
+          area.h--;
+        }
+      }
+      while (area.w > Wsize) {
+        let toss = coinFlip();
+        if (toss) {
+          area.x++;
+          area.w--;
+        } else {
+          area.w--;
+        }
+      }
+    }
   }
 }
 class Dungeon extends MasterDungeon {
@@ -1302,7 +1356,7 @@ class Dungeon extends MasterDungeon {
         this.maxX - this.minX + 1,
         this.maxY - this.minY + 1
       );
-      this.areaTree = this.splitArea(this.mainArea, DUNGEON.ITERATIONS);
+      this.areaTree = this.splitArea(this.mainArea, DUNGEON.ITERATIONS, DUNGEON);
       this.areas = this.areaTree.getLeafs();
       this.rooms = this.makeRooms();
     }
@@ -1575,10 +1629,21 @@ var PACDUNGEON = {
   }
 };
 var ARENA = {
-  //CENTRAL_ROOM_SIZE: 1,
-  CENTRAL_ROOM_SIZE: 3,
+  CENTRAL_ROOM_SIZE: 1,
+  //CENTRAL_ROOM_SIZE: 3,
   CENTRAL_ROOM_WALL_WIDTH: 2,
+  MIN_ROOM: 1,
+  MAX_ROOM: 3,
+  MIN_PADDING: 2,
+  PAD: null,
+  FREE: null,
+  ITERATIONS: 6,
   create(sizeX, sizeY) {
+    this.PAD = this.MIN_ROOM + (1.5 * this.MIN_PADDING) | 0; //minimum area
+    //this.PAD = this.MIN_ROOM + (1.0 * this.MIN_PADDING) | 0; //minimum area
+    this.FREE = this.MAX_ROOM + 2 * this.MIN_PADDING; //not carving further
+    this.MIN_SIZE = this.MIN_ROOM; //compatibility
+    this.MAX_SIZE = this.MAX_ROOM; //compatibility
     var arena = new Arena(sizeX, sizeY);
     return arena;
   }
@@ -1613,10 +1678,10 @@ var DUNGEON = {
     this.LOCK_LEVEL = lockLevel;
   },
   create(sizeX, sizeY) {
-    DUNGEON.PAD = DUNGEON.MIN_ROOM + 2 * DUNGEON.MIN_PADDING; //minimum area
-    DUNGEON.FREE = DUNGEON.MAX_ROOM + 4 * DUNGEON.MIN_PADDING; //not carving further
+    this.PAD = this.MIN_ROOM + 2 * this.MIN_PADDING; //minimum area
+    this.FREE = this.MAX_ROOM + 4 * this.MIN_PADDING; //not carving further
     //tunneling safeguard
-    if (DUNGEON.MIN_ROOM < 3) DUNGEON.MIN_ROOM = 3;
+    if (this.MIN_ROOM < 3) this.MIN_ROOM = 3;
     var dungeon = new Dungeon(sizeX, sizeY);
     //if (DUNGEON.CONFIGURE) dungeon.configure();
     return dungeon;
