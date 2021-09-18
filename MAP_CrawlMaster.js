@@ -2175,7 +2175,7 @@ var SPAWN = {
       ASSET[sprite] = new LiveSPRITE("1D", [SPRITE[sprite]]);
     }
   },
-  stairs(map, level, upperLimit){
+  stairs(map, level, upperLimit) {
     map.entranceVector = map.deadEndDirection(map.entrance);
     let upGrid = map.entrance.add(map.entranceVector.mirror());
     let stairsUp;
@@ -2198,29 +2198,31 @@ var SPAWN = {
     map.GA.addStair(downGrid);
     DECAL.add(stairsDown);
   },
+  shrines(map) {
+    //setup shrines
+    const SHRINES = [
+      SHRINE_TYPE.AttackShrine,
+      SHRINE_TYPE.DefenseShrine,
+      SHRINE_TYPE.MagicShrine
+    ];
+    for (const [index, shrine] of map.shrines.entries()) {
+      let DE_Dir = map.deadEndDirection(shrine);
+      let wallGrid = shrine.add(DE_Dir.mirror());
+      map.GA.reserve(wallGrid);
+      let shr = new Shrine(wallGrid, DE_Dir, SHRINES[index]);
+      DECAL.add(shr);
+    }
+  },
+  mapPointers(map){
+    map.map_pointers = [
+      map.shrines.chooseRandom(),
+      map.keys.Red,
+      map.keys.Silver,
+      map.keys.Gold
+    ];
+  },
   dungeonObjects(map, level, upperLimit) {
     this.stairs(map, level, upperLimit);
-    /*map.entranceVector = map.deadEndDirection(map.entrance);
-    let upGrid = map.entrance.add(map.entranceVector.mirror());
-    let stairsUp;
-    if (level > upperLimit) {
-      stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.UP);
-      map.GA.addStair(upGrid);
-    } else {
-      stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.GATE);
-    }
-
-    DECAL.add(stairsUp);
-
-    map.exitVector = map.deadEndDirection(map.exit);
-    let downGrid = map.exit.add(map.exitVector.mirror());
-    let stairsDown = new Staircase(
-      downGrid,
-      map.exitVector,
-      STAIRCASE_TYPE.DOWN
-    );
-    map.GA.addStair(downGrid);
-    DECAL.add(stairsDown);*/
 
     //keys and gates
     let gateCounter = 0;
@@ -2261,6 +2263,8 @@ var SPAWN = {
       }
     }
 
+    this.shrines(map);
+    /*
     //setup shrines
     const SHRINES = [
       SHRINE_TYPE.AttackShrine,
@@ -2274,7 +2278,10 @@ var SPAWN = {
       let shr = new Shrine(wallGrid, DE_Dir, SHRINES[index]);
       DECAL.add(shr);
     }
+    */
 
+    this.mapPointers(map);
+    /*
     //map pointers
     map.map_pointers = [
       map.shrines.chooseRandom(),
@@ -2282,14 +2289,35 @@ var SPAWN = {
       map.keys.Silver,
       map.keys.Gold
     ];
+    */
   },
-  arena(map, level, upperLimit){
+  arena(map, level, upperLimit) {
     console.log("spawning ARENA level...", level);
     let t0 = performance.now();
 
     //dungeon objects
     this.stairs(map, level, upperLimit);
 
+    //lock golden gate
+    let gateCounter = 0;
+    for (let gate in map.lockedRooms) {
+      gateCounter++;
+      let gateName = `${gate}Gate`;
+      let door = map.lockedRooms[gate].door[0];
+      for (const dir of ENGINE.directions) {
+        let grid = door.add(dir);
+        if (map.GA.isEmpty(grid)) {
+          let gateInstance = new Gate(door, dir, GATE_TYPE[gateName]);
+          gateInstance.masterId = gateCounter;
+          DECAL.add(gateInstance);
+        }
+      }
+    }
+
+    //shrines
+    this.shrines(map);
+
+    map.map_pointers = [];
     console.log(
       `%cLevel ${GAME.level} spawned in ${performance.now() - t0} ms`,
       "color: orange"

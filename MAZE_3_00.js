@@ -19,7 +19,6 @@ known bugs:
 
 */
 
-
 class Room {
   constructor(id, area, type = "common") {
     this.id = id;
@@ -1240,7 +1239,7 @@ class Arena extends MasterDungeon {
     this.GA.border(2);
 
     //set entrance, randomly on top
-    this.entrance = new Grid(RND(this.minX, this.maxX), this.minY);
+    this.entrance = new Grid(RND(this.minX + 2, this.maxX - 2), this.minY);
     this.GA.toStair(this.entrance);
 
     //center room with downstairs
@@ -1267,6 +1266,7 @@ class Arena extends MasterDungeon {
     this.GA.toDoor(door);
     RoomObj.door.push(door);
     this.rooms.push(RoomObj);
+    this.lockedRooms[DUNGEON.LOCK_LEVELS[0]] = RoomObj;
 
     //areas
     this.mainArea = new Area(this.minX + 3, this.minY + 3, this.maxX - this.minX - 6, this.maxY - this.minY - 6);
@@ -1279,6 +1279,23 @@ class Arena extends MasterDungeon {
     }
     this.createChunks();
     this.density = this.measureDensity();
+
+    //locking the doors
+    for (let lockedDoor in this.lockedRooms) {
+      this.GA.closeDoor(this.lockedRooms[lockedDoor].door[0]);
+    }
+
+    //shrines
+    this.shrines = [];
+    let shrinePool = [];
+    shrinePool.push(new Grid(RND(this.minX + 2, this.maxX - 2), this.maxY));
+    shrinePool.push(new Grid(this.minX, RND(this.minY + 2, this.maxY - 2)));
+    shrinePool.push(new Grid(this.maxX, RND(this.minY + 2, this.maxY - 2)));
+    for (let shrine of shrinePool) {
+      this.shrines.push(shrine);
+      this.GA.carveDot(shrine);
+      this.GA.addShrine(shrine);
+    }
 
     delete this.areas;
     delete this.areaTree;
@@ -1301,7 +1318,7 @@ class Arena extends MasterDungeon {
     do {
       this.GA.toWall(cursor);
       surface++;
-      let completeness = surface/maxSurface;
+      let completeness = surface / maxSurface;
       if (completeness / 2 > Math.random()) break;
       let candidates = [];
       for (let dir of ENGINE.directions) {
