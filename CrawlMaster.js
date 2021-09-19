@@ -16,7 +16,7 @@ known bugs:
 ////////////////////////////////////////////////////
 
 var DEBUG = {
-  _2D_display: true,
+  _2D_display: false,
   FPS: true,
   SETTING: true,
   BUTTONS: true,
@@ -808,7 +808,7 @@ var INI = {
   FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.45.0.DEV",
+  VERSION: "0.45.1.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",

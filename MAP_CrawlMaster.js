@@ -1379,20 +1379,20 @@ var MONSTER = {
     SPRITE_FPS: 30,
     final_boss: true,
     base: 1,
-    attack: 10,
-    defense: 5,
-    magic: 10,
-    health: 25,
-    xp: 100,
-    attackSound: "MonsterAttack2",
-    hurtSound: "DeathPain1",
-    mana: 15,
+    attack: 100,
+    defense: 80,
+    magic: 100,
+    health: 100,
+    xp: 5000,
+    attackSound: "MonsterAttack1",
+    hurtSound: "PainSqueek",
+    mana: 10,
     caster: true,
     shootDistance: 8,
     stalkDistance: 6,
     inventory: "GoldKey",
     inventoryValue: 0,
-    behaviourArguments: [Infinity, ["wanderer"], 5, ["shoot"]],
+    behaviourArguments: [Infinity, ["wanderer"], 8, ["shoot"]],
   },
   Death1: {
     class: "Death1",
@@ -2155,7 +2155,7 @@ var MOSTER_LAYOUT = {
   },
   10: {
     corridor: {
-      N: 10,
+      N: 15,
       monster: {
         RedBull: 1,
         Knight: 1,
@@ -2274,9 +2274,7 @@ var SPAWN = {
     this.mapPointers(map);
   },
   arena(map, level, upperLimit) {
-    console.log("spawning ARENA level...", level);
     let t0 = performance.now();
-
     //dungeon objects
     this.stairs(map, level, upperLimit);
 
@@ -2308,8 +2306,6 @@ var SPAWN = {
     }
     this.arenaItems(map);
     this.arena_monsters(map, level);
-
-    //
     map.map_pointers = [...map.shrines];
     console.log(
       `%cLevel ${GAME.level} spawned in ${performance.now() - t0} ms`,
@@ -2330,7 +2326,6 @@ var SPAWN = {
     );
   },
   arena_monsters(map, level) {
-    console.log("....spawning arena monsters");
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
     for (let grid of corrGrids) {
       let type = weightedRnd(MOSTER_LAYOUT[level].corridor.monster);
@@ -2346,7 +2341,6 @@ var SPAWN = {
     let N = Object.keys(boss).length;
     corrGrids = map.poolOfCorridorGrids(N);
     for (let [index, monster] of Object.keys(boss).entries()) {
-      console.log("spawning", monster);
       let grid = corrGrids[index];
       let enemy = new Monster(
         grid,
