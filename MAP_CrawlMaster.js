@@ -404,8 +404,6 @@ var MONSTER = {
     attackSound: "MonsterAttack2",
     hurtSound: "MonsterHurt",
     behaviourArguments: [],
-    //inventory: "ShieldSkill",
-    //inventory: "MagicSkill",
     inventory: "SwordSkill",
     inventoryValue: 0
   },
@@ -1373,7 +1371,60 @@ var MONSTER = {
     stalkDistance: 4,
     inventory: "RedPotion",
     inventoryValue: 0,
-    behaviourArguments: [4, ["wanderer"], 6, ["shoot"]],
+    behaviourArguments: [10, ["wanderer"], 6, ["shoot"]],
+  },
+  Dragon: {
+    class: "BlackDragon",
+    moveSpeed: 3.0,
+    SPRITE_FPS: 30,
+    final_boss: true,
+    base: 1,
+    attack: 10,
+    defense: 5,
+    magic: 10,
+    health: 25,
+    xp: 100,
+    attackSound: "MonsterAttack2",
+    hurtSound: "DeathPain1",
+    mana: 15,
+    caster: true,
+    shootDistance: 8,
+    stalkDistance: 6,
+    inventory: "GoldKey",
+    inventoryValue: 0,
+    behaviourArguments: [Infinity, ["wanderer"], 5, ["shoot"]],
+  },
+  Death1: {
+    class: "Death1",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 48,
+    defense: 40,
+    health: 50,
+    magic: 10,
+    xp: 250,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 4, ["follower"]],
+    inventory: "GoldCoin",
+    inventoryValue: 250
+  },
+  Death2: {
+    class: "Death2",
+    moveSpeed: 2.5,
+    SPRITE_FPS: 25,
+    base: 1,
+    attack: 46,
+    defense: 38,
+    health: 50,
+    magic: 10,
+    xp: 200,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt2",
+    behaviourArguments: [8, ["wanderer"], 4, ["advancer"]],
+    inventory: "GoldCoin",
+    inventoryValue: 200
   },
 };
 var MISSILE_TYPE = {
@@ -2103,59 +2154,17 @@ var MOSTER_LAYOUT = {
     }
   },
   10: {
-    start: {
-      N: 1,
-      monster: { Hudobec: 1, ArmoredSkelly: 1 },
-      //monster: {SmallSkelly: 1}
-    },
     corridor: {
-      N: 25,
+      N: 10,
       monster: {
-        Flamy: 1,
-        SmallDragon: 1,
-        Ninja: 1,
-        GreenPuffer: 0.5,
-        ArmoredSkelly: 1,
-        Knight: 0.1,
-        SmallSkelly: 0.8
+        RedBull: 1,
+        Knight: 1,
+        Death1: 1,
+        Death2: 1,
       }
     },
-    common: {
-      N: 2,
-      monster: {
-        SmallDragon: 1,
-        Flamy: 1,
-        Ninja: 1,
-        BlueDevil: 1,
-        GreenPuffer: 1,
-        ArmoredSkelly: 0.5,
-        Knight: 0.5,
-        SmallSkelly: 1
-      }
-    },
-    Gold: {
-      N: 2,
-      monster: { SmallDragon: 1.2, Ninja: 1.3, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.2, SmallSkelly: 1.3 },
-      boss: { RedBull_BossL9: 1 }
-    },
-    Silver: {
-      N: 2,
-      monster: { Flamy: 1, SmallDragon: 1.1, Ninja: 1, BlueDevil: 1, RedDevil: 1, GreenPuffer: 1, Knight: 1.1, SmallSkelly: 1.2 },
-      boss: { Knight: 1 }
-    },
-    Red: {
-      N: 2,
-      monster: { Flamy: 1, SmallDragon: 1, Ninja: 0.9, BlueDevil: 1, GreenPuffer: 1, Knight: 1, SmallSkelly: 1 },
-      boss: { SmallSkelly: 1 }
-    },
-    firstKey: {
-      N: 2,
-      monster: { Ninja: 0.8, GreenPuffer: 1, Knight: 0.4, SmallSkelly: 0.8 },
-      boss: { RoomBlueDevil: 1 }
-    },
-    temple: {
-      N: 1,
-      monster: { Hudobec: 1, ArmoredSkelly: 1, }
+    boss: {
+      Dragon: 1,
     }
   },
 };
@@ -2298,7 +2307,7 @@ var SPAWN = {
       DECAL.add(new Decal(grid.grid, grid.dir, DECAL_TYPE[weightedRnd(type)]));
     }
     this.arenaItems(map);
-    this.arena_monsters(map,level);
+    this.arena_monsters(map, level);
 
     //
     map.map_pointers = [...map.shrines];
@@ -2320,8 +2329,35 @@ var SPAWN = {
       "color: orange"
     );
   },
-  arena_monsters(map, level){
+  arena_monsters(map, level) {
     console.log("....spawning arena monsters");
+    let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
+    for (let grid of corrGrids) {
+      let type = weightedRnd(MOSTER_LAYOUT[level].corridor.monster);
+      let enemy = new Monster(
+        grid,
+        map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
+        MONSTER[type]
+      );
+      ENEMY.add(enemy);
+    }
+    //boss
+    let boss = MOSTER_LAYOUT[level].boss;
+    let N = Object.keys(boss).length;
+    corrGrids = map.poolOfCorridorGrids(N);
+    for (let [index, monster] of Object.keys(boss).entries()) {
+      console.log("spawning", monster);
+      let grid = corrGrids[index];
+      let enemy = new Monster(
+        grid,
+        map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
+        MONSTER[monster]
+      );
+      ENEMY.add(enemy);
+    }
+
+    //analysis
+    if (DEBUG.VERBOSE) ENEMY.analyze();
   },
   monsters(map, level) {
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
@@ -2446,7 +2482,7 @@ var SPAWN = {
       COMMON_ITEM_TYPE.SwordSkill
     ];
     corridorPool = map.poolOfCorridorGrids(total);
-    for (let i = 0; i < total; i++){
+    for (let i = 0; i < total; i++) {
       let item = new CommonItem(corridorPool[i], skillsAndStats[i], 0);
       FLOOR_OBJECT.add(item);
     }

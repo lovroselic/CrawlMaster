@@ -474,7 +474,6 @@ var LoadPacks = [
   { srcName: "Knight64.png", count: 4, name: "Knight" },
   { srcName: "SmallSkelly.png", count: 4, name: "SmallSkelly" },
   { srcName: "RedBull.png", count: 3, name: "RedBull" },
-  
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
   { srcName: "Death2_pack.png", count: 4, name: "Death2" },
   { srcName: "Death1_pack.png", count: 4, name: "Death1" },

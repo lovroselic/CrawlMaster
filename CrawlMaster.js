@@ -8,13 +8,9 @@
 /*
       
 TODO:
-      
+      monster with blue potion
+      monstre with scrolls
 known bugs: 
-  ARENA: temple scroll bug
-  
-
-shorts:
-  window.PLAYER.pos = new FP_Grid(,);
 
  */
 ////////////////////////////////////////////////////
@@ -269,11 +265,9 @@ class CommonItem {
         break;
       case "scroll":
         let type = weightedRnd(SCROLL_TYPE);
-
-        if (GAME.level === INI.FINAL_LEVEL && type === 'TeleportTemple'){
+        if (GAME.level === INI.FINAL_LEVEL && type === 'TeleportTemple') {
           type = 'HalfLife';
         }
-
         let scroll = new Scroll(type);
         scroll.display();
         HERO.inventory.scroll.add(scroll);
@@ -299,7 +293,6 @@ class CommonItem {
         break;
       default:
         throw "picking up category error";
-
     }
   }
   display() {
@@ -371,7 +364,7 @@ class DecalMaster {
     this.grid = grid;
     this.facingDir = dir;
     this.floorGrid = this.grid.add(this.facingDir);
-    this.sprite = null; //debug
+    this.sprite = null;
     for (const prop in type) {
       this[prop] = type[prop];
     }
@@ -380,9 +373,7 @@ class DecalMaster {
   calcDrawPosition(type) {
     this.width = SPRITE[this.sprite].width / 2;
     this.facePosition = this.parent.calcPosition(type.position);
-    [this.drawPosition, this.leftDraw, this.rightDraw] = DECAL.drawPosition(
-      this
-    );
+    [this.drawPosition, this.leftDraw, this.rightDraw] = DECAL.drawPosition(this);
   }
   show() {
     this.visible = true;
@@ -515,6 +506,7 @@ class Monster {
     this.guardPosition = null;
     this.parent = ENEMY;
     this.dirStack = [];
+    this.final_boss = false;
     for (const prop in type) {
       this[prop] = type[prop];
     }
@@ -637,6 +629,7 @@ class Monster {
     return ratio <= 0.2;
   }
   petrify() {
+    if (this.final_boss) return;
     if (this.petrified) return;
     this.petrified = true;
     this.attack = 0;
@@ -749,7 +742,6 @@ class LiftingGate {
     this.sprite = SPRITE[this.class];
     this.height = SPRITE[this.class].height;
     this.top = 0;
-
     this.drawPosition = instance.drawPosition;
     this.leftDraw = instance.leftDraw;
     this.rightDraw = instance.rightDraw;
@@ -816,7 +808,7 @@ var INI = {
   FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.43.0.DEV",
+  VERSION: "0.44.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -842,7 +834,6 @@ var PRG = {
     console.log("PRG.setup");
     $("#gridsize").val(INI.GRIDSIZE);
     $("#gridsize").change(GAME.resizeGrid);
-
     $("#engine_version").html(ENGINE.VERSION);
     $("#grid_version").html(GRID.VERSION);
     $("#maze_version").html(DUNGEON.VERSION);
@@ -1028,7 +1019,7 @@ var HERO = {
     GAME.level = 5;
     GAME.upperLimit = GAME.level;
     GAME.gold = 312;
-    
+
     this.health = 79;
     this.mana = 44;
     this.defense = 16;
@@ -1059,7 +1050,7 @@ var HERO = {
     GAME.level = 6;
     GAME.upperLimit = GAME.level;
     GAME.gold = 647;
-    
+
     this.health = 87;
     this.mana = 36;
     this.defense = 20;
@@ -1078,7 +1069,7 @@ var HERO = {
     this.magicExpGoal = 1713;
     this.inventory.potion.red = 2;
     this.inventory.potion.blue = 1;
-    let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon'];
+    let scrolls = ['Petrify', 'MagicBoost', 'MagicBoost', 'MagicBoost', 'BoostArmor', 'DestroyWeapon', 'BoostWeapon'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1090,7 +1081,7 @@ var HERO = {
     GAME.level = 7;
     GAME.upperLimit = GAME.level;
     GAME.gold = 136;
-    
+
     this.health = 71;
     this.mana = 39;
     this.defense = 24;
@@ -1109,7 +1100,7 @@ var HERO = {
     this.magicExpGoal = 2570;
     this.inventory.potion.red = 5;
     this.inventory.potion.blue = 0;
-    let scrolls = ['Petrify','MagicBoost','MagicBoost','MagicBoost','BoostArmor','DestroyWeapon','BoostWeapon','DestroyArmor'];
+    let scrolls = ['Petrify', 'MagicBoost', 'MagicBoost', 'MagicBoost', 'BoostArmor', 'DestroyWeapon', 'BoostWeapon', 'DestroyArmor'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1121,7 +1112,7 @@ var HERO = {
     GAME.level = 8;
     GAME.upperLimit = GAME.level;
     GAME.gold = 640;
-    
+
     this.health = 82;
     this.mana = 56;
     this.defense = 27;
@@ -1140,8 +1131,8 @@ var HERO = {
     this.magicExpGoal = 3855;
     this.inventory.potion.red = 6;
     this.inventory.potion.blue = 0;
-    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon',
-    'BoostWeapon','DestroyArmor', 'DestroyArmor','DestroyArmor','Cripple', 'HalfLife'];
+    let scrolls = ['MagicBoost', 'MagicBoost', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'DestroyWeapon', 'DestroyWeapon',
+      'BoostWeapon', 'DestroyArmor', 'DestroyArmor', 'DestroyArmor', 'Cripple', 'HalfLife'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1153,7 +1144,7 @@ var HERO = {
     GAME.level = 9;
     GAME.upperLimit = GAME.level;
     GAME.gold = 89;
-    
+
     this.health = 115;
     this.mana = 148;
     this.defense = 37;
@@ -1172,8 +1163,8 @@ var HERO = {
     this.magicExpGoal = 5783;
     this.inventory.potion.red = 5;
     this.inventory.potion.blue = 2;
-    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon',
-    'BoostWeapon','BoostWeapon','DestroyArmor', 'Cripple', 'Cripple','Cripple','HalfLife', 'Invisibility'];
+    let scrolls = ['MagicBoost', 'MagicBoost', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'DestroyWeapon', 'DestroyWeapon',
+      'BoostWeapon', 'BoostWeapon', 'DestroyArmor', 'Cripple', 'Cripple', 'Cripple', 'HalfLife', 'Invisibility'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1185,9 +1176,8 @@ var HERO = {
     GAME.level = 10;
     GAME.upperLimit = GAME.level;
     GAME.gold = 66;
-    
+
     this.health = 119;
-    this.mana = 153;
     this.defense = 39;
     this.reference_defense = this.defense;
     this.attack = 41;
@@ -1195,7 +1185,8 @@ var HERO = {
     this.magic = 35;
     this.reference_magic = this.magic;
     this.maxHealth = 119;
-    this.maxMana = 153;
+    this.maxMana = 3 * Missile.calcMana(this.magic);
+    this.mana = this.maxMana;
     this.attackExp = 7069;
     this.defenseExp = 366;
     this.magicExp = 4990;
@@ -1204,8 +1195,8 @@ var HERO = {
     this.magicExpGoal = 5783;
     this.inventory.potion.red = 8;
     this.inventory.potion.blue = 0;
-    let scrolls = ['MagicBoost','MagicBoost','BoostArmor','BoostArmor','BoostArmor','BoostArmor','DestroyWeapon','DestroyWeapon','DestroyWeapon',
-    'BoostWeapon','BoostWeapon','DestroyArmor', 'Cripple', 'Cripple','Cripple','HalfLife', 'Invisibility','Invisibility','DrainMana'];
+    let scrolls = ['MagicBoost', 'MagicBoost', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'DestroyWeapon', 'DestroyWeapon', 'DestroyWeapon',
+      'BoostWeapon', 'BoostWeapon', 'DestroyArmor', 'Cripple', 'Cripple', 'Cripple', 'HalfLife', 'Invisibility', 'Invisibility', 'DrainMana'];
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1533,7 +1524,6 @@ var GAME = {
     MINIMAP.setOffset(TITLE.stack.minimapX, TITLE.stack.minimapY);
     $("#pause").prop("disabled", false);
     $("#pause").off();
-    //$("#startAnimation").prop("disabled", false);
     GAME.paused = false;
     ENGINE.watchVisibility(GAME.lostFocus);
     GAME.prepareForRestart();
@@ -1551,7 +1541,6 @@ var GAME = {
     AI.initialize(PLAYER);
     RAY_MOUSE.initialize("WINDOW");
     GAME.fps = new FPS_measurement();
-
     HERO.construct();
 
     //SAVE GAME
@@ -1866,19 +1855,18 @@ var GAME = {
   newDungeon(waypoint = "entrance") {
     GAME.setlevelTextures(GAME.level);
     let randomDungeon;
-    if (GAME.level < INI.FINAL_LEVEL){
+    if (GAME.level < INI.FINAL_LEVEL) {
       randomDungeon = DUNGEON.create(
         MAP[GAME.level].width,
         MAP[GAME.level].height
       );
-    } else if (GAME.level === INI.FINAL_LEVEL){
+    } else if (GAME.level === INI.FINAL_LEVEL) {
       console.log("newDungeon: CREATE FINAL LEVEL");
       randomDungeon = ARENA.create(
         MAP[GAME.level].width,
         MAP[GAME.level].height
       );
     }
-    
 
     MAP[GAME.level].DUNGEON = randomDungeon;
     console.log("creating random dungeon", MAP[GAME.level].DUNGEON);
@@ -2014,13 +2002,13 @@ var GAME = {
     FORM.set("WINDOW", "mouse");
   },
   configDungeon(waypoint = "entrance") {
-    if (MAP[GAME.level].DUNGEON.type === "DUNGEON"){
+    if (MAP[GAME.level].DUNGEON.type === "DUNGEON") {
       SPAWN.spawn(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
-    } else{
+    } else {
       console.log("..spawning for arena");
       SPAWN.arena(MAP[GAME.level].DUNGEON, GAME.level, GAME.upperLimit);
     }
-    
+
     PLAYER.initialize(
       Grid.toCenter(MAP[GAME.level].DUNGEON[waypoint]),
       FP_Vector.toClass(MAP[GAME.level].DUNGEON[`${waypoint}Vector`])
