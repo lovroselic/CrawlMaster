@@ -8,9 +8,9 @@
 /*
       
 TODO:
-  monster animation when attacking?
       
 known bugs: 
+  ARENA: temple scroll bug
   
 
 shorts:
@@ -269,6 +269,11 @@ class CommonItem {
         break;
       case "scroll":
         let type = weightedRnd(SCROLL_TYPE);
+
+        if (GAME.level === INI.FINAL_LEVEL && type === 'TeleportTemple'){
+          type = 'HalfLife';
+        }
+
         let scroll = new Scroll(type);
         scroll.display();
         HERO.inventory.scroll.add(scroll);
@@ -811,7 +816,7 @@ var INI = {
   FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.42.0.DEV",
+  VERSION: "0.43.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1296,7 +1301,7 @@ var HERO = {
   incStatus(type) {
     let Type = type.capitalize();
     let max = `max${Type}`;
-    if (type === 'Magic') {
+    if (type === 'mana') {
       this[max] = Math.max(this[max], 3 * Missile.calcMana(this.reference_magic));
     }
     this[max] += INI[`${type.toUpperCase()}_INC`];

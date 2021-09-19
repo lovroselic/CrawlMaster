@@ -2168,8 +2168,6 @@ var SPAWN = {
     gold_per_level: 6
   },
   init() {
-    //console.log("SPAWN initializing dependencies...");
-    //init dependencies
     for (const item in COMMON_ITEM_TYPE) {
       let sprite = COMMON_ITEM_TYPE[item].class;
       ASSET[sprite] = new LiveSPRITE("1D", [SPRITE[sprite]]);
@@ -2185,7 +2183,7 @@ var SPAWN = {
     } else {
       stairsUp = new Staircase(upGrid, map.entranceVector, STAIRCASE_TYPE.GATE);
     }
-
+    map.GA.reserve(upGrid); //new, check
     DECAL.add(stairsUp);
 
     map.exitVector = map.deadEndDirection(map.exit);
@@ -2196,10 +2194,10 @@ var SPAWN = {
       STAIRCASE_TYPE.DOWN
     );
     map.GA.addStair(downGrid);
+    map.GA.reserve(downGrid); //new, check
     DECAL.add(stairsDown);
   },
   shrines(map) {
-    //setup shrines
     const SHRINES = [
       SHRINE_TYPE.AttackShrine,
       SHRINE_TYPE.DefenseShrine,
@@ -2213,7 +2211,7 @@ var SPAWN = {
       DECAL.add(shr);
     }
   },
-  mapPointers(map){
+  mapPointers(map) {
     map.map_pointers = [
       map.shrines.chooseRandom(),
       map.keys.Red,
@@ -2264,32 +2262,7 @@ var SPAWN = {
     }
 
     this.shrines(map);
-    /*
-    //setup shrines
-    const SHRINES = [
-      SHRINE_TYPE.AttackShrine,
-      SHRINE_TYPE.DefenseShrine,
-      SHRINE_TYPE.MagicShrine
-    ];
-    for (const [index, shrine] of map.shrines.entries()) {
-      let DE_Dir = map.deadEndDirection(shrine);
-      let wallGrid = shrine.add(DE_Dir.mirror());
-      map.GA.reserve(wallGrid);
-      let shr = new Shrine(wallGrid, DE_Dir, SHRINES[index]);
-      DECAL.add(shr);
-    }
-    */
-
     this.mapPointers(map);
-    /*
-    //map pointers
-    map.map_pointers = [
-      map.shrines.chooseRandom(),
-      map.keys.Red,
-      map.keys.Silver,
-      map.keys.Gold
-    ];
-    */
   },
   arena(map, level, upperLimit) {
     console.log("spawning ARENA level...", level);
@@ -2317,7 +2290,18 @@ var SPAWN = {
     //shrines
     this.shrines(map);
 
-    map.map_pointers = [];
+    //decals
+    let N = (map.width * map.height * (1 - parseFloat(map.density)) * 0.75) | 0;
+    let corrDecalGrids = map.poolOfCorridorDecalGrids(N);
+    let type = { Painting: 20, Crest: 1.5 };
+    for (let grid of corrDecalGrids) {
+      DECAL.add(new Decal(grid.grid, grid.dir, DECAL_TYPE[weightedRnd(type)]));
+    }
+    this.arenaItems(map);
+    this.arena_monsters(map,level);
+
+    //
+    map.map_pointers = [...map.shrines];
     console.log(
       `%cLevel ${GAME.level} spawned in ${performance.now() - t0} ms`,
       "color: orange"
@@ -2335,6 +2319,9 @@ var SPAWN = {
       `%cLevel ${GAME.level} spawned in ${performance.now() - t0} ms`,
       "color: orange"
     );
+  },
+  arena_monsters(map, level){
+    console.log("....spawning arena monsters");
   },
   monsters(map, level) {
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
@@ -2424,8 +2411,48 @@ var SPAWN = {
       FLOOR_OBJECT.add(container);
     }
   },
+  arenaItems(map) {
+    //mana potions
+    let corridorPool = map.poolOfCorridorGrids(SPAWN.INI.mana_potions_per_level);
+    for (const grid of corridorPool) {
+      let BluePotion = new CommonItem(grid, COMMON_ITEM_TYPE.BluePotion);
+      FLOOR_OBJECT.add(BluePotion);
+    }
+    //health potions
+    corridorPool = map.poolOfCorridorGrids(SPAWN.INI.health_potions_per_level);
+    for (const grid of corridorPool) {
+      let RedPotion = new CommonItem(grid, COMMON_ITEM_TYPE.RedPotion);
+      FLOOR_OBJECT.add(RedPotion);
+    }
+    //scrolls
+    corridorPool = map.poolOfCorridorGrids(SPAWN.INI.scrolls_per_level);
+    for (const grid of corridorPool) {
+      let Scroll = new CommonItem(grid, COMMON_ITEM_TYPE.Scroll);
+      FLOOR_OBJECT.add(Scroll);
+    }
+    //gold, COMMON_ITEM_TYPE.Gold
+    corridorPool = map.poolOfCorridorGrids(SPAWN.INI.gold_per_level);
+    for (const grid of corridorPool) {
+      let Gold = new CommonItem(grid, COMMON_ITEM_TYPE.GoldBar, RND(75, 125));
+      FLOOR_OBJECT.add(Gold);
+    }
+    //skills and h/m
+    const total = 5;
+    let skillsAndStats = [
+      COMMON_ITEM_TYPE.HealthStatus,
+      COMMON_ITEM_TYPE.ManaStatus,
+      COMMON_ITEM_TYPE.MagicSkill,
+      COMMON_ITEM_TYPE.ShieldSkill,
+      COMMON_ITEM_TYPE.SwordSkill
+    ];
+    corridorPool = map.poolOfCorridorGrids(total);
+    for (let i = 0; i < total; i++){
+      let item = new CommonItem(corridorPool[i], skillsAndStats[i], 0);
+      FLOOR_OBJECT.add(item);
+    }
+
+  },
   items(map) {
-    //console.log("spawning items...");
 
     //health potions
     let roomPool = map.poolOfRoomGrids(SPAWN.INI.health_potions_per_level);
@@ -2479,28 +2506,6 @@ var SPAWN = {
       let item = new CommonItem(grid, skillsAndStats[index], 0);
       FLOOR_OBJECT.add(item);
     }
-
-    //sandbox
-    /*
-    let startRoom = map.findRoom("start");
-    for (let i = 0; i < 3; i++) {
-      let location = map.findMiddleSpace(startRoom.area);
-      if (location) {
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.SwordSkill);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.ShieldSkill);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.MagicSkill);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.HealthStatus);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.ManaStatus);
-        let item = new CommonItem(location, COMMON_ITEM_TYPE.Scroll);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.BluePotion);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.RedPotion);
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.GoldBar, RND(50, 100));
-        //let item = new CommonItem(location, COMMON_ITEM_TYPE.GoldCoin, RND(10, 50));
-        FLOOR_OBJECT.add(item);
-      }
-    }
-    */
-    //sandbox END
   }
 };
 console.log("%cMAP for CrawlMaster loaded.", "color: #888");

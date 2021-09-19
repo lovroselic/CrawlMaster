@@ -675,7 +675,7 @@ class GridArray {
   notReserved(grid) {
     return !this.isReserved(grid);
   }
-  toEmpty(grid){
+  toEmpty(grid) {
     this.setValue(grid, MAPDICT.EMPTY);
   }
   isEmpty(grid) {
@@ -1412,6 +1412,7 @@ var MINIMAP = {
             CTX.fillStyle = MINIMAP.LEGEND.STAIR;
             break;
           case MAPDICT.SHRINE + MAPDICT.ROOM:
+          case MAPDICT.SHRINE:
             CTX.fillStyle = MINIMAP.LEGEND.SHRINE;
             break;
           default:
