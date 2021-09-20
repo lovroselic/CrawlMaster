@@ -412,6 +412,33 @@ var LoadSprites = [
   { srcName: "Infiltrator2.png", name: "Infiltrator2" },
   { srcName: "Ivy3.png", name: "Ivy3" },
   { srcName: "Ivy4.png", name: "Ivy4" },
+
+  { srcName: "1942_2.png", name: "1942_2" },
+{ srcName: "Arnie1.png", name: "Arnie1" },
+{ srcName: "BTF1.png", name: "BTF1" },
+{ srcName: "BeachHead5.png", name: "BeachHead5" },
+{ srcName: "Biggles1.png", name: "Biggles1" },
+{ srcName: "BlueThunder1.png", name: "BlueThunder1" },
+{ srcName: "BrianBloodaxe1.png", name: "BrianBloodaxe1" },
+{ srcName: "BrideOfFrakenstein1.png", name: "BrideOfFrakenstein1" },
+{ srcName: "BruceLee1.png", name: "BruceLee1" },
+{ srcName: "Captive.png", name: "Captive" },
+{ srcName: "EnigmaForce.png", name: "EnigmaForce" },
+{ srcName: "Fred3.png", name: "Fred3" },
+{ srcName: "Fred4.png", name: "Fred4" },
+{ srcName: "JSW4.png", name: "JSW4" },
+{ srcName: "ManiacMansion2.png", name: "ManiacMansion2" },
+{ srcName: "PQ1.png", name: "PQ1" },
+{ srcName: "Pengo.png", name: "Pengo" },
+{ srcName: "Pirates.png", name: "Pirates" },
+{ srcName: "PolePosition.png", name: "PolePosition" },
+{ srcName: "Silkworm1.png", name: "Silkworm1" },
+{ srcName: "SirFred1.png", name: "SirFred1" },
+{ srcName: "SirFred2.png", name: "SirFred2" },
+{ srcName: "SirFred3.png", name: "SirFred3" },
+{ srcName: "SuperDogfight.png", name: "SuperDogfight" },
+{ srcName: "SuperDogfight2.png", name: "SuperDogfight2" },
+{ srcName: "Unknown1.png", name: "Unknown1" },
 ];
 var LoadSequences = [
   { srcName: "SHIP_exp", name: "BigExplosion", type: "png", count: 8 },
@@ -477,6 +504,8 @@ var LoadPacks = [
   { srcName: "BlackDragon64.png", count: 3, name: "BlackDragon" },
   { srcName: "Death2_pack.png", count: 4, name: "Death2" },
   { srcName: "Death1_pack.png", count: 4, name: "Death1" },
+  { srcName: "Cutie.png", count: 3, name: "Cutie" },
+  { srcName: "TheWalker.png", count: 16, name: "Walker" },
   
 ];
 var LoadRotated = [];

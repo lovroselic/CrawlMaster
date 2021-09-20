@@ -193,7 +193,6 @@ var SAVE_GAME = {
     localStorage.removeItem(sg);
     console.log(`%cDeleted ....: ${sg}`, SAVE_GAME.CSS);
   }
-  
 };
 
 SAVE_GAME.ready();

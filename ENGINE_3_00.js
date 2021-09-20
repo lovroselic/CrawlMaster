@@ -2494,6 +2494,9 @@ class Inventory {
   constructor() {
     this.list = [];
   }
+  clear() {
+    this.list = [];
+  }
   add(element) {
     for (let q = 0, QL = this.list.length; q < QL; q++) {
       let item = this.list[q].object;
@@ -2779,7 +2782,7 @@ class Area {
     this.w = w;
     this.h = h;
   }
-  gridWithin(grid){
+  gridWithin(grid) {
     return this.within(grid.x, grid.y);
   }
   within(X, Y) {
@@ -2792,7 +2795,7 @@ class Area {
       return true;
     } else return false;
   }
-  overlap(area){
+  overlap(area) {
     if (this.x > area.x + area.w) return false;
     if (this.x + this.w < area.x) return false;
     if (this.y > area.y + area.h) return false;

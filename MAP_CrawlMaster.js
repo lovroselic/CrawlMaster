@@ -272,7 +272,10 @@ var DECAL_PAINTINGS = [
   "SeaWolf",
   "GIJoe10",
   "Hobbit1", "Hobbit3", "Ghostbusters2", "Commando3", "EOB20", "Hobbit6", "Hobbit7", "Hobbit8", "Hobbit9", "AticAtac1", "Infiltrator1", "ManicMiner2",
-  "ManicMiner3", "Prince3", "Infiltrator2"
+  "ManicMiner3", "Prince3", "Infiltrator2",
+  "1942_2", "Arnie1", "BTF1", "BeachHead5", "Biggles1", "BlueThunder1", "BrianBloodaxe1", "BrideOfFrakenstein1", "BruceLee1", "Captive", "EnigmaForce", 
+  "Fred3", "Fred4", "JSW4", "ManiacMansion2", "PQ1", "Pengo", "Pirates", "PolePosition", "Silkworm1", "SirFred1", "SirFred2", "SirFred3", "SuperDogfight",
+   "SuperDogfight2", "Unknown1"
 ];
 //console.log("DECAL_PAINTINGS", DECAL_PAINTINGS.sort());
 var DECAL_CRESTS = [
@@ -1426,6 +1429,38 @@ var MONSTER = {
     inventory: "GoldCoin",
     inventoryValue: 200
   },
+  Walker: {
+    class: "Walker",
+    moveSpeed: 2.0,
+    SPRITE_FPS: 50,
+    base: 1,
+    attack: 75,
+    defense: 0,
+    magic: 100,
+    health: 100,
+    xp: 400,
+    attackSound: "MonsterAttack1",
+    hurtSound: "MonsterHurt",
+    behaviourArguments: [10, ["wanderer"], 8, ["advancer"]],
+    inventory: "Scroll",
+    inventoryValue: 0
+  },
+  Cutie: {
+    class: "Cutie",
+    moveSpeed: 2.2,
+    SPRITE_FPS: 30,
+    base: 1,
+    attack: 50,
+    defense: 50,
+    magic: 0,
+    health: 60,
+    xp: 300,
+    attackSound: "HumanAttack1",
+    hurtSound: "Ow",
+    inventory: "BluePotion",
+    inventoryValue: 0,
+    behaviourArguments: [6, ["wanderer"], 4, ["follower"]],
+  },
 };
 var MISSILE_TYPE = {
   Fireball: {
@@ -2161,6 +2196,8 @@ var MOSTER_LAYOUT = {
         Knight: 1,
         Death1: 1,
         Death2: 1,
+        Cutie: 1,
+        Walker: 1,
       }
     },
     boss: {

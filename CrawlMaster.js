@@ -8,9 +8,9 @@
 /*
       
 TODO:
-      monster with blue potion
-      monstre with scrolls
+
 known bugs: 
+  load appends to uncleared list!
 
  */
 ////////////////////////////////////////////////////
@@ -808,7 +808,7 @@ var INI = {
   FINAL_LEVEL: 10
 };
 var PRG = {
-  VERSION: "0.45.1.DEV",
+  VERSION: "0.45.3.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1197,6 +1197,7 @@ var HERO = {
     this.inventory.potion.blue = 0;
     let scrolls = ['MagicBoost', 'MagicBoost', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'DestroyWeapon', 'DestroyWeapon', 'DestroyWeapon',
       'BoostWeapon', 'BoostWeapon', 'DestroyArmor', 'Cripple', 'Cripple', 'Cripple', 'HalfLife', 'Invisibility', 'Invisibility', 'DrainMana'];
+    
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1552,6 +1553,7 @@ var GAME = {
 
     if (GAME.fromCheckpoint) {
       console.log(`%c ... Loading from checkpoint ...`, GAME.CSS);
+      HERO.inventory.scroll.clear();
       SAVE_GAME.load();
       GAME.upperLimit = GAME.level;
       GAME.fromCheckpoint = false;
@@ -1561,6 +1563,7 @@ var GAME = {
       console.log("########################");
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
+      HERO.inventory.scroll.clear();
       HERO.depth10();
       //HERO.depth9();
     }
