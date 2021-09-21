@@ -2190,7 +2190,7 @@ var MOSTER_LAYOUT = {
   },
   10: {
     corridor: {
-      N: 15,
+      N: 18,
       monster: {
         RedBull: 1,
         Knight: 1,

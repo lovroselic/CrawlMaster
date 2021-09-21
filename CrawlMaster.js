@@ -805,10 +805,10 @@ var INI = {
   CRIPPLE_SPEED: 0.5,
   BOOST_TIME: 59,
   MM_reveal_radius: 4,
-  FINAL_LEVEL: 10
+  FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "0.45.3.DEV",
+  VERSION: "0.46.0.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1197,7 +1197,7 @@ var HERO = {
     this.inventory.potion.blue = 0;
     let scrolls = ['MagicBoost', 'MagicBoost', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'BoostArmor', 'DestroyWeapon', 'DestroyWeapon', 'DestroyWeapon',
       'BoostWeapon', 'BoostWeapon', 'DestroyArmor', 'Cripple', 'Cripple', 'Cripple', 'HalfLife', 'Invisibility', 'Invisibility', 'DrainMana'];
-    
+
     for (let scr of scrolls) {
       let scroll = new Scroll(scr);
       HERO.inventory.scroll.add(scroll);
@@ -1826,6 +1826,7 @@ var GAME = {
   useStaircase(newLevel, waypoint) {
     ROM.storeMaps(MAP[GAME.level].DUNGEON);
     GAME.level = newLevel;
+    if (GAME.level === GAME.WIN_LEVEL) return GAME.won();
     if (MAP[GAME.level].DUNGEON === null) {
       GAME.newDungeon(waypoint);
       SAVE_GAME.save();
@@ -1855,6 +1856,9 @@ var GAME = {
     FLOOR_OBJECT.init(map);
     MINIMAP.init(map, INI.MIMIMAP_WIDTH, INI.MIMIMAP_HEIGHT);
   },
+  won() {
+    throw "GAME WON!";
+  },
   newDungeon(waypoint = "entrance") {
     GAME.setlevelTextures(GAME.level);
     let randomDungeon;
@@ -1869,7 +1873,9 @@ var GAME = {
         MAP[GAME.level].width,
         MAP[GAME.level].height
       );
-    }
+    } /*else if (GAME.level === GAME.WIN_LEVEL){
+      return GAME.won();
+    }*/
 
     MAP[GAME.level].DUNGEON = randomDungeon;
     console.log("creating random dungeon", MAP[GAME.level].DUNGEON);
@@ -2003,6 +2009,7 @@ var GAME = {
       2
     );
     FORM.set("WINDOW", "mouse");
+    GAME.WIN_LEVEL = INI.FINAL_LEVEL + 1;
   },
   configDungeon(waypoint = "entrance") {
     if (MAP[GAME.level].DUNGEON.type === "DUNGEON") {
