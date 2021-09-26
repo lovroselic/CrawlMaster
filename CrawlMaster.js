@@ -17,18 +17,17 @@ known bugs:
 
 var DEBUG = {
   _2D_display: false,
-  FPS: true,
+  FPS: false,
   SETTING: true,
   BUTTONS: true,
   VERBOSE: true,
-  LOAD: true,
+  LOAD: false,
   clearEnemies() {
     ENEMY.clearAll();
   },
   toLastRoom() {
     let map = MAP[GAME.level].DUNGEON;
     let last = map.findRoom("Gold");
-    //let target = map.findMiddleSpaceUnreserved(last.area);
     let target = map.findSpace(last.area);
     PLAYER.pos = Grid.toCenter(target);
   }
@@ -809,7 +808,7 @@ var INI = {
   FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "0.46.2.DEV",
+  VERSION: "0.80.0.A",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -888,7 +887,6 @@ var HERO = {
     this.maxHealth = 15;
     this.maxMana = 3 * Missile.calcMana(5);
     this.restore();
-    //stats
     this.defense = 5;
     this.reference_defense = this.defense;
     this.attack = 5;
@@ -1530,11 +1528,9 @@ var GAME = {
     ENGINE.watchVisibility(GAME.lostFocus);
     GAME.prepareForRestart();
     GAME.completed = false;
-
     GAME.level = 1;
     GAME.upperLimit = GAME.level;
     GAME.gold = 0;
-
     SPAWN.init();
     SWORD.init(SPRITE.SwordPOV, LAYER.sword);
 
@@ -1868,19 +1864,17 @@ var GAME = {
     ENGINE.GAME.ANIMATION.next(GAME.inBetween);
   },
   inBetween() {
-    //clear layers
     const layersToClear = ["view", "sword", "FPS", "info"];
     layersToClear.forEach(item => ENGINE.layersToClear.add(item));
     ENGINE.clearLayerStack();
-    //
     ENGINE.GAME.ANIMATION.next(GAME.wonRun);
   },
-  wonRun() {
+  wonRun(lapsedTime) {
     if (ENGINE.GAME.stopAnimation) return;
     if (ENGINE.GAME.keymap[ENGINE.KEY.map.enter]) {
       ENGINE.GAME.ANIMATION.waitThen(TITLE.startTitle);
     }
-    GAME.endingCreditText.process();
+    GAME.endingCreditText.process(lapsedTime);
     GAME.wonFrameDraw();
   },
   wonFrameDraw() {
@@ -1900,9 +1894,7 @@ var GAME = {
         MAP[GAME.level].width,
         MAP[GAME.level].height
       );
-    } /*else if (GAME.level === GAME.WIN_LEVEL){
-      return GAME.won();
-    }*/
+    }
 
     MAP[GAME.level].DUNGEON = randomDungeon;
     console.log("creating random dungeon", MAP[GAME.level].DUNGEON);
@@ -2674,7 +2666,7 @@ var TITLE = {
     written and performed by LaughingSkull, 
     ${"\u00A9"} 2006 Lovro Selic.
 
-    thanks for sticking till the end.\n`;
+    thanks for sticking 'till the end.\n`;
     return text;
 
   },

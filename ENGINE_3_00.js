@@ -9,11 +9,13 @@
 //      ENGINE version 3.00        by LS          //
 //                                                //
 ////////////////////////////////////////////////////
+
 /*  
 
 TODO:
       
 */
+
 ////////////////////////////////////////////////////
 
 //vector definitions
@@ -2710,7 +2712,7 @@ class RenderData {
 class VerticalScrollingText {
   constructor(text, speed, renderData) {
     this.text = text;
-    this.speed = speed;
+    this.speed = speed; 
     this.RD = renderData;
     this.textArray = this.text.split('\n').map(x => x.trim(" "));
     this.lineHeight = Math.round(1.1 * this.RD.fs);
