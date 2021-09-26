@@ -1247,7 +1247,8 @@ class Arena extends MasterDungeon {
     let topLeft = center.add(new Vector(-ARENA.CENTRAL_ROOM_WALL_WIDTH, -ARENA.CENTRAL_ROOM_WALL_WIDTH));
     let W = 2 * ARENA.CENTRAL_ROOM_WALL_WIDTH + ARENA.CENTRAL_ROOM_SIZE;
     this.GA.rect(topLeft.x, topLeft.y, W, W, 2);
-    let roomArea = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
+    //let roomArea = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
+    let roomArea = new Area(center.x, center.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
     let ignoreArea = new Area(topLeft.x, topLeft.y, W, W);
     let RoomObj = new Room(this.rooms.length + 1, roomArea, DUNGEON.LOCK_LEVELS[0]);
     let centeringVector = new Vector((ARENA.CENTRAL_ROOM_SIZE / 2) | 0, 0);

@@ -158,7 +158,7 @@ var ENGINE = {
   clearLayerStack() {
     let CLR = ENGINE.layersToClear.length;
     if (CLR === 0) return;
-    ENGINE.layersToClear.forEach(ENGINE.clearLayer);
+    ENGINE.layersToClear.forEach(layer => ENGINE.clearLayer(layer));
     ENGINE.layersToClear.clear();
   },
   fillLayer(layer, colour) {
@@ -2705,6 +2705,61 @@ class RenderData {
     this.layer.shadowOffsetY = shadowOffsetY || 0;
     this.layer.shadowBlur = shadowBlur || 0;
     this.fs = fontSize;
+  }
+}
+class VerticalScrollingText {
+  constructor(text, speed, renderData) {
+    this.text = text;
+    this.speed = speed;
+    this.RD = renderData;
+    this.textArray = this.text.split('\n').map(x => x.trim(" "));
+    this.lineHeight = Math.round(1.1 * this.RD.fs);
+    this.cw = this.RD.layer.canvas.width;
+    this.ch = this.RD.layer.canvas.height;
+    this.measureLineWidths();
+    this.maxWidth = Math.max(...this.lineWidths);
+    console.assert(this.maxWidth <= this.cw, "Line too wide for layer -  ERROR");
+    this.cursorX = Math.max(((this.cw - this.maxWidth) / 2) | 0, 0);
+    this.bottomY = this.ch + this.lineHeight;
+    this.reset();
+  }
+  reset() {
+    this.cursorY = this.ch + this.lineHeight;
+    this.firstLine = 0;
+    this.lastLine = 0;
+  }
+  measureLineWidths() {
+    let LN = this.textArray.length;
+    this.lineWidths = [];
+    for (let i = 0; i < LN; i++) {
+      this.lineWidths.push(Math.ceil(this.RD.layer.measureText(this.textArray[i]).width));
+    }
+  }
+  process() {
+    let LN = this.textArray.length;
+    this.cursorY -= this.speed;
+
+    if (this.bottomY - this.cursorY >= this.lineHeight * (this.lastLine + 1 - this.firstLine)) {
+      this.lastLine++;
+    }
+    if (this.cursorY <= 0) {
+      this.cursorY = this.lineHeight;
+      this.firstLine++;
+    }
+    if (this.lastLine >= LN){
+      if (this.firstLine >= LN){
+        this.reset();
+      } else this.lastLine = LN-1;
+    } 
+
+  }
+  draw() {
+    let CTX = this.RD.layer;
+    ENGINE.clearLayer(this.RD.layerName);
+    for (let i = this.firstLine; i <= this.lastLine; i++) {
+      let actualY = this.cursorY + this.lineHeight * (i - this.firstLine);
+      CTX.fillText(this.textArray[i], this.cursorX, actualY);
+    }
   }
 }
 class MovingText {

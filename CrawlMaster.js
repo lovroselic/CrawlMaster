@@ -28,7 +28,8 @@ var DEBUG = {
   toLastRoom() {
     let map = MAP[GAME.level].DUNGEON;
     let last = map.findRoom("Gold");
-    let target = map.findMiddleSpaceUnreserved(last.area);
+    //let target = map.findMiddleSpaceUnreserved(last.area);
+    let target = map.findSpace(last.area);
     PLAYER.pos = Grid.toCenter(target);
   }
 };
@@ -808,7 +809,7 @@ var INI = {
   FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "0.46.0.DEV",
+  VERSION: "0.46.2.DEV",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -1857,7 +1858,33 @@ var GAME = {
     MINIMAP.init(map, INI.MIMIMAP_WIDTH, INI.MIMIMAP_HEIGHT);
   },
   won() {
-    throw "GAME WON!";
+    console.log("GAME WON");
+    ENGINE.TIMERS.stop();
+    ENGINE.GAME.ANIMATION.resetTimer();
+    TITLE.music();
+    TITLE.setEndingCreditsScroll();
+    $("#pause").prop("disabled", true);
+    $("#pause").off();
+    ENGINE.GAME.ANIMATION.next(GAME.inBetween);
+  },
+  inBetween() {
+    //clear layers
+    const layersToClear = ["view", "sword", "FPS", "info"];
+    layersToClear.forEach(item => ENGINE.layersToClear.add(item));
+    ENGINE.clearLayerStack();
+    //
+    ENGINE.GAME.ANIMATION.next(GAME.wonRun);
+  },
+  wonRun() {
+    if (ENGINE.GAME.stopAnimation) return;
+    if (ENGINE.GAME.keymap[ENGINE.KEY.map.enter]) {
+      ENGINE.GAME.ANIMATION.waitThen(TITLE.startTitle);
+    }
+    GAME.endingCreditText.process();
+    GAME.wonFrameDraw();
+  },
+  wonFrameDraw() {
+    GAME.endingCreditText.draw();
   },
   newDungeon(waypoint = "entrance") {
     GAME.setlevelTextures(GAME.level);
@@ -2230,7 +2257,6 @@ var TITLE = {
     this.background();
     this.title();
   },
-  setup() { },
   keys() {
     ENGINE.clearLayer("keys");
     let y = (SPRITE.LineTop.height / 2 + TITLE.stack.delta2 / 2) | 0;
@@ -2620,7 +2646,46 @@ var TITLE = {
       LAYER.bottom_text.canvas.height
     );
     GAME.movingText = new MovingText(text, 2, RD, SQ);
+  },
+  generateEndingCredits() {
+    const text = `Congratulations!
+    You have completed CrawlMaster
+    in ${GAME.time.timeString()}.
+    You certainly had fun.
+    You may think this ending is rather
+    anticlimactic ...
+    sure ...
+    but what would you prefer?
+    picking gold, without noticing that it's over?
+    like in 'Deep Down ...'?
+    There comes a time a project has to end.
+    Somehow.
+    
+    CREDITS:
+    all libraries and game code: Lovro Selic,
+    written in JavaScript,
+    except of course,  JQUERY: John Resig et al.
+    Graphics taken from (hopefully) free resources
+    or drawn with PiskelApp.
+    Supplementary tools written in 
+    JavaScript or Python.
+      
+    Music: Laughing Skull 
+    written and performed by LaughingSkull, 
+    ${"\u00A9"} 2006 Lovro Selic.
+
+    thanks for sticking till the end.\n`;
+    return text;
+
+  },
+  setEndingCreditsScroll() {
+    console.group("endingCredits");
+    const text = this.generateEndingCredits();
+    const RD = new RenderData("DeepDown", 20, "#DAA520", "text");
+    GAME.endingCreditText = new VerticalScrollingText(text, 1, RD);
+    console.groupEnd("endingCredits");
   }
+
 };
 var TURN = {
   damage(attacker, defender) {
