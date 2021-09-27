@@ -18,9 +18,9 @@ known bugs:
 var DEBUG = {
   _2D_display: false,
   FPS: false,
-  SETTING: true,
-  BUTTONS: true,
-  VERBOSE: true,
+  SETTING: false,
+  BUTTONS: false,
+  VERBOSE: false,
   LOAD: false,
   clearEnemies() {
     ENEMY.clearAll();
@@ -808,7 +808,7 @@ var INI = {
   FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "0.80.0.A",
+  VERSION: "1.00",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -832,6 +832,9 @@ var PRG = {
   },
   setup() {
     console.log("PRG.setup");
+    if (DEBUG.SETTING){
+      $('#debug').show();
+    } else $('#debug').hide();
     $("#gridsize").val(INI.GRIDSIZE);
     $("#gridsize").change(GAME.resizeGrid);
     $("#engine_version").html(ENGINE.VERSION);
@@ -2029,6 +2032,8 @@ var GAME = {
     );
     FORM.set("WINDOW", "mouse");
     GAME.WIN_LEVEL = INI.FINAL_LEVEL + 1;
+
+   
   },
   configDungeon(waypoint = "entrance") {
     if (MAP[GAME.level].DUNGEON.type === "DUNGEON") {
