@@ -2,6 +2,7 @@
 /*jshint -W097 */
 /*jshint -W117 */
 /*jshint -W061 */
+/*jshint esversion: 11 */
 "use strict";
 
 /*  
@@ -41,7 +42,11 @@ class IAM {
     }
     poolToIA(IA) {
         for (const obj of this.POOL) {
-            let grid = Grid.toClass(obj.moveState.pos) || obj.grid;
+            let grid = null;
+            if (obj.moveState) {
+                grid = Grid.toClass(obj.moveState.pos);
+            } else grid = obj.grid;
+            //let grid = Grid.toClass(obj.moveState?.pos) || obj.grid;
             if (!IA.has(grid, obj.id)) {
                 IA.next(grid, obj.id);
             }
@@ -206,6 +211,7 @@ class Floor_Object extends IAM {
         this.reIndexRequired = false;
     }
     init(map) {
+        if (!this.POOL) this.POOL = [];
         this.linkMap(map);
         this.manage();
     }
