@@ -1,313 +1,32 @@
-var DECAL_PAINTINGS = [
-  "AA1",
-  "AA2",
-  "AA3",
-  "AA4",
-  "AA5",
-  "AA7",
-  "AA8",
-  "AA9",
-  "AMC",
-  "Amberstar",
-  "Apshai",
-  "ArcticShipwreck",
-  "Arena",
-  "Aztec",
-  "BC1",
-  "BFF",
-  "Bagitman",
-  "Barbarian1",
-  "Barbarian5",
-  "BeachHead",
-  "Blackwyche",
-  "BlueMax",
-  "BlueMax2",
-  "BlueMax3",
-  "BoogaBoo1",
-  "BoogaBoo3",
-  "C64",
-  "CH1",
-  "CSB1",
-  "CW1",
-  "CW10",
-  "CW2",
-  "CW3",
-  "CW5",
-  "CW6",
-  "Castle",
-  "CastleTerror",
-  "Cavelon",
-  "Cavelon3",
-  "Choplifter",
-  "Commando2",
-  "CrystalCastles",
-  "Cuthbert1",
-  "CyberPunk1",
-  "DDID2",
-  "DK",
-  "DK2",
-  "DM1",
-  "DM11",
-  "DM12",
-  "DM13",
-  "DM2",
-  "DM3",
-  "DM4",
-  "DM5",
-  "DM6",
-  "DM7",
-  "DigDug",
-  "Drelbs",
-  "EOB1",
-  "EOB2",
-  "EOB3",
-  "EOB4",
-  "Eric",
-  "FA2",
-  "FA3",
-  "FF1",
-  "FF2",
-  "FF4",
-  "Falcon",
-  "FalconPatrol2",
-  "FireAnt",
-  "FranticFreddie",
-  "Fred1",
-  "Fred2",
-  "Frogger",
-  "Galaga1",
-  "Galaxian3",
-  "Ghostbusters",
-  "Gods",
-  "Goonies",
-  "GreenBeret",
-  "HL1",
-  "HL2",
-  "HL3",
-  "HL4",
-  "HL5",
-  "HOB1",
-  "HOB11",
-  "HOB2",
-  "HOB4",
-  "HOB5",
-  "Hero1",
-  "Hero10",
-  "Hero2",
-  "Hero3",
-  "Horace",
-  "Horace2",
-  "HoraceSki",
-  "Hunchback",
-  "IK1",
-  "IM",
-  "Iceman",
-  "Imhotep",
-  "Impossible_Mission4",
-  "Invaders",
-  "JSW",
-  "JSW2",
-  "JSW3",
-  "JetPac",
-  "Jumpman",
-  "JumpmanJr",
-  "Jupiter_Lander",
-  "KQ1",
-  "Kangaroo.png",
-  "Karateka",
-  "Killerwat",
-  "Knightlore",
-  "LSL1",
-  "LSL2",
-  "LSL20",
-  "LSL3",
-  "LSL4",
-  "LSL6",
-  "LSL7",
-  "LTUT",
-  "LastNinja1",
-  "Lode",
-  "Maniac",
-  "ManicMiner",
-  "Miner",
-  "MonkeyIsland",
-  "Montezuma",
-  "Moon",
-  "MrRobot",
-  "Nebulus",
-  "OMine",
-  "Oblivion",
-  "Oblivion2",
-  "OperationWolf",
-  "OperationWolf2",
-  "PAC2",
-  "Paratroopers",
-  "Penta",
-  "Phara",
-  "Pipeline",
-  "Pitfall",
-  "Pitfall2",
-  "Pitfall3",
-  "Pitfall4",
-  "Pitstop",
-  "Pooyan",
-  "Portal1",
-  "Prince1",
-  "Prince2",
-  "RRR",
-  "RickDangerous",
-  "Robin",
-  "SOF",
-  "SQ1",
-  "ST",
-  "SVS1",
-  "SVS10",
-  "SVS11",
-  "SVS2",
-  "SVS3",
-  "SVS4",
-  "SW2",
-  "SW4",
-  "Scramble2",
-  "Scramble3",
-  "Scramble4",
-  "Skyrim",
-  "Soccer",
-  "Sorcery2",
-  "Sorcery3",
-  "TR1",
-  "TR1",
-  "TR10",
-  "TR2",
-  "TR2",
-  "TR3",
-  "TheSentinel",
-  "Tut",
-  "Tut2",
-  "UU",
-  "UU2",
-  "Ultima1",
-  "Ultima2",
-  "Under",
-  "VIC20",
-  "Valhalla",
-  "Vixen1",
-  "Vixen2",
-  "WDW",
-  "WG2",
-  "WG3",
-  "WOW1",
-  "WOW2",
-  "WOW3",
-  "Walls",
-  "Wally",
-  "Winter",
-  "Wolf1",
-  "Wolf2",
-  "Zak",
-  "Zaxxon",
-  "ZimSalaBim",
-  "Zong",
-  "galaxian",
-  "sabre2",
-  "ski",
-  "trash",
-  "zx1",
-  "WG4",
-  "BlueMax4",
-  "Witcher5",
-  "LSL9",
-  "Shamus1",
-  "PharaohCurse3",
-  "Witcher4",
-  "Witcher3",
-  "TempleOfApshai",
-  "Witcher2",
-  "KnightLore2",
-  "Witcher1",
-  "Spelunker",
-  "ShamusCase2",
-  "Ishar2",
-  "Ishar1",
-  "Jungle1",
-  "Pitfall5",
-  "PharaohCurse2",
-  "Frontier",
-  "LSL8",
-  "SP2",
-  "SP1",
-  "EveLSL",
-  "SVS24",
-  "SVS23",
-  "KQ10",
-  "Shamus20",
-  "Pitfall21",
-  "Apshai6",
-  "Apshai5",
-  "MontyMole",
-  "PacClose",
-  "PacGhost",
-  "Pitfall20",
-  "SVS22",
-  "SVS21",
-  "Apshai4",
-  "Apshai3",
-  "Paperboy",
-  "JungleStory",
-  "RobinOfTheWood2",
-  "Pyjamarama",
-  "SammyLightfoot",
-  "ThePawn",
-  "KokotoniWilf",
-  "Cauldron1",
-  "Zeppelin2",
-  "TimeTunnel",
-  "SP3",
-  "AC2",
-  "Hero30",
-  "SVS30",
-  "AirWolf",
-  "AA41",
-  "AA40",
-  "SeaWolf",
-  "GIJoe10",
+var DECAL_PAINTINGS = ["AA1", "AA2", "AA3", "AA4", "AA5", "AA7", "AA8", "AA9", "AMC", "Amberstar", "Apshai", "ArcticShipwreck", "Arena",
+  "Aztec", "BC1", "BFF", "Bagitman", "Barbarian1", "Barbarian5", "BeachHead", "Blackwyche", "BlueMax", "BlueMax2", "BlueMax3", "BoogaBoo1", "BoogaBoo3",
+  "C64", "CH1", "CSB1", "CW1", "CW10", "CW2", "CW3", "CW5", "CW6", "Castle", "CastleTerror", "Cavelon", "Cavelon3", "Choplifter", "Commando2",
+  "CrystalCastles", "Cuthbert1", "CyberPunk1", "DDID2", "DK", "DK2", "DM1", "DM11", "DM12", "DM13", "DM2", "DM3", "DM4", "DM5", "DM6", "DM7",
+  "DigDug", "Drelbs", "EOB1", "EOB2", "EOB3", "EOB4", "Eric", "FA2", "FA3", "FF1", "FF2", "FF4", "Falcon", "FalconPatrol2", "FireAnt",
+  "FranticFreddie", "Fred1", "Fred2", "Frogger", "Galaga1", "Galaxian3", "Ghostbusters", "Gods", "Goonies", "GreenBeret", "HL1", "HL2", "HL3",
+  "HL4", "HL5", "HOB1", "HOB11", "HOB2", "HOB4", "HOB5", "Hero1", "Hero10", "Hero2", "Hero3", "Horace", "Horace2", "HoraceSki", "Hunchback",
+  "IK1", "IM", "Iceman", "Imhotep", "Impossible_Mission4", "Invaders", "JSW", "JSW2", "JSW3", "JetPac", "Jumpman", "JumpmanJr", "Jupiter_Lander", "KQ1",
+  "Kangaroo", "Karateka", "Killerwat", "Knightlore", "LSL1", "LSL2", "LSL20", "LSL3", "LSL4", "LSL6", "LSL7", "LTUT", "LastNinja1", "Lode",
+  "Maniac", "ManicMiner", "Miner", "MonkeyIsland", "Montezuma", "Moon", "MrRobot", "Nebulus", "OMine", "Oblivion", "Oblivion2", "OperationWolf",
+  "OperationWolf2", "PAC2", "Paratroopers", "Penta", "Phara", "Pipeline", "Pitfall", "Pitfall2", "Pitfall3", "Pitfall4", "Pitstop", "Pooyan",
+  "Portal1", "Prince1", "Prince2", "RRR", "RickDangerous", "Robin", "SOF", "SQ1", "ST", "SVS1", "SVS10", "SVS11", "SVS2", "SVS3", "SVS4",
+  "SW2", "SW4", "Scramble2", "Scramble3", "Scramble4", "Skyrim", "Soccer", "Sorcery2", "Sorcery3", "TR1", "TR1", "TR10", "TR2", "TR2", "TR3",
+  "TheSentinel", "Tut", "Tut2", "UU", "UU2", "Ultima1", "Ultima2", "Under", "VIC20", "Valhalla", "Vixen1", "Vixen2", "WDW", "WG2", "WG3", "WOW1",
+  "WOW2", "WOW3", "Walls", "Wally", "Winter", "Wolf1", "Wolf2", "Zak", "Zaxxon", "ZimSalaBim", "Zong", "galaxian", "sabre2", "ski", "trash",
+  "zx1", "WG4", "BlueMax4", "Witcher5", "LSL9", "Shamus1", "PharaohCurse3", "Witcher4", "Witcher3", "TempleOfApshai", "Witcher2", "KnightLore2",
+  "Witcher1", "Spelunker", "ShamusCase2", "Ishar2", "Ishar1", "Jungle1", "Pitfall5", "PharaohCurse2", "Frontier", "LSL8", "SP2", "SP1", "EveLSL",
+  "SVS24", "SVS23", "KQ10", "Shamus20", "Pitfall21", "Apshai6", "Apshai5", "MontyMole", "PacClose", "PacGhost", "Pitfall20", "SVS22", "SVS21",
+  "Apshai4", "Apshai3", "Paperboy", "JungleStory", "RobinOfTheWood2", "Pyjamarama", "SammyLightfoot", "ThePawn", "KokotoniWilf", "Cauldron1",
+  "Zeppelin2", "TimeTunnel", "SP3", "AC2", "Hero30", "SVS30", "AirWolf", "AA41", "AA40", "SeaWolf", "GIJoe10",
   "Hobbit1", "Hobbit3", "Ghostbusters2", "Commando3", "EOB20", "Hobbit6", "Hobbit7", "Hobbit8", "Hobbit9", "AticAtac1", "Infiltrator1", "ManicMiner2",
-  "ManicMiner3", "Prince3", "Infiltrator2",
-  "1942_2", "Arnie1", "BTF1", "BeachHead5", "Biggles1", "BlueThunder1", "BrianBloodaxe1", "BrideOfFrakenstein1", "BruceLee1", "Captive", "EnigmaForce", 
-  "Fred3", "Fred4", "JSW4", "ManiacMansion2", "PQ1", "Pengo", "Pirates", "PolePosition", "Silkworm1", "SirFred1", "SirFred2", "SirFred3", "SuperDogfight",
-   "SuperDogfight2", "Unknown1"
+  "ManicMiner3", "Prince3", "Infiltrator2", "1942_2", "Arnie1", "BTF1", "BeachHead5", "Biggles1", "BlueThunder1", "BrianBloodaxe1", "BrideOfFrakenstein1",
+  "BruceLee1", "Captive", "EnigmaForce", "Fred3", "Fred4", "JSW4", "ManiacMansion2", "PQ1", "Pengo", "Pirates", "PolePosition", "Silkworm1", "SirFred1",
+  "SirFred2", "SirFred3", "SuperDogfight", "SuperDogfight2", "Unknown1", "BattleThroughTime", "BOF3", "Chopper2", "Cliffhanger", "F1", "IM10", "MoonPatrol", "SummerGames10" 
 ];
 //console.log("DECAL_PAINTINGS", DECAL_PAINTINGS.sort());
-var DECAL_CRESTS = [
-  "Crest",
-  "Web2",
-  "Web1",
-  "SkeletonOnTheWall",
-  "Torch",
-  "Web4",
-  "Web6",
-  "Web5",
-  "LS",
-  "Ivy2",
-  "Ivy1",
-  "PrayingSkeleton",
-  "Skull4",
-  "Skull3",
-  "Skull2",
-  "Skull1",
-  "skeletonDance",
-  "Crack5",
-  "Crack4",
-  "Crack3",
-  "HangingSkeleton",
-  "DragonAndSword",
-  "Candles1",
-  "SpiderWeb7",
-  "KnightStatue2",
-  "WallSkell",
-  "Crack7",
-  "Crack6",
-  "KnightStatue", "Ivy3", "Ivy4"
+var DECAL_CRESTS = ["Crest", "Web2", "Web1", "SkeletonOnTheWall", "Torch", "Web4", "Web6", "Web5", "LS", "Ivy2", "Ivy1", "PrayingSkeleton",
+  "Skull4", "Skull3", "Skull2", "Skull1", "skeletonDance", "Crack5", "Crack4", "Crack3", "HangingSkeleton", "DragonAndSword", "Candles1",
+  "SpiderWeb7", "KnightStatue2", "WallSkell", "Crack7", "Crack6", "KnightStatue", "Ivy3", "Ivy4"
 ];
 //console.log("DECAL_CRESTS", DECAL_CRESTS.sort());
 
@@ -2273,7 +1992,7 @@ var SPAWN = {
     for (let key in map.keys) {
       let grid = map.keys[key];
       let item = new CommonItem(grid, COMMON_ITEM_TYPE[key + "Key"]);
-      FLOOR_OBJECT.add(item);
+      FLOOR_OBJECT_WIDE.add(item);
     }
     for (let gate in map.lockedRooms) {
       gateCounter++;
@@ -2371,7 +2090,7 @@ var SPAWN = {
         map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
         MONSTER[type]
       );
-      ENEMY.add(enemy);
+      ENEMY_RC.add(enemy);
     }
     //boss
     let boss = MOSTER_LAYOUT[level].boss;
@@ -2384,11 +2103,11 @@ var SPAWN = {
         map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
         MONSTER[monster]
       );
-      ENEMY.add(enemy);
+      ENEMY_RC.add(enemy);
     }
 
     //analysis
-    if (DEBUG.VERBOSE) ENEMY.analyze();
+    if (DEBUG.VERBOSE) ENEMY_RC.analyze();
   },
   monsters(map, level) {
     let corrGrids = map.poolOfCorridorGrids(MOSTER_LAYOUT[level].corridor.N);
@@ -2399,7 +2118,7 @@ var SPAWN = {
         map.GA.getDirectionsIfNot(grid, MAPDICT.WALL).chooseRandom(),
         MONSTER[type]
       );
-      ENEMY.add(enemy);
+      ENEMY_RC.add(enemy);
     }
     for (let R of map.rooms) {
       let N = MOSTER_LAYOUT[level][R.type].N;
@@ -2413,7 +2132,7 @@ var SPAWN = {
         );
         let guardPosition = map.findMiddleSpaceUnreserved(R.area);
         enemy.guardPosition = guardPosition;
-        ENEMY.add(enemy);
+        ENEMY_RC.add(enemy);
       }
       //boss
       let boss = MOSTER_LAYOUT[level][R.type].boss;
@@ -2427,12 +2146,12 @@ var SPAWN = {
         );
         let guardPosition = map.findMiddleSpaceUnreserved(R.area);
         enemy.guardPosition = guardPosition;
-        ENEMY.add(enemy);
+        ENEMY_RC.add(enemy);
       }
     }
 
     //analysis
-    if (DEBUG.VERBOSE) ENEMY.analyze();
+    if (DEBUG.VERBOSE) ENEMY_RC.analyze();
   },
   decals(map) {
     for (const room of map.rooms) {
@@ -2475,7 +2194,7 @@ var SPAWN = {
         faceDir,
         FLOOR_CONTAINER_TYPE.Chest
       );
-      FLOOR_OBJECT.add(container);
+      FLOOR_OBJECT_WIDE.add(container);
     }
   },
   arenaItems(map) {
@@ -2483,25 +2202,25 @@ var SPAWN = {
     let corridorPool = map.poolOfCorridorGrids(SPAWN.INI.mana_potions_per_level);
     for (const grid of corridorPool) {
       let BluePotion = new CommonItem(grid, COMMON_ITEM_TYPE.BluePotion);
-      FLOOR_OBJECT.add(BluePotion);
+      FLOOR_OBJECT_WIDE.add(BluePotion);
     }
     //health potions
     corridorPool = map.poolOfCorridorGrids(SPAWN.INI.health_potions_per_level);
     for (const grid of corridorPool) {
       let RedPotion = new CommonItem(grid, COMMON_ITEM_TYPE.RedPotion);
-      FLOOR_OBJECT.add(RedPotion);
+      FLOOR_OBJECT_WIDE.add(RedPotion);
     }
     //scrolls
     corridorPool = map.poolOfCorridorGrids(SPAWN.INI.scrolls_per_level);
     for (const grid of corridorPool) {
       let Scroll = new CommonItem(grid, COMMON_ITEM_TYPE.Scroll);
-      FLOOR_OBJECT.add(Scroll);
+      FLOOR_OBJECT_WIDE.add(Scroll);
     }
     //gold, COMMON_ITEM_TYPE.Gold
     corridorPool = map.poolOfCorridorGrids(SPAWN.INI.gold_per_level);
     for (const grid of corridorPool) {
       let Gold = new CommonItem(grid, COMMON_ITEM_TYPE.GoldBar, RND(75, 125));
-      FLOOR_OBJECT.add(Gold);
+      FLOOR_OBJECT_WIDE.add(Gold);
     }
     //skills and h/m
     const total = 5;
@@ -2515,7 +2234,7 @@ var SPAWN = {
     corridorPool = map.poolOfCorridorGrids(total);
     for (let i = 0; i < total; i++) {
       let item = new CommonItem(corridorPool[i], skillsAndStats[i], 0);
-      FLOOR_OBJECT.add(item);
+      FLOOR_OBJECT_WIDE.add(item);
     }
 
   },
@@ -2525,7 +2244,7 @@ var SPAWN = {
     let roomPool = map.poolOfRoomGrids(SPAWN.INI.health_potions_per_level);
     for (const grid of roomPool) {
       let RedPotion = new CommonItem(grid, COMMON_ITEM_TYPE.RedPotion);
-      FLOOR_OBJECT.add(RedPotion);
+      FLOOR_OBJECT_WIDE.add(RedPotion);
     }
     //mana potions
     let corridorPool = map.poolOfCorridorGrids(
@@ -2533,25 +2252,25 @@ var SPAWN = {
     );
     for (const grid of corridorPool) {
       let BluePotion = new CommonItem(grid, COMMON_ITEM_TYPE.BluePotion);
-      FLOOR_OBJECT.add(BluePotion);
+      FLOOR_OBJECT_WIDE.add(BluePotion);
     }
     //scrolls
     let anyPool = map.poolOfGrids(SPAWN.INI.scrolls_per_level);
     for (const grid of anyPool) {
       let Scroll = new CommonItem(grid, COMMON_ITEM_TYPE.Scroll);
-      FLOOR_OBJECT.add(Scroll);
+      FLOOR_OBJECT_WIDE.add(Scroll);
     }
     //gold, COMMON_ITEM_TYPE.Gold
     anyPool = map.poolOfGrids(SPAWN.INI.gold_per_level);
     for (const grid of anyPool) {
       let Gold = new CommonItem(grid, COMMON_ITEM_TYPE.GoldCoin, RND(10, 50));
-      FLOOR_OBJECT.add(Gold);
+      FLOOR_OBJECT_WIDE.add(Gold);
     }
 
     anyPool = map.poolOfGrids(SPAWN.INI.gold_per_level);
     for (const grid of anyPool) {
       let Gold = new CommonItem(grid, COMMON_ITEM_TYPE.GoldBar, RND(50, 100));
-      FLOOR_OBJECT.add(Gold);
+      FLOOR_OBJECT_WIDE.add(Gold);
     }
 
     //skills and h/m
@@ -2571,7 +2290,7 @@ var SPAWN = {
     }
     for (let [index, grid] of DE.entries()) {
       let item = new CommonItem(grid, skillsAndStats[index], 0);
-      FLOOR_OBJECT.add(item);
+      FLOOR_OBJECT_WIDE.add(item);
     }
   }
 };

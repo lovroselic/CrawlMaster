@@ -7,7 +7,7 @@
 ///////////////////////Dungeon.js///////////////
 //                                            //
 //        Procedureal maze and dungeon        //
-//             generation: 3.01               //
+//             generation: 3.06               //
 //                                            //
 //    dependencies: Prototype LS, ENGINE      //
 ////////////////////////////////////////////////
@@ -132,7 +132,6 @@ class MasterDungeon {
                     N = RND(1, 2);
                 } else N = RND(2, 4);
             }
-
 
             this.connectToGrid(room, N, off);
             room.priority = 1 + q;
@@ -539,21 +538,8 @@ class MasterDungeon {
         this.obstacles.clear();
         this.obstacles = [...arguments].flat().filter((el) => el !== null);
     }
-    setNodeMap(where = "nodeMap") {
-        let map = [];
-        for (let x = 0; x < this.width; x++) {
-            map[x] = [];
-            for (let y = 0; y < this.height; y++) {
-                if (this.GA.isMazeWall(new Grid(x, y))) {
-                    map[x][y] = null;
-                } else {
-                    map[x][y] = new PathNode(x, y);
-                }
-            }
-        }
-        this.obstacles.forEach((obj) => (map[obj.x][obj.y] = null));
-        this[where] = map;
-        return map;
+    setNodeMap() {
+        return this.GA.setNodeMap("nodeMap", [MAPDICT.WALL], "exclude", this.obstacles);
     }
     gridDistance(grid) {
         if (!this.nodeMap) return -1;
@@ -582,9 +568,6 @@ class MasterDungeon {
                 let test = bridge.add(ENGINE.directions[z]);
                 if (this.GA.isEmpty(test)) {
                     let connections = this.hasConnections(bridge);
-                    /*if (connections === 2 && !this.isInAnyRoom(test)) {
-                        possible.push(bridge);
-                    }*/
                     if (connections === 2) {
                         if (!this.isInAnyRoom(test) && DUNGEON.REFUSE_CONNECTION_TO_ROOM) {
                             possible.push(bridge);
@@ -636,7 +619,6 @@ class MasterDungeon {
             this.polishDeadEnds();
         } while (this.deadEnds.length > 0);
     }
-
     getConnectionCandidates() {
         let candidates = [];
         for (let y = this.minY + 1; y < this.maxY; y++) {
@@ -716,8 +698,12 @@ class MasterDungeon {
         let missing = Math.floor(required) - dots;
         return missing;
     }
-    polishDeadEnds() {
-        //changed to polish also DE > size 1
+    polishDeadEnds(short = false) {
+        /**
+         * if true, only size-1 DE are polished, else any, but shortened for only 1 grid
+         */
+        let cons = 2;
+        if (short) cons = 3;
         this.deadEnds = [...this.deadEnds];
         for (let q = this.deadEnds.length - 1; q >= 0; q--) {
             let deadEnd = this.deadEnds[q];
@@ -725,12 +711,12 @@ class MasterDungeon {
             if (this.GA.isStair(deadEnd)) continue;
             let dir = this.deadEndDirection(deadEnd);
             let next = deadEnd.add(dir);
-            if (this.hasConnections(next) >= 2) {
+            if (this.hasConnections(next) >= cons) {
                 this.GA.toWall(deadEnd);
                 this.deadEnds.splice(q, 1);
-            }
-            if (this.isDeadEnd(next)) {
-                this.deadEnds.push(next);
+                if (this.isDeadEnd(next)) {
+                    this.deadEnds.push(next);
+                }
             }
         }
     }
@@ -1209,10 +1195,7 @@ class Maze extends MasterDungeon {
         super(sizeX, sizeY);
         this.type = "MAZE";
         this.carveMaze(start);
-        console.log(
-            `%cMaze construction ${performance.now() - t0} ms.`,
-            DUNGEON.CSS
-        );
+        console.log(`%cMaze construction ${performance.now() - t0} ms.`, DUNGEON.CSS);
     }
 }
 class Arena extends MasterDungeon {
@@ -1232,7 +1215,6 @@ class Arena extends MasterDungeon {
         let topLeft = center.add(new Vector(-ARENA.CENTRAL_ROOM_WALL_WIDTH, -ARENA.CENTRAL_ROOM_WALL_WIDTH));
         let W = 2 * ARENA.CENTRAL_ROOM_WALL_WIDTH + ARENA.CENTRAL_ROOM_SIZE;
         this.GA.rect(topLeft.x, topLeft.y, W, W, 2);
-        //let roomArea = new Area(topLeft.x, topLeft.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
         let roomArea = new Area(center.x, center.y, ARENA.CENTRAL_ROOM_SIZE, ARENA.CENTRAL_ROOM_SIZE);
         let ignoreArea = new Area(topLeft.x, topLeft.y, W, W);
         let RoomObj = new Room(this.rooms.length + 1, roomArea, DUNGEON.LOCK_LEVELS[0]);
@@ -1402,12 +1384,7 @@ class Dungeon extends MasterDungeon {
 
         if (DUNGEON.SET_ROOMS) {
             if (this.rooms.length < DUNGEON.LOCK_LEVEL - 1) {
-                console.error(
-                    "too few rooms: ",
-                    this.rooms.length,
-                    "; for lock level",
-                    DUNGEON.LOCK_LEVEL
-                );
+                console.error("too few rooms: ", this.rooms.length, "; for lock level", DUNGEON.LOCK_LEVEL);
                 throw "SOLVE it Lovro!";
             }
 
@@ -1597,12 +1574,15 @@ class RatArena extends MasterDungeon {
         let leftX = centerX - F * (RAT_ARENA.CORR_PAD + 1);
         let bottomLeft = new Grid(leftX, this.maxY);
         this.corridor_starts = [];
-        this.hero_start = new Grid(leftX, this.maxY + RAT_ARENA.CORR_LENGTH - 1);
+        //startPosition
+        this.startPosition = new Grid(centerX, this.maxY - Math.round((RAT_ARENA.CORR_LENGTH - 1) / 2));
         for (let c = 0; c < RAT_ARENA.NCORR; c++) {
             let startGrid = new Grid(bottomLeft.x + c * (RAT_ARENA.CORR_PAD + 1), bottomLeft.y);
             this.line(startGrid, RAT_ARENA.CORR_LENGTH, UP, MAPDICT.ROOM);
-            this.corridor_starts.push(startGrid);
+            this.corridor_starts.push(startGrid.add(UP));
         }
+        this.corridor_starts = this.corridor_starts.midsort();
+
         this.line(bottomLeft, (RAT_ARENA.NCORR - 1) * (RAT_ARENA.CORR_PAD + 1) + 1, RIGHT);
         this.line(bottomLeft.add(UP, RAT_ARENA.CORR_LENGTH - 1), (RAT_ARENA.NCORR - 1) * (RAT_ARENA.CORR_PAD + 1) + 1, RIGHT);
         let tempMaxY = this.maxY;
@@ -1626,10 +1606,16 @@ class RatArena extends MasterDungeon {
         this.addConnections();
         this.density = this.measureDensity();
 
-        //
         delete this.areas;
         delete this.areaTree;
         console.log(`%cRat-Arena construction ${performance.now() - t0} ms.`, DUNGEON.CSS);
+    }
+}
+class FreeMap extends MasterDungeon {
+    constructor(sizeX, sizeY, GA = null) {
+        super(sizeX, sizeY);
+        this.type = "FREE-MAP";
+        if (GA !== null) this.GA = GA;
     }
 }
 var MAZE = {
@@ -1646,9 +1632,9 @@ var MAZE = {
     bias: 2,
     targetDensity: 0.6,
     configure(maze, sizeX = null, sizeY = null, start = null) {
-        if (MAZE.polishDeadEnds) maze.polishDeadEnds();
         if (MAZE.connectSome) maze.connectSomeDeadEnds(MAZE.leaveDeadEnds);
-        if (MAZE.connectDeadEnds) maze.connectDeadEnds();
+        if (MAZE.connectDeadEnds) maze.eradicateDeadEnds();
+        if (MAZE.polishDeadEnds) maze.polishDeadEnds(true);
         if (MAZE.addConnections) maze.addConnections();
         if (MAZE.autoCalcDensity) maze.density = maze.measureDensity();
         if (MAZE.opened) {
@@ -1677,7 +1663,6 @@ var RAT_ARENA = {
         DUNGEON.MAX_ROOM = 4;
         DUNGEON.MIN_PADDING = 2;
         DUNGEON.ITERATIONS = 5;
-        //DUNGEON.ITERATIONS = 4;
         DUNGEON.init();
         var rat_arena = new RatArena(sizeX, sizeY);
         return rat_arena;
@@ -1701,8 +1686,19 @@ var ARENA = {
         return arena;
     }
 };
+var FREE_MAP = {
+    create(sizeX, sizeY, GA = null) {
+        var map = new FreeMap(sizeX, sizeY, GA);
+        return map;
+    },
+    import(data) {
+        data.map = GridArray.importMap(data.map);
+        data.map = GridArray.fromString(data.width, data.height, data.map);
+        return FREE_MAP.create(data.width, data.height, data.map);
+    }
+};
 var DUNGEON = {
-    VERSION: "3.01",
+    VERSION: "3.06",
     CSS: "color: #f4ee42",
     REFUSE_CONNECTION_TO_ROOM: true,
     LIMIT_ROOMS: false,

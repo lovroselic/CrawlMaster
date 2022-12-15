@@ -26,9 +26,10 @@ knownBugs:
 /////////////////////////////////////////
 
 var AI = {
-  VERSION: "1.00",
+  VERSION: "1.01",
   CSS: "color: silver",
   referenceEntity: null,
+  immobileWander: true,
   initialize(ref) {
     this.referenceEntity = ref;
   },
@@ -44,30 +45,27 @@ var AI = {
       return [enemy.moveState.dir.mirror()];
     }
   },
-  immobile() {
+  immobile(enemy) {
+    if (AI.immobileWander) return this.wanderer(enemy);
     return [NOWAY];
   },
   hunt(enemy) {
-    let nodeMap = enemy.parent.map.nodeMap;
+    let nodeMap = enemy.parent.map.GA.nodeMap;
     let grid = Grid.toClass(enemy.moveState.pos);
     let goto = nodeMap[grid.x][grid.y].goto || NOWAY;
     return [goto];
   },
-  crossroader(enemy, playerPosition, dir) {
-    let goal = enemy.parent.map.GA.findNextCrossroad(playerPosition, dir);
+  crossroader(enemy, playerPosition, dir, block) {
+    let goal, _;
+    [goal, _] = enemy.parent.map.GA.findNextCrossroad(playerPosition, dir);
     if (goal === null) {
       return this.hunt(enemy);
     }
 
-    let Astar = enemy.parent.map.GA.findPath_AStar_fast(
-      Grid.toClass(enemy.moveState.pos),
-      goal,
-      [MAPDICT.WALL],
-      "exclude"
-    );
+    let Astar = enemy.parent.map.GA.findPath_AStar_fast(Grid.toClass(enemy.moveState.pos), goal, [MAPDICT.WALL], "exclude", block);
 
     if (Astar === null) {
-      return this.immobile();
+      return this.immobile(enemy);
     }
     if (Astar === 0) {
       return this.hunt(enemy);
@@ -78,23 +76,15 @@ var AI = {
     return directions;
   },
   follower(enemy, ARG) {
-    return this.crossroader(
-      enemy,
-      ARG.playerPosition,
-      ARG.currentPlayerDir.mirror()
-    );
+    return this.crossroader(enemy, ARG.playerPosition, ARG.currentPlayerDir.mirror(), ARG.block);
   },
   advancer(enemy, ARG) {
-    return this.crossroader(enemy, ARG.playerPosition, ARG.currentPlayerDir);
+    return this.crossroader(enemy, ARG.playerPosition, ARG.currentPlayerDir, ARG.block);
   },
   runAway(enemy) {
-    let nodeMap = enemy.parent.map.nodeMap;
+    let nodeMap = enemy.parent.map.GA.nodeMap;
     let grid = Grid.toClass(enemy.moveState.pos);
-    let directions = enemy.parent.map.GA.getDirectionsFromNodeMap(
-      grid,
-      nodeMap,
-      nodeMap[grid.x][grid.y].goto
-    );
+    let directions = enemy.parent.map.GA.getDirectionsFromNodeMap(grid, nodeMap, nodeMap[grid.x][grid.y].goto);
     directions.push(NOWAY);
     let distances = [];
     for (const dir of directions) {
@@ -114,13 +104,13 @@ var AI = {
     );
 
     if (Astar === null) {
-      return this.immobile();
+      return this.immobile(enemy);
     }
     if (Astar === 0) {
       if (enemy.behaviour.complex("passive")) {
-        enemy.behaviour.cycle("passive"); 
+        enemy.behaviour.cycle("passive");
         enemy.behaviour.strategy = enemy.behaviour.getPassive();
-        return this.immobile();
+        return this.immobile(enemy);
       } else {
         //maybe obsolete
         return this.hunt(enemy);
@@ -163,7 +153,7 @@ var AI = {
         } else {
           enemy.behaviour.set("active", "hunt");
         }
-        return this.immobile();
+        return this.immobile(enemy);
       }
     } else {
       return this.keepTheDistance(enemy, ARG);
@@ -173,7 +163,7 @@ var AI = {
     let map = enemy.parent.map;
     let grid = Grid.toClass(enemy.moveState.pos);
     let playerGrid = Grid.toClass(ARG.playerPosition);
-    let directions = map.GA.getDirectionsFromNodeMap(grid, map.nodeMap);
+    let directions = map.GA.getDirectionsFromNodeMap(grid, map.GA.nodeMap);
     let possible = [];
     let max = [];
     let curMax = 0;
@@ -191,12 +181,73 @@ var AI = {
       return [possible.chooseRandom()];
     } else if (max.length > 0) {
       return [max.chooseRandom()];
-    } else return this.immobile();
+    } else return this.immobile(enemy);
+  },
+  shadower(enemy, ARG) {
+    let directions = enemy.parent.map.GA.getDirectionsIfNot(
+      Grid.toClass(enemy.moveState.pos),
+      MAPDICT.WALL,
+      enemy.moveState.dir.mirror()
+    );
+    if (directions.length === 1) return [directions[0]];
+    if (enemy.moveState.goingAway(ARG.MS) || enemy.moveState.towards(ARG.MS, enemy.tolerance)) {
+      //if going away or not coming towards, take HERo's dir if possible
+      if (ARG.MS.dir.isInAt(directions) !== -1) {
+        return [ARG.MS.dir];
+      }
+    } else {
+      //else take opposite dir
+      let contra = ARG.MS.dir.mirror();
+      if (contra.isInAt(directions) !== -1) {
+        return [contra];
+      }
+    }
+    //remaining: take direction in which the distance is largest
+    let solutions = enemy.moveState.endGrid.directionSolutions(ARG.MS.homeGrid);
+    let selected = solve();
+    if (selected) return [selected];
+    return [directions.chooseRandom()];
+
+    function solve() {
+      for (let q = 0; q < 2; q++) {
+        if (solutions[q].dir.isInAt(directions) !== -1)
+          return solutions[q].dir;
+      }
+      return null;
+    }
+  },
+  prophet(enemy, ARG) {
+    let firstCR, lastDir;
+    [firstCR, lastDir] = enemy.parent.map.GA.findNextCrossroad(ARG.playerPosition, ARG.currentPlayerDir);
+    let directions = enemy.parent.map.GA.getDirectionsIfNot(firstCR, MAPDICT.WALL, lastDir.mirror());
+    let crossroads = [];
+    let secondCR, _;
+    for (let dir of directions) {
+      [secondCR, _] = enemy.parent.map.GA.findNextCrossroad(firstCR.add(dir), dir);
+      crossroads.push(secondCR);
+    }
+    let distances = [];
+    let paths = [];
+    for (let cross of crossroads) {
+      let Astar = enemy.parent.map.GA.findPath_AStar_fast(Grid.toClass(enemy.moveState.pos), cross, [MAPDICT.WALL], "exclude", ARG.block);
+
+      if (Astar === null) {
+        return this.immobile(enemy);
+      }
+      if (Astar === 0) {
+        return this.hunt(enemy);
+      }
+
+      distances.push(Astar[cross.x][cross.y].path);
+      paths.push(Astar);
+    }
+
+    let minIndex = distances.indexOf(Math.min(...distances));
+    let path = GRID.pathFromNodeMap(crossroads[minIndex], paths[minIndex]);
+    let finalDirections = GRID.directionsFromPath(path, 1);
+    return finalDirections;
   },
 
-  //to do
-  prophet(enemy, ARG) { },
-  shadower() { }
 };
 class Behaviour {
   constructor(

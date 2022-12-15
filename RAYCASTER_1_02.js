@@ -19,7 +19,7 @@ TODO:
 
 /** Raycaster main */
 var ROM = {
-  staticPools: ["FLOOR_OBJECT", "DECAL", "ENEMY"],
+  staticPools: ["FLOOR_OBJECT_WIDE", "DECAL", "ENEMY_RC"],
   dinamicPools: ["DESTRUCTION_ANIMATION", "CHANGING_ANIMATION", "MISSILE"],
   linkMap(dungeon) {
     for (const stat of [...this.staticPools, ...this.dinamicPools]) {
@@ -46,19 +46,13 @@ var CAMERA = {
   transformDepth: null,
   Z: 0.5,
   set(player = PLAYER) {
-    CAMERA.dir = player.dir
-      .rotate(Math.radians(90))
-      .scale(Math.tan(Math.radians(CAMERA.FOV) / 2));
-
+    CAMERA.dir = player.dir.rotate(Math.radians(90)).scale(Math.tan(Math.radians(CAMERA.FOV) / 2));
     CAMERA.minPerspective = Math.cos(Math.radians((90 + this.FOV) / 2));
   },
   transform(spritePos) {
-    let invDet =
-      1.0 / (CAMERA.dir.x * PLAYER.dir.y - PLAYER.dir.x * CAMERA.dir.y);
-    CAMERA.transformX =
-      invDet * (PLAYER.dir.y * spritePos.x - PLAYER.dir.x * spritePos.y);
-    CAMERA.transformDepth =
-      invDet * (-CAMERA.dir.y * spritePos.x + CAMERA.dir.x * spritePos.y);
+    let invDet = 1.0 / (CAMERA.dir.x * PLAYER.dir.y - PLAYER.dir.x * CAMERA.dir.y);
+    CAMERA.transformX = invDet * (PLAYER.dir.y * spritePos.x - PLAYER.dir.x * spritePos.y);
+    CAMERA.transformDepth = invDet * (-CAMERA.dir.y * spritePos.x + CAMERA.dir.x * spritePos.y);
   },
   setZ(z) {
     this.Z = z;
@@ -77,24 +71,17 @@ var PLAYER = {
     CAMERA.set();
   },
   rotate(rotDirection, lapsedTime) {
-    let angle =
-      Math.round(lapsedTime / ENGINE.INI.ANIMATION_INTERVAL) *
-      rotDirection *
-      ((2 * Math.PI) / PLAYER.rotationResolution);
+    let angle = Math.round(lapsedTime / ENGINE.INI.ANIMATION_INTERVAL) * rotDirection * ((2 * Math.PI) / PLAYER.rotationResolution);
     PLAYER.dir = PLAYER.dir.rotate(angle);
     CAMERA.dir = CAMERA.dir.rotate(angle);
   },
   bumpEnemy(nextPos) {
-    let checkGrids = RAYCAST.MAP.GA.gridsAroundEntity(
-      nextPos,
-      PLAYER.dir,
-      PLAYER.r
-    );
+    let checkGrids = RAYCAST.MAP.GA.gridsAroundEntity(nextPos, PLAYER.dir, PLAYER.r);
     let enemies = RAYCAST.MAP.enemyIA.unrollArray(checkGrids);
     if (enemies.size > 0) {
       for (const e of enemies) {
-        if (ENEMY.POOL[e - 1].base !== 1) continue;
-        let EP_hit = PLAYER.circleCollision(ENEMY.POOL[e - 1], nextPos);
+        if (ENEMY_RC.POOL[e - 1].base !== 1) continue;
+        let EP_hit = PLAYER.circleCollision(ENEMY_RC.POOL[e - 1], nextPos);
         if (EP_hit) {
           return true;
         }
@@ -144,10 +131,7 @@ var PLAYER = {
       if (GRID.same(futureGrid, currentGrid)) {
         continue;
       } else {
-        if (
-          RAYCAST.MAP.GA.isWall(futureGrid) &&
-          RAYCAST.MAP.GA.isStair(futureGrid)
-        ) {
+        if (RAYCAST.MAP.GA.isWall(futureGrid) && RAYCAST.MAP.GA.isStair(futureGrid)) {
           let IA = RAYCAST.MAP.decalIA;
           let item = DECAL.POOL[IA.unroll(futureGrid)[0] - 1];
           return item;
@@ -221,16 +205,10 @@ var PLAYER = {
   hitByMissile: null
 };
 var RAYCAST = {
-  VERSION: "1.01",
+  VERSION: "1.02",
   CSS: "color: gold",
   MAP: null,
-  spriteSources: [
-    ENEMY,
-    MISSILE,
-    DESTRUCTION_ANIMATION,
-    FLOOR_OBJECT,
-    CHANGING_ANIMATION
-  ],
+  spriteSources: [ENEMY_RC, MISSILE, DESTRUCTION_ANIMATION, FLOOR_OBJECT_WIDE, CHANGING_ANIMATION],
   decalSources: [DECAL],
   SCREEN_WIDTH: null,
   SCREEN_HEIGHT: null,
@@ -258,12 +236,8 @@ var RAYCAST = {
     console.log(`%cRAYCAST initialized.`, RAYCAST.CSS);
     RAYCAST.SCREEN_WIDTH = w;
     RAYCAST.SCREEN_HEIGHT = h;
-    RAYCAST.OVERDRAW =
-      Math.ceil(
-        Math.ceil(RAYCAST.INI.OVERDRAW_FACTOR * RAYCAST.SCREEN_HEIGHT) / 2
-      ) * 2;
+    RAYCAST.OVERDRAW = Math.ceil(Math.ceil(RAYCAST.INI.OVERDRAW_FACTOR * RAYCAST.SCREEN_HEIGHT) / 2) * 2;
     RAYCAST.TEX_SIZE = ts;
-    console.log("RAYCAST", RAYCAST);
   },
   setMap(map) {
     RAYCAST.MAP = map;
@@ -275,9 +249,7 @@ var RAYCAST = {
     return BUFFER;
   },
   renderView(floorData, ceilingData, wallData) {
-    let BUFFER = new Uint8ClampedArray(
-      4 * RAYCAST.SCREEN_WIDTH * RAYCAST.SCREEN_HEIGHT
-    );
+    let BUFFER = new Uint8ClampedArray(4 * RAYCAST.SCREEN_WIDTH * RAYCAST.SCREEN_HEIGHT);
     let Z_BUFFER = new Float32Array(RAYCAST.SCREEN_WIDTH);
     let H_BUFFER = new Uint32Array(RAYCAST.SCREEN_WIDTH);
     let GRID_BUFFER = new Array(RAYCAST.SCREEN_WIDTH); //to which grid x belongs
@@ -289,11 +261,7 @@ var RAYCAST = {
       let cameraX = (2 * x) / (RAYCAST.SCREEN_WIDTH - 1) - 1;
       let rayDir = PLAYER.dir.add(CAMERA.dir, cameraX);
       let Map = Grid.toClass(PLAYER.pos);
-      let deltaDist = new FP_Vector(
-        Math.abs(1 / rayDir.x),
-        Math.abs(1 / rayDir.y)
-      );
-
+      let deltaDist = new FP_Vector(Math.abs(1 / rayDir.x), Math.abs(1 / rayDir.y));
       let stepX;
       let sideDistX;
       let stepY;
@@ -345,22 +313,14 @@ var RAYCAST = {
         perpWallDist = (Map.y - PLAYER.pos.y + (1 - stepY) / 2) / rayDir.y;
       }
 
-      let lineHeight =
-        Math.ceil(RAYCAST.SCREEN_HEIGHT / perpWallDist) + RAYCAST.OVERDRAW;
+      let lineHeight = Math.ceil(RAYCAST.SCREEN_HEIGHT / perpWallDist) + RAYCAST.OVERDRAW;
 
       Z_BUFFER[x] = perpWallDist;
       H_BUFFER[x] = lineHeight;
       GRID_BUFFER[x] = Map;
 
-      let drawStart = Math.max(
-        ((RAYCAST.SCREEN_HEIGHT - lineHeight) / 2) | 0,
-        0
-      );
-
-      let drawEnd = Math.min(
-        RAYCAST.SCREEN_HEIGHT,
-        ((RAYCAST.SCREEN_HEIGHT + lineHeight) / 2) | 0
-      );
+      let drawStart = Math.max(((RAYCAST.SCREEN_HEIGHT - lineHeight) / 2) | 0, 0);
+      let drawEnd = Math.min(RAYCAST.SCREEN_HEIGHT, ((RAYCAST.SCREEN_HEIGHT + lineHeight) / 2) | 0);
 
       if (hit) {
         let wallX;
@@ -381,14 +341,11 @@ var RAYCAST = {
         }
 
         let step = RAYCAST.TEX_SIZE / lineHeight;
-        let texPos =
-          (drawStart + lineHeight / 2 - RAYCAST.SCREEN_HEIGHT / 2) * step;
+        let texPos = (drawStart + lineHeight / 2 - RAYCAST.SCREEN_HEIGHT / 2) * step;
 
         let tintAmount = 1.0;
         if (perpWallDist > RAYCAST.INI.MIN_SHADING) {
-          tintAmount =
-            (perpWallDist - RAYCAST.INI.MAX_DISTANCE) ** 2 /
-            (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
+          tintAmount = (perpWallDist - RAYCAST.INI.MAX_DISTANCE) ** 2 / (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
         }
 
         for (let y = drawStart; y < drawEnd; y++) {
@@ -405,11 +362,7 @@ var RAYCAST = {
     }
 
     //floor casting
-    for (
-      let y = RAYCAST.SCREEN_HEIGHT - 1;
-      y >= RAYCAST.SCREEN_HEIGHT / 2 + 1;
-      y--
-    ) {
+    for (let y = RAYCAST.SCREEN_HEIGHT - 1; y >= RAYCAST.SCREEN_HEIGHT / 2 + 1; y--) {
       let leftRay = PLAYER.dir.sub(CAMERA.dir);
       let rightRay = PLAYER.dir.add(CAMERA.dir);
       let p = y - RAYCAST.SCREEN_HEIGHT / 2;
@@ -420,9 +373,7 @@ var RAYCAST = {
 
       let tintAmount = 1.0;
       if (rowDistance > RAYCAST.INI.MIN_SHADING) {
-        tintAmount =
-          (rowDistance - RAYCAST.INI.MAX_DISTANCE) ** 2 /
-          (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
+        tintAmount = (rowDistance - RAYCAST.INI.MAX_DISTANCE) ** 2 / (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
       }
 
       let floorStep = new FP_Vector(
@@ -434,10 +385,7 @@ var RAYCAST = {
       for (let x = 0; x < RAYCAST.SCREEN_WIDTH; x++) {
         let Cell = Grid.toClass(floorPos);
 
-        if (
-          RAYCAST.MAP.GA.check(Cell, MAPDICT.WALL) ||
-          rowDistance > Z_BUFFER[x]
-        ) {
+        if (RAYCAST.MAP.GA.check(Cell, MAPDICT.WALL) || rowDistance > Z_BUFFER[x]) {
           floorPos = floorPos.translate(floorStep);
           continue;
         }
@@ -452,23 +400,17 @@ var RAYCAST = {
           VISIBLE_DECAL_LIST = VISIBLE_DECAL_LIST.concat(decalsInCell);
         }
 
-        let tx =
-          (RAYCAST.TEX_SIZE * (floorPos.x - Cell.x)) & (RAYCAST.TEX_SIZE - 1);
-        let ty =
-          (RAYCAST.TEX_SIZE * (floorPos.y - Cell.y)) & (RAYCAST.TEX_SIZE - 1);
+        let tx = (RAYCAST.TEX_SIZE * (floorPos.x - Cell.x)) & (RAYCAST.TEX_SIZE - 1);
+        let ty = (RAYCAST.TEX_SIZE * (floorPos.y - Cell.y)) & (RAYCAST.TEX_SIZE - 1);
         let textureIndex = 4 * ty * RAYCAST.TEX_SIZE + 4 * tx;
         let floorColor = floorData.data.slice(textureIndex, textureIndex + 4);
-        let ceilingColor = ceilingData.data.slice(
-          textureIndex,
-          textureIndex + 4
-        );
+        let ceilingColor = ceilingData.data.slice(textureIndex, textureIndex + 4);
 
         RAYCAST.tint(floorColor, tintAmount);
         RAYCAST.tint(ceilingColor, tintAmount);
         let bufferIndex = 4 * x + 4 * RAYCAST.SCREEN_WIDTH * y;
         RAYCAST.pasteColor(floorColor, bufferIndex, BUFFER);
-        bufferIndex =
-          4 * x + 4 * RAYCAST.SCREEN_WIDTH * (RAYCAST.SCREEN_HEIGHT - y - 1);
+        bufferIndex = 4 * x + 4 * RAYCAST.SCREEN_WIDTH * (RAYCAST.SCREEN_HEIGHT - y - 1);
         RAYCAST.pasteColor(ceilingColor, bufferIndex, BUFFER);
         floorPos = floorPos.translate(floorStep);
       }
@@ -584,47 +526,27 @@ var RAYCAST = {
   drawSprite(sprite) {
     let spriteRel = sprite.moveState.pos.sub(PLAYER.pos);
     CAMERA.transform(spriteRel);
-
-    let spriteScreenX = Math.floor(
-      (RAYCAST.SCREEN_WIDTH / 2) *
-      (1 + CAMERA.transformX / CAMERA.transformDepth)
-    );
-
+    let spriteScreenX = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let imageData = sprite.actor.getImageData();
     let vScale = imageData.height / RAYCAST.INI.BLOCK_SIZE;
     let wScale = imageData.width / RAYCAST.INI.BLOCK_SIZE;
-
-    let verticalMove = Math.floor(
-      (sprite.base * (0.5 * (RAYCAST.INI.BLOCK_SIZE + imageData.height))) /
-      vScale /
-      CAMERA.transformDepth
-    );
-
-    let spriteHeight = Math.abs(
-      ((RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * vScale) | 0
-    );
-
-    let drawStartY_abs = Math.floor(
-      -spriteHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove
-    );
+    let verticalMove = Math.floor((sprite.base * (0.5 * (RAYCAST.INI.BLOCK_SIZE + imageData.height))) / vScale / CAMERA.transformDepth);
+    let spriteHeight = Math.abs(((RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * vScale) | 0);
+    let drawStartY_abs = Math.floor(-spriteHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove);
     let drawStartY = Math.max(drawStartY_abs, 0);
 
     if (drawStartY_abs >= RAYCAST.SCREEN_HEIGHT) {
       return;
     }
 
-    let drawEndY =
-      (spriteHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove) | 0;
+    let drawEndY = (spriteHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove) | 0;
     drawEndY = Math.min(drawEndY, RAYCAST.SCREEN_HEIGHT - 1);
 
     if (drawEndY < 0) {
       return;
     }
 
-    let spriteWidth = Math.round(
-      (RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * wScale
-    );
-
+    let spriteWidth = Math.round((RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * wScale);
     let drawStartX_abs = Math.floor(-spriteWidth / 2 + spriteScreenX);
     let drawStartX = Math.max(drawStartX_abs, 0);
 
@@ -639,37 +561,18 @@ var RAYCAST = {
       return;
     }
 
-    for (
-      let stripe = drawStartX;
-      stripe < drawEndX && stripe < RAYCAST.SCREEN_WIDTH;
-      stripe++
-    ) {
+    for (let stripe = drawStartX; stripe < drawEndX && stripe < RAYCAST.SCREEN_WIDTH; stripe++) {
       if (CAMERA.transformDepth < RAYCAST.DATA.Z_BUFFER[stripe]) {
-        let texX =
-          (((stripe - drawStartX_abs) * imageData.width) / spriteWidth) >>> 0;
-        for (
-          let y = drawStartY;
-          y < drawEndY && y < RAYCAST.SCREEN_HEIGHT;
-          y++
-        ) {
-          let deltaY =
-            (y -
-              verticalMove -
-              RAYCAST.SCREEN_HEIGHT / 2 +
-              spriteHeight / 2) >>>
-            0;
+        let texX = (((stripe - drawStartX_abs) * imageData.width) / spriteWidth) >>> 0;
+        for (let y = drawStartY; y < drawEndY && y < RAYCAST.SCREEN_HEIGHT; y++) {
+          let deltaY = (y - verticalMove - RAYCAST.SCREEN_HEIGHT / 2 + spriteHeight / 2) >>> 0;
           let texY = ((deltaY * imageData.height) / spriteHeight) >>> 0;
           let textureIndex = 4 * texY * imageData.width + 4 * texX;
-          let spriteColor = imageData.data.slice(
-            textureIndex,
-            textureIndex + 4
-          );
+          let spriteColor = imageData.data.slice(textureIndex, textureIndex + 4);
           if (spriteColor[3] > 0) {
             let tintAmount = 1.0;
             if (sprite.distance > RAYCAST.INI.MIN_SHADING) {
-              tintAmount =
-                (sprite.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 /
-                (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
+              tintAmount = (sprite.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 / (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
             }
             let bufferIndex = 4 * stripe + 4 * RAYCAST.SCREEN_WIDTH * y;
             RAYCAST.tint(spriteColor, tintAmount);
@@ -684,13 +587,9 @@ var RAYCAST = {
     decal.hide();
     let imageData = decal.getImageData();
     let vScale = imageData.height / RAYCAST.INI.BLOCK_SIZE / 2;
-
     let leftRel = decal.leftDraw.sub(PLAYER.pos);
     CAMERA.transform(leftRel);
-    let drawStartX_abs = Math.floor(
-      (RAYCAST.SCREEN_WIDTH / 2) *
-      (1 + CAMERA.transformX / CAMERA.transformDepth)
-    );
+    let drawStartX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawStartX = Math.max(drawStartX_abs, 0);
     if (drawStartX >= RAYCAST.SCREEN_WIDTH) {
       return;
@@ -698,10 +597,7 @@ var RAYCAST = {
 
     let rightRel = decal.rightDraw.sub(PLAYER.pos);
     CAMERA.transform(rightRel);
-    let drawEndX_abs = Math.floor(
-      (RAYCAST.SCREEN_WIDTH / 2) *
-      (1 + CAMERA.transformX / CAMERA.transformDepth)
-    );
+    let drawEndX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
     if (drawEndX < 0) {
       return;
@@ -710,11 +606,7 @@ var RAYCAST = {
     let decalRel = decal.drawPosition.sub(PLAYER.pos);
     CAMERA.transform(decalRel);
 
-    let verticalMove = Math.floor(
-      (RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) /
-      vScale /
-      CAMERA.transformDepth
-    );
+    let verticalMove = Math.floor((RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) / vScale / CAMERA.transformDepth);
 
     for (let stripe = drawStartX; stripe < drawEndX; stripe++) {
       let closeGrid = RAYCAST.DATA.GRID_BUFFER[stripe];
@@ -722,36 +614,22 @@ var RAYCAST = {
         continue;
       }
 
-      let texX =
-        (((stripe - drawStartX_abs) / (drawEndX_abs - drawStartX_abs)) *
-          imageData.width) |
-        0;
-
-      let decalHeight = Math.round(
-        (RAYCAST.SCREEN_HEIGHT / RAYCAST.DATA.Z_BUFFER[stripe]) * vScale
-      );
-
-      let drawStartY_abs = Math.floor(
-        -decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove
-      );
+      let texX = (((stripe - drawStartX_abs) / (drawEndX_abs - drawStartX_abs)) * imageData.width) | 0;
+      let decalHeight = Math.round((RAYCAST.SCREEN_HEIGHT / RAYCAST.DATA.Z_BUFFER[stripe]) * vScale);
+      let drawStartY_abs = Math.floor(-decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove);
       let drawStartY = Math.max(drawStartY_abs, 0);
       if (drawStartY_abs >= RAYCAST.SCREEN_HEIGHT) {
         continue;
       }
 
-      let drawEndY = Math.floor(
-        decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove
-      );
+      let drawEndY = Math.floor(decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove);
       drawEndY = Math.min(drawEndY, RAYCAST.SCREEN_HEIGHT - 1);
       if (drawEndY < 0) {
         continue;
       }
 
       for (let y = drawStartY; y < drawEndY; y++) {
-        let deltaY =
-          (y - verticalMove - RAYCAST.SCREEN_HEIGHT / 2 + decalHeight / 2) >>>
-          0;
-
+        let deltaY = (y - verticalMove - RAYCAST.SCREEN_HEIGHT / 2 + decalHeight / 2) >>> 0;
         let texY = ((deltaY * imageData.height) / decalHeight) >>> 0;
         let textureIndex = 4 * texY * imageData.width + 4 * texX;
         let decalColor = imageData.data.slice(textureIndex, textureIndex + 4);
@@ -760,9 +638,7 @@ var RAYCAST = {
           let bufferIndex = 4 * stripe + 4 * RAYCAST.SCREEN_WIDTH * y;
           let tintAmount = 1.0;
           if (decal.distance > RAYCAST.INI.MIN_SHADING) {
-            tintAmount =
-              (decal.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 /
-              (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
+            tintAmount = (decal.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 / (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
           }
           RAYCAST.tint(decalColor, tintAmount);
           RAYCAST.pasteColor(decalColor, bufferIndex, RAYCAST.DATA.BUFFER);
@@ -797,10 +673,7 @@ var RAYCAST = {
 
     let leftRel = decal.leftDraw.sub(PLAYER.pos);
     CAMERA.transform(leftRel);
-    let drawStartX_abs = Math.floor(
-      (RAYCAST.SCREEN_WIDTH / 2) *
-      (1 + CAMERA.transformX / CAMERA.transformDepth)
-    );
+    let drawStartX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawStartX = Math.max(drawStartX_abs, 0);
     if (drawStartX >= RAYCAST.SCREEN_WIDTH) {
       return;
@@ -808,10 +681,7 @@ var RAYCAST = {
 
     let rightRel = decal.rightDraw.sub(PLAYER.pos);
     CAMERA.transform(rightRel);
-    let drawEndX_abs = Math.floor(
-      (RAYCAST.SCREEN_WIDTH / 2) *
-      (1 + CAMERA.transformX / CAMERA.transformDepth)
-    );
+    let drawEndX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
     if (drawEndX < 0) {
       return;
@@ -824,37 +694,22 @@ var RAYCAST = {
       let xRel = initialGrid.sub(PLAYER.pos);
       CAMERA.transform(xRel);
 
-      let verticalMove = Math.floor(
-        (RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) /
-        vScale /
-        CAMERA.transformDepth
-      );
-
-      let decalHeight = Math.round(
-        (RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * vScale
-      );
-
-      let drawStartY_abs = Math.floor(
-        -decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove
-      );
+      let verticalMove = Math.floor((RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) / vScale / CAMERA.transformDepth);
+      let decalHeight = Math.round((RAYCAST.SCREEN_HEIGHT / CAMERA.transformDepth) * vScale);
+      let drawStartY_abs = Math.floor(-decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove);
       let drawStartY = Math.max(drawStartY_abs, 0);
       if (drawStartY_abs >= RAYCAST.SCREEN_HEIGHT) {
         continue;
       }
 
-      let drawEndY = Math.floor(
-        decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove
-      );
+      let drawEndY = Math.floor(decalHeight / 2 + RAYCAST.SCREEN_HEIGHT / 2 + verticalMove);
       drawEndY = Math.min(drawEndY, RAYCAST.SCREEN_HEIGHT - 1);
       if (drawEndY < 0) {
         continue;
       }
 
       for (let y = drawStartY; y < drawEndY; y++) {
-        let deltaY =
-          (y - verticalMove - RAYCAST.SCREEN_HEIGHT / 2 + decalHeight / 2) >>>
-          0;
-
+        let deltaY = (y - verticalMove - RAYCAST.SCREEN_HEIGHT / 2 + decalHeight / 2) >>> 0;
         let texY = ((deltaY * imageData.height) / decalHeight) >>> 0;
         let textureIndex = 4 * texY * imageData.width + 4 * texX;
         let decalColor = imageData.data.slice(textureIndex, textureIndex + 4);
@@ -862,9 +717,7 @@ var RAYCAST = {
           let bufferIndex = 4 * stripe + 4 * RAYCAST.SCREEN_WIDTH * y;
           let tintAmount = 1.0;
           if (decal.distance > RAYCAST.INI.MIN_SHADING) {
-            tintAmount =
-              (decal.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 /
-              (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
+            tintAmount = (decal.distance - RAYCAST.INI.MAX_DISTANCE) ** 2 / (RAYCAST.INI.MAX_DISTANCE - RAYCAST.INI.MIN_SHADING) ** 2;
           }
           RAYCAST.tint(decalColor, tintAmount);
           RAYCAST.pasteColor(decalColor, bufferIndex, RAYCAST.DATA.BUFFER);
@@ -888,17 +741,13 @@ var RAYCAST = {
     }
   },
   volume(distance) {
-    let ratio =
-      (RAYCAST.INI.NO_SOUND -
-        RAYCAST.INI.NORMAL_SOUND -
-        (distance - RAYCAST.INI.NORMAL_SOUND)) /
-      (RAYCAST.INI.NO_SOUND - RAYCAST.INI.NORMAL_SOUND);
+    let ratio = (RAYCAST.INI.NO_SOUND - RAYCAST.INI.NORMAL_SOUND - (distance - RAYCAST.INI.NORMAL_SOUND)) / (RAYCAST.INI.NO_SOUND - RAYCAST.INI.NORMAL_SOUND);
     ratio = Math.min(Math.max(0, ratio), 1);
     return ratio;
   }
 };
 var RAY_MOUSE = {
-  floorSources: [FLOOR_OBJECT],
+  floorSources: [FLOOR_OBJECT_WIDE],
   wallSources: [DECAL],
   initialize(id) {
     RAYCAST.DATA.window = id;
@@ -931,9 +780,7 @@ var RAY_MOUSE = {
           case "wall":
             if (distance <= RAYCAST.INI.WALL_CLICK_DISTANCE) {
               let ratio = (ENGINE.mouseY - WallStart) / (WallEnd - WallStart);
-              let blockHeight =
-                RAYCAST.INI.BLOCK_SIZE -
-                ((RAYCAST.INI.BLOCK_SIZE * ratio) >>> 0);
+              let blockHeight = RAYCAST.INI.BLOCK_SIZE - ((RAYCAST.INI.BLOCK_SIZE * ratio) >>> 0);
               return {
                 surface: surface,
                 blockHeight: blockHeight,
@@ -942,21 +789,15 @@ var RAY_MOUSE = {
             } else return null;
             break;
           case "ceiling":
-            rowDistance =
-              (CAMERA.Z * RAYCAST.SCREEN_HEIGHT) /
-              (RAYCAST.SCREEN_HEIGHT / 2 - ENGINE.mouseY);
+            rowDistance = (CAMERA.Z * RAYCAST.SCREEN_HEIGHT) / (RAYCAST.SCREEN_HEIGHT / 2 - ENGINE.mouseY);
             break;
           case "floor":
-            rowDistance =
-              (CAMERA.Z * RAYCAST.SCREEN_HEIGHT) /
-              (ENGINE.mouseY - RAYCAST.SCREEN_HEIGHT / 2);
+            rowDistance = (CAMERA.Z * RAYCAST.SCREEN_HEIGHT) / (ENGINE.mouseY - RAYCAST.SCREEN_HEIGHT / 2);
             break;
         }
         if (rowDistance <= RAYCAST.INI.FLOOR_CLICK_DISTANCE) {
           let position = PLAYER.pos.translate(PLAYER.dir, rowDistance);
-          let sideDistance =
-            (ENGINE.mouseX - RAYCAST.SCREEN_WIDTH / 2) /
-            (RAYCAST.SCREEN_WIDTH / 2);
+          let sideDistance = (ENGINE.mouseX - RAYCAST.SCREEN_WIDTH / 2) / (RAYCAST.SCREEN_WIDTH / 2);
           position = position.translate(CAMERA.dir, sideDistance * rowDistance);
           return {
             surface: surface,

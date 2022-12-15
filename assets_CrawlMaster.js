@@ -4,7 +4,7 @@
 
 console.log("%cAssets for CrawlMaster ready.", "color: orange");
 
-var LoadTextures = [
+const LoadTextures = [
   { srcName: "StoneFloor3_128.jpg", name: "StoneFloor3" },
   { srcName: "DungeonWall128.jpg", name: "DungeonWall" },
   { srcName: "DungeonWall2_128.jpg", name: "DungeonWall2" },
@@ -36,7 +36,7 @@ var LoadTextures = [
   { srcName: "Wall6.jpg", name: "DungeonWall4" },
   { srcName: "Tile1.jpg", name: "Tile" },
 ];
-var LoadSprites = [
+const LoadSprites = [
   { srcName: "CM_title.png", name: "Title" },
   { srcName: "Sword12.png", name: "SwordSkill" },
   { srcName: "Magic16.png", name: "MagicSkill" },
@@ -56,7 +56,6 @@ var LoadSprites = [
   { srcName: "Invisible24.png", name: "Invisible" },
   { srcName: "Clover24.png", name: "Clover" },
   { srcName: "Lantern24.png", name: "Lantern" },
-  //{ srcName: "lantern.png", name: "LanternBig" },
   { srcName: "Scroll24.png", name: "ClosedScroll" },
   { srcName: "BluePotion16.png", name: "BluePotion" },
   { srcName: "RedPotion16.png", name: "RedPotion" },
@@ -272,7 +271,7 @@ var LoadSprites = [
   { srcName: "LSL20.png", name: "LSL20" },
   { srcName: "HL3.png", name: "HL3" },
   { srcName: "Pooyan.png", name: "Pooyan" },
-  { srcName: "Kangaroo.png", name: "Kangaroo.png" },
+  { srcName: "Kangaroo.png", name: "Kangaroo" },
   { srcName: "Invisibility.png", name: "SCR_Invisibility" },
   { srcName: "DestroyArmor.png", name: "SCR_DestroyArmor" },
   { srcName: "DestroyWeapon.png", name: "SCR_DestroyWeapon" },
@@ -412,52 +411,55 @@ var LoadSprites = [
   { srcName: "Infiltrator2.png", name: "Infiltrator2" },
   { srcName: "Ivy3.png", name: "Ivy3" },
   { srcName: "Ivy4.png", name: "Ivy4" },
-
   { srcName: "1942_2.png", name: "1942_2" },
-{ srcName: "Arnie1.png", name: "Arnie1" },
-{ srcName: "BTF1.png", name: "BTF1" },
-{ srcName: "BeachHead5.png", name: "BeachHead5" },
-{ srcName: "Biggles1.png", name: "Biggles1" },
-{ srcName: "BlueThunder1.png", name: "BlueThunder1" },
-{ srcName: "BrianBloodaxe1.png", name: "BrianBloodaxe1" },
-{ srcName: "BrideOfFrakenstein1.png", name: "BrideOfFrakenstein1" },
-{ srcName: "BruceLee1.png", name: "BruceLee1" },
-{ srcName: "Captive.png", name: "Captive" },
-{ srcName: "EnigmaForce.png", name: "EnigmaForce" },
-{ srcName: "Fred3.png", name: "Fred3" },
-{ srcName: "Fred4.png", name: "Fred4" },
-{ srcName: "JSW4.png", name: "JSW4" },
-{ srcName: "ManiacMansion2.png", name: "ManiacMansion2" },
-{ srcName: "PQ1.png", name: "PQ1" },
-{ srcName: "Pengo.png", name: "Pengo" },
-{ srcName: "Pirates.png", name: "Pirates" },
-{ srcName: "PolePosition.png", name: "PolePosition" },
-{ srcName: "Silkworm1.png", name: "Silkworm1" },
-{ srcName: "SirFred1.png", name: "SirFred1" },
-{ srcName: "SirFred2.png", name: "SirFred2" },
-{ srcName: "SirFred3.png", name: "SirFred3" },
-{ srcName: "SuperDogfight.png", name: "SuperDogfight" },
-{ srcName: "SuperDogfight2.png", name: "SuperDogfight2" },
-{ srcName: "Unknown1.png", name: "Unknown1" },
+  { srcName: "Arnie1.png", name: "Arnie1" },
+  { srcName: "BTF1.png", name: "BTF1" },
+  { srcName: "BeachHead5.png", name: "BeachHead5" },
+  { srcName: "Biggles1.png", name: "Biggles1" },
+  { srcName: "BlueThunder1.png", name: "BlueThunder1" },
+  { srcName: "BrianBloodaxe1.png", name: "BrianBloodaxe1" },
+  { srcName: "BrideOfFrakenstein1.png", name: "BrideOfFrakenstein1" },
+  { srcName: "BruceLee1.png", name: "BruceLee1" },
+  { srcName: "Captive.png", name: "Captive" },
+  { srcName: "EnigmaForce.png", name: "EnigmaForce" },
+  { srcName: "Fred3.png", name: "Fred3" },
+  { srcName: "Fred4.png", name: "Fred4" },
+  { srcName: "JSW4.png", name: "JSW4" },
+  { srcName: "ManiacMansion2.png", name: "ManiacMansion2" },
+  { srcName: "PQ1.png", name: "PQ1" },
+  { srcName: "Pengo.png", name: "Pengo" },
+  { srcName: "Pirates.png", name: "Pirates" },
+  { srcName: "PolePosition.png", name: "PolePosition" },
+  { srcName: "Silkworm1.png", name: "Silkworm1" },
+  { srcName: "SirFred1.png", name: "SirFred1" },
+  { srcName: "SirFred2.png", name: "SirFred2" },
+  { srcName: "SirFred3.png", name: "SirFred3" },
+  { srcName: "SuperDogfight.png", name: "SuperDogfight" },
+  { srcName: "SuperDogfight2.png", name: "SuperDogfight2" },
+  { srcName: "Unknown1.png", name: "Unknown1" },
+  { srcName: "BattleThroughTime.png", name: "BattleThroughTime" },
+  { srcName: "BOF3.png", name: "BOF3" },
+  { srcName: "Chopper2.png", name: "Chopper2" },
+  { srcName: "Cliffhanger.png", name: "Cliffhanger" },
+  { srcName: "F1.png", name: "F1" },
+  { srcName: "IM10.png", name: "IM10" },
+  { srcName: "MoonPatrol.png", name: "MoonPatrol" },
+  { srcName: "SummerGames10.png", name: "SummerGames10" },
 ];
-var LoadSequences = [
+const LoadSequences = [
   { srcName: "SHIP_exp", name: "BigExplosion", type: "png", count: 8 },
   { srcName: "ALIEN_exp", name: "ShortExplosion", type: "png", count: 6 }
 ];
-var LoadSheetSequences = [
+const LoadSheetSequences = [
   { srcName: "Explosion64.png", count: 24, name: "Explosion" },
   { srcName: "Explosion4_64.png", count: 32, name: "Explosion4" },
   { srcName: "SmallFireball64.png", count: 24, name: "Fireball" },
-  {
-    srcName: "SmallShortExplosion64.png",
-    count: 6,
-    name: "SmallShortExplosion"
-  },
+  { srcName: "SmallShortExplosion64.png", count: 6, name: "SmallShortExplosion" },
   { srcName: "Smoke2.png", count: 12, name: "Smoke" }
 ];
-var LoadSheets = [];
-var ExtendSheetTag = [];
-var LoadPacks = [
+const LoadSheets = [];
+const ExtendSheetTag = [];
+const LoadPacks = [
   { srcName: "Wizard64.png", count: 4, name: "Wizard" },
   { srcName: "Skeleton64.png", count: 9, name: "Skeleton" },
   { srcName: "GreenSnake64.png", count: 4, name: "GreenSnake" },
@@ -506,11 +508,11 @@ var LoadPacks = [
   { srcName: "Death1_pack.png", count: 4, name: "Death1" },
   { srcName: "Cutie.png", count: 3, name: "Cutie" },
   { srcName: "TheWalker.png", count: 16, name: "Walker" },
-  
+
 ];
-var LoadRotated = [];
-var LoadExtWasm = [];
-var LoadAudio = [
+const LoadRotated = [];
+const LoadExtWasm = [];
+const LoadAudio = [
   { srcName: "ClosedDoor.mp3", name: "ClosedDoor" },
   { srcName: "Keys.mp3", name: "Keys" },
   { srcName: "OpenGate.mp3", name: "OpenGate" },
@@ -546,4 +548,5 @@ var LoadAudio = [
   { srcName: "Scream.mp3", name: "Scream" },
   { srcName: "HumanAttack1.mp3", name: "HumanAttack1" }
 ];
-var LoadFonts = [{ srcName: "DeepDown.ttf", name: "DeepDown" }];
+const LoadFonts = [{ srcName: "DeepDown.ttf", name: "DeepDown" }];
+const LoadRotatedSheetSequences = [];

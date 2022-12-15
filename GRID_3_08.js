@@ -5,7 +5,7 @@
 "use strict";
 
 //////////////////////////////////////
-// GRID v 3.00.DEV   by LS          //
+// GRID v 3.04       by LS          //
 //////////////////////////////////////
 
 /*
@@ -15,8 +15,8 @@ known bugs:
 
 */
 
-var GRID = {
-  VERSION: "3.00",
+const GRID = {
+  VERSION: "3.08",
   CSS: "color: #0AA",
   SETTING: {
     ALLOW_CROSS: false,
@@ -31,11 +31,11 @@ var GRID = {
   },
   circleRectangleCollision() { },
   collision(actor, grid) {
-    let actorGrid = actor.MoveState.homeGrid;
+    let actorGrid = actor.moveState.homeGrid;
     return GRID.same(actorGrid, grid);
   },
   spriteToSpriteCollision(actor1, actor2) {
-    return GRID.same(actor1.MoveState.homeGrid, actor2.MoveState.homeGrid);
+    return GRID.same(actor1.moveState.homeGrid, actor2.moveState.homeGrid);
   },
   gridToCenterPX(grid) {
     var x = grid.x * ENGINE.INI.GRIDPIX + Math.floor(ENGINE.INI.GRIDPIX / 2);
@@ -45,9 +45,16 @@ var GRID = {
   gridToSprite(grid, actor) {
     GRID.coordToSprite(GRID.gridToCoord(grid), actor);
   },
+  gridToSpriteBottomCenter(grid, actor) {
+    GRID.coordToSpriteBottomCenter(GRID.gridToCoord(grid), actor);
+  },
   coordToSprite(coord, actor) {
     actor.x = coord.x + Math.floor(ENGINE.INI.GRIDPIX / 2);
     actor.y = coord.y + Math.floor(ENGINE.INI.GRIDPIX / 2);
+  },
+  coordToSpriteBottomCenter(coord, actor) {
+    actor.x = coord.x + Math.floor(ENGINE.INI.GRIDPIX / 2);
+    actor.y = coord.y + ENGINE.INI.GRIDPIX;
   },
   gridToCoord(grid) {
     var x = grid.x * ENGINE.INI.GRIDPIX;
@@ -59,8 +66,15 @@ var GRID = {
     var ty = Math.floor(y / ENGINE.INI.GRIDPIX);
     return new Grid(tx, ty);
   },
+  coordToFP_Grid(x, y) {
+    var tx = x / ENGINE.INI.GRIDPIX;
+    var ty = y / ENGINE.INI.GRIDPIX;
+    return new FP_Grid(tx, ty);
+  },
+  pointToGrid(point) {
+    return this.coordToGrid(point.x, point.y);
+  },
   grid(CTX = LAYER.grid) {
-    //potentially obsolete
     var x = 0;
     var y = 0;
     CTX.strokeStyle = "#AAA";
@@ -86,8 +100,23 @@ var GRID = {
       CTX.stroke();
     } while (x <= CTX.canvas.width);
   },
+  paintCoord(layer, dungeon) {
+    ENGINE.clearLayer(layer);
+    for (let x = 0; x < dungeon.width; x++) {
+      for (let y = 0; y < dungeon.height; y++) {
+        let grid = new Grid(x, y);
+        if (!dungeon.GA.check(grid, MAPDICT.WALL)) {
+          let point = GRID.gridToCoord(grid);
+          let text = `${x},${y}`;
+          GRID.paintText(point, text, layer, "#BBB");
+          let index = x + dungeon.width * y;
+          point = point.add(DOWN, 12);
+          GRID.paintText(point, index, layer, "#BBB");
+        }
+      }
+    }
+  },
   paintText(point, text, layer, color = "#FFF") {
-    //check usage, obsolete?
     var CTX = LAYER[layer];
     CTX.font = "10px Consolas";
     var y = point.y + ENGINE.INI.GRIDPIX / 2;
@@ -124,22 +153,14 @@ var GRID = {
   },
   contTranslatePosition(entity, lapsedTime) {
     let length = (lapsedTime / 1000) * entity.moveSpeed;
-    entity.moveState.pos = entity.moveState.pos.translate(
-      entity.moveState.dir,
-      length
-    );
+    entity.moveState.pos = entity.moveState.pos.translate(entity.moveState.dir, length);
     entity.actor.updateAnimation(lapsedTime);
     return;
   },
   translatePosition(entity, lapsedTime) {
     let length = (lapsedTime / 1000) * entity.moveSpeed;
-    entity.moveState.pos = entity.moveState.pos.translate(
-      entity.moveState.realDir,
-      length
-    );
-    let distance = entity.moveState.pos.EuclidianDistance(
-      entity.moveState.endPos
-    );
+    entity.moveState.pos = entity.moveState.pos.translate(entity.moveState.realDir, length);
+    let distance = entity.moveState.pos.EuclidianDistance(entity.moveState.endPos);
 
     let boundGrid = Grid.toClass(entity.moveState.pos);
     if (
@@ -160,31 +181,22 @@ var GRID = {
       return;
     }
   },
-  translateMove(
-    entity,
-    gridArray,
-    changeView = false,
-    onFinish = null,
-    animate = true
-  ) {
-    entity.actor.x += entity.MoveState.dir.x * entity.speed;
-    entity.actor.y += entity.MoveState.dir.y * entity.speed;
-    entity.actor.orientation = entity.actor.getOrientation(
-      entity.MoveState.dir
-    );
-    if (animate) {
-      entity.actor.animateMove(entity.actor.orientation);
+  translateMove(entity, lapsedTime, gridArray, changeView = false, onFinish = null, animate = true) {
+    if (!gridArray) {
+      gridArray = entity.moveState.gridArray;
     }
-    entity.MoveState.homeGrid = GRID.coordToGrid(
-      entity.actor.x,
-      entity.actor.y
-    );
+    entity.actor.x += entity.moveState.dir.x * entity.speed;
+    entity.actor.y += entity.moveState.dir.y * entity.speed;
+    entity.actor.orientation = entity.actor.getOrientation(entity.moveState.dir);
+    if (animate) {
+      entity.actor.updateAnimation(lapsedTime, entity.actor.orientation);
+    }
+    entity.moveState.homeGrid = GRID.coordToGrid(entity.actor.x, entity.actor.y);
+    entity.moveState.pos = entity.moveState.homeGrid;
 
-    if (gridArray.outside(entity.MoveState.homeGrid)) {
-      entity.MoveState.homeGrid = gridArray.toOtherSide(
-        entity.MoveState.homeGrid
-      );
-      GRID.gridToSprite(entity.MoveState.homeGrid, entity.actor);
+    if (gridArray.outside(entity.moveState.homeGrid)) {
+      entity.moveState.homeGrid = gridArray.toOtherSide(entity.moveState.homeGrid);
+      GRID.gridToSprite(entity.moveState.homeGrid, entity.actor);
     }
 
     if (changeView) {
@@ -193,21 +205,21 @@ var GRID = {
 
     ENGINE.VIEWPORT.alignTo(entity.actor);
 
-    if (GRID.same(entity.MoveState.endGrid, GRID.trueToGrid(entity.actor))) {
-      entity.MoveState.moving = false;
-      entity.MoveState.startGrid = entity.MoveState.endGrid;
-      entity.MoveState.homeGrid = entity.MoveState.endGrid;
+    if (GRID.same(entity.moveState.endGrid, GRID.trueToGrid(entity.actor))) {
+      entity.moveState.moving = false;
+      entity.moveState.startGrid = entity.moveState.endGrid;
+      entity.moveState.homeGrid = entity.moveState.endGrid;
 
       if (onFinish) onFinish.call();
     }
     return;
   },
   blockMove(entity, changeView = false) {
-    let newGrid = entity.MoveState.startGrid.add(entity.MoveState.dir);
-    entity.MoveState.reset(newGrid);
+    let newGrid = entity.moveState.startGrid.add(entity.moveState.dir);
+    entity.moveState.reset(newGrid);
     GRID.gridToSprite(newGrid, entity.actor);
     entity.actor.orientation = entity.actor.getOrientation(
-      entity.MoveState.dir
+      entity.moveState.dir
     );
     entity.actor.animateMove(entity.actor.orientation);
 
@@ -218,7 +230,7 @@ var GRID = {
     return;
   },
   teleportToGrid(entity, grid, changeView = false) {
-    entity.MoveState.reset(grid);
+    entity.moveState.reset(grid);
     GRID.gridToSprite(grid, entity.actor);
     if (changeView) {
       ENGINE.VIEWPORT.check(entity.actor);
@@ -281,16 +293,13 @@ var GRID = {
   calcDistancesBFS_BH(start, dungeon) {
     dungeon.setNodeMap();
     let BH = new BinHeap("distance");
-    dungeon.nodeMap[start.x][start.y].distance = 0;
-    dungeon.nodeMap[start.x][start.y].goto = new Vector(0, 0);
-    BH.insert(dungeon.nodeMap[start.x][start.y]);
+    dungeon.GA.nodeMap[start.x][start.y].distance = 0;
+    dungeon.GA.nodeMap[start.x][start.y].goto = new Vector(0, 0);
+    BH.insert(dungeon.GA.nodeMap[start.x][start.y]);
     while (BH.size() > 0) {
       let node = BH.extractMax();
       for (let D = 0; D < ENGINE.directions.length; D++) {
-        let nextNode =
-          dungeon.nodeMap[node.grid.x + ENGINE.directions[D].x][
-          node.grid.y + ENGINE.directions[D].y
-          ];
+        let nextNode = dungeon.GA.nodeMap[node.grid.x + ENGINE.directions[D].x][node.grid.y + ENGINE.directions[D].y];
         if (nextNode) {
           if (nextNode.distance > node.distance + 1) {
             nextNode.distance = node.distance + 1;
@@ -305,20 +314,16 @@ var GRID = {
   calcDistancesBFS_A(start, dungeon) {
     dungeon.setNodeMap();
     let Q = new NodeQ("distance");
-    dungeon.nodeMap[start.x][start.y].distance = 0;
-    dungeon.nodeMap[start.x][start.y].goto = new Vector(0, 0);
-    Q.queueSimple(dungeon.nodeMap[start.x][start.y]);
+    dungeon.GA.nodeMap[start.x][start.y].distance = 0;
+    dungeon.GA.nodeMap[start.x][start.y].goto = new Vector(0, 0);
+    Q.queueSimple(dungeon.GA.nodeMap[start.x][start.y]);
     while (Q.size() > 0) {
       let node = Q.dequeue();
 
       for (let D = 0; D < ENGINE.directions.length; D++) {
-        let x =
-          (node.grid.x + ENGINE.directions[D].x + dungeon.width) %
-          dungeon.width;
-        let y =
-          (node.grid.y + ENGINE.directions[D].y + dungeon.height) %
-          dungeon.height;
-        let nextNode = dungeon.nodeMap[x][y];
+        let x = (node.grid.x + ENGINE.directions[D].x + dungeon.width) % dungeon.width;
+        let y = (node.grid.y + ENGINE.directions[D].y + dungeon.height) % dungeon.height;
+        let nextNode = dungeon.GA.nodeMap[x][y];
 
         if (nextNode) {
           if (nextNode.distance > node.distance + 1) {
@@ -397,14 +402,14 @@ class BinHeap {
     let maxIndex = i;
     let L = this.leftChild(i);
     if (
-      L <= this.size() - 1 &&
+      L < this.size() &&
       this.HEAP[L][this.sort] < this.HEAP[maxIndex][this.sort]
     ) {
       maxIndex = L;
     }
     let R = this.rightChild(i);
     if (
-      R <= this.size() - 1 &&
+      R < this.size() &&
       this.HEAP[R][this.sort] < this.HEAP[maxIndex][this.sort]
     ) {
       maxIndex = R;
@@ -431,7 +436,7 @@ class BinHeap {
     }
   }
 }
-class Node {
+class SearchNode {
   constructor(HG, goal, stack, path, history, iterations) {
     this.grid = HG;
     this.stack = stack || [];
@@ -446,7 +451,7 @@ class Node {
     let stack = this.stack.concat(node.stack);
     let history = this.history.concat(node.history.slice(1));
     let path = this.path + node.path;
-    return new Node(node.grid, goal, stack, path, history);
+    return new SearchNode(node.grid, goal, stack, path, history);
   }
 }
 class BlindNode {
@@ -512,14 +517,18 @@ var MAPDICT = {
   START_POSITION: 2 ** 4, //16
   STAIR: 2 ** 5, //32
   SHRINE: 2 ** 6, // 64
-  FOG: 2 ** 7 //128 - fog should remain largest!
+  FOG: 2 ** 7, //128 - fog should remain largest!
+  //alternative1
+  TRAP_DOOR: 2 ** 3, //8
+  BLOCKWALL: 2 ** 4, //16
+  VACANT_PLACEHODLER: 2 ** 5, //32
+  DEAD_END: 2 ** 6, //64
+  WATER: 2 ** 7, //128 - fog,water should remain largest!
 };
 class GridArray {
   constructor(sizeX, sizeY, byte = 1, fill = 0) {
     if (byte !== 1 && byte !== 2 && byte !== 4) {
-      console.error(
-        "GridArray set up with wrong size. Reset to default 8 bit!"
-      );
+      console.error("GridArray set up with wrong size. Reset to default 8 bit!");
       byte = 1;
     }
     let buffer = new ArrayBuffer(sizeX * sizeY * byte);
@@ -560,7 +569,7 @@ class GridArray {
   }
   linkToEntity(entities) {
     for (const entity of entities) {
-      entity.MoveState.gridArray = this;
+      entity.moveState.gridArray = this;
     }
   }
   indexToGrid(index) {
@@ -572,6 +581,9 @@ class GridArray {
     if (this.isOutOfBounds(grid)) throw "Grid is out of bounds - ERROR";
     return grid.x + grid.y * this.width;
   }
+  iset(index, bin) {
+    this.map[index] |= bin;
+  }
   set(grid, bin) {
     if (this.isOutOfBounds(grid)) throw "Grid is out of bounds - ERROR";
     this.map[this.gridToIndex(grid)] |= bin;
@@ -580,9 +592,15 @@ class GridArray {
     if (this.isOutOfBounds(grid)) throw "Grid is out of bounds - ERROR";
     this.map[this.gridToIndex(grid)] = value;
   }
+  iclear(index, bin) {
+    this.map[index] &= (2 ** this.gridSizeBit - 1 - bin);
+  }
   clear(grid, bin) {
     if (this.isOutOfBounds(grid)) throw "Grid is out of bounds - ERROR";
     this.map[this.gridToIndex(grid)] &= (2 ** this.gridSizeBit - 1 - bin);
+  }
+  icheck(index, bin) {
+    return this.map[index] & bin;
   }
   check(grid, bin) {
     if (this.isOutOfBounds(grid)) return false;
@@ -595,6 +613,9 @@ class GridArray {
   getValue(grid) {
     if (this.isOutOfBounds(grid)) return false;
     return this.map[this.gridToIndex(grid)];
+  }
+  iget_and_mask(index, not = 0) {
+    return this.map[index] & (2 ** this.gridSizeBit - 1 - not);
   }
   toWall(grid) {
     this.setValue(grid, MAPDICT.WALL);
@@ -674,6 +695,24 @@ class GridArray {
   }
   notReserved(grid) {
     return !this.isReserved(grid);
+  }
+  addTrapDoor(grid) {
+    this.set(grid, MAPDICT.TRAP_DOOR);
+  }
+  isTrapDoor(grid) {
+    return this.check(grid, MAPDICT.TRAP_DOOR) === MAPDICT.TRAP_DOOR;
+  }
+  notTrapDoor(grid) {
+    return !this.isTrapDoor(grid);
+  }
+  addBlockWall(grid) {
+    this.set(grid, MAPDICT.BLOCKWALL);
+  }
+  isBlockWall(grid) {
+    return this.check(grid, MAPDICT.BLOCKWALL) === MAPDICT.BLOCKWALL;
+  }
+  notBlockWall(grid) {
+    return !this.isBlockWall(grid);
   }
   toEmpty(grid) {
     this.setValue(grid, MAPDICT.EMPTY);
@@ -771,7 +810,7 @@ class GridArray {
     if (this.isOutOfBounds(next)) return false;
     return this.value(next, value);
   }
-  setNodeMap(where = "nodeMap", path = [0], type = "value") {
+  setNodeMap(where = "nodeMap", path = [0], type = "value", block = [], cls = PathNode) {
     let map = [];
     for (let x = 0; x < this.width; x++) {
       map[x] = [];
@@ -793,12 +832,14 @@ class GridArray {
         }
 
         if (carve) {
-          map[x][y] = new PathNode(x, y);
+          map[x][y] = new cls(x, y);
         } else {
           map[x][y] = null;
         }
       }
     }
+
+    block.forEach((obj) => (map[obj.x][obj.y] = null));
     this[where] = map;
     return map;
   }
@@ -857,8 +898,12 @@ class GridArray {
     }
     return NODES;
   }
-  findPath_AStar_fast(start, finish, path = [0], type = "value") {
+  gravity_AStar(start, finish, path = [0], type = "value", block = [], DIR = [LEFT, RIGHT, DOWN]) {
+    return this.findPath_AStar_fast(start, finish, path, type, block, DIR);
+  }
+  findPath_AStar_fast(start, finish, path = [0], type = "value", block = [], DIR = ENGINE.directions) {
     /** 
+    DIR: applicable directions
     return
     null: no path exist
     0: start is the same as finish
@@ -870,7 +915,7 @@ class GridArray {
     }
 
     var Q = new NodeQ("priority");
-    let NodeMap = this.setNodeMap("AStar", path, type);
+    let NodeMap = this.setNodeMap("AStar", path, type, block);
 
     NodeMap[start.x][start.y].distance = start.distance(finish);
     NodeMap[start.x][start.y].path = 0;
@@ -879,11 +924,9 @@ class GridArray {
     Q.queueSimple(NodeMap[start.x][start.y]);
     while (Q.size() > 0) {
       let node = Q.dequeue();
-      for (let D = 0; D < ENGINE.directions.length; D++) {
-        let x =
-          (node.grid.x + ENGINE.directions[D].x + this.width) % this.width;
-        let y =
-          (node.grid.y + ENGINE.directions[D].y + this.height) % this.height;
+      for (let D = 0; D < DIR.length; D++) {
+        let x = (node.grid.x + DIR[D].x + this.width) % this.width;
+        let y = (node.grid.y + DIR[D].y + this.height) % this.height;
 
         let nextNode = NodeMap[x][y];
         if (nextNode) {
@@ -901,78 +944,6 @@ class GridArray {
       }
     }
     return null;
-  }
-  findPath_AStar(
-    start,
-    finish,
-    path = [0],
-    allowCross = false,
-    maxPath = Infinity,
-    maxIterations = Infinity
-  ) {
-    var Q = new NodeQ("distance");
-    let NodeMap = this.setNodeMap("tempNodeMap", path);
-    Q.list.push(new Node(start, finish));
-    if (Q.list[0].dist === 0) {
-      Q.list[0].status = "Overlap";
-      return Q.list[0];
-    }
-    NodeMap[start.x][start.y].distance = start.distance(finish);
-    var selected;
-    var iteration = 0;
-    while (Q.list.length > 0) {
-      iteration++;
-      selected = Q.list.shift();
-
-      if (selected.path > maxPath) {
-        selected.status = "PathTooLong";
-        return selected;
-      }
-
-      let dirs = this.getDirectionsFromNodeMap(
-        selected.grid,
-        NodeMap,
-        allowCross
-      );
-      for (let q = 0; q < dirs.length; q++) {
-        let HG = selected.grid.add(dirs[q]);
-
-        if (allowCross) {
-          if (this.outside(HG)) {
-            HG = this.toOtherSide(HG);
-          }
-        }
-
-        let history = [].concat(selected.history);
-        history.push(HG);
-        let I_stack = [].concat(selected.stack);
-        I_stack.push(dirs[q]);
-        let fork = new Node(
-          HG,
-          finish,
-          I_stack,
-          selected.path + 1,
-          history,
-          iteration
-        );
-        if (fork.dist === 0) {
-          fork.status = "Found";
-          return fork;
-        }
-        let node = NodeMap[fork.grid.x][fork.grid.y];
-        if (fork.path < node.distance) {
-          node.distance = fork.path;
-          Q.queue(fork);
-        }
-      }
-
-      if (iteration > maxIterations) {
-        selected.status = "Abandoned";
-        return selected;
-      }
-    }
-    selected.status = "NoSolution";
-    return selected;
   }
   setStackValue(stack, value) {
     for (const grid of stack) {
@@ -1066,13 +1037,7 @@ class GridArray {
           history.push(nextGrid);
           let dirStack = [].concat(q.stack);
           dirStack.push(dir);
-          let fork = new BlindNode(
-            nextGrid,
-            dirStack,
-            q.path + 1,
-            history,
-            iteration
-          );
+          let fork = new BlindNode(nextGrid, dirStack, q.path + 1, history, iteration);
           T.push(fork);
         }
       }
@@ -1123,16 +1088,18 @@ class GridArray {
   }
   findNextCrossroad(start, dir) {
     let directions = this.getDirectionsIfNot(start, MAPDICT.WALL, dir.mirror());
+    let lastDir = dir;
     while (directions.length <= 1) {
       if (directions.length === 0) return null; //dead end!
       start = start.add(directions[0]);
+      lastDir = directions[0];
       directions = this.getDirectionsIfNot(
         start,
         MAPDICT.WALL,
         directions[0].mirror()
       );
     }
-    return start;
+    return [start, lastDir];
   }
   positionIsNotWall(pos) {
     let grid = Grid.toClass(pos);
@@ -1169,13 +1136,93 @@ class GridArray {
     }
     return true;
   }
+  lookForGrid(startGrid, dir, lookGrid) {
+    do {
+      startGrid = startGrid.add(dir);
+      if (this.isWall(startGrid)) return false;
+    } while (!startGrid.same(lookGrid));
+    return true;
+  }
+  toString() {
+    const offset = 65;
+    let str = "";
+    for (let byte of this.map) {
+      str += String.fromCharCode(byte + offset);
+    }
+    return str;
+  }
+  exportMap() {
+    return BWT.rle_encode(BWT.bwt(this.toString()));
+  }
+  static importMap(rle) {
+    return BWT.inverseBwt(BWT.rle_decode(rle));
+  }
+  static fromString(sizeX, sizeY, string, byte = 1) {
+    const offset = 65;
+    let GA = new GridArray(sizeX, sizeY, byte);
+    for (let i = 0; i < string.length; i++) {
+      GA.map[i] = string[i].charCodeAt(0) - offset;
+    }
+    return GA;
+  }
+}
+class NodeArray {
+  constructor(GA, CLASS, path = [0], ignore = [], type = 'value') {
+    /**
+     * always constructed from GridArray
+     */
+    this.width = GA.width;
+    this.height = GA.height;
+    this.map = Array(this.width * this.height);
+    this.map = this.map.fill(null);
+    for (let [index, _] of this.map.entries()) {
+      let check = GA.map[index] & (2 ** GA.gridSizeBit - 1 - ignore.sum());
+      let carve;
+      switch (type) {
+        case 'value':
+          carve = path.includes(check);
+          break;
+        default:
+          console.error("NodeArray type error!");
+      }
+      if (carve) {
+        this.map[index] = new CLASS(index, this.indexToGrid(index));
+      }
+    }
+  }
+  G_set(grid, property, value) {
+    this.I_set(this.gridToIndex(grid), property, value);
+  }
+  I_set(index, property, value) {
+    this.map[index][property] = value;
+  }
+  indexToGrid(index) {
+    let x = index % this.width;
+    let y = Math.floor(index / this.width);
+    return new Grid(x, y);
+  }
+  gridToIndex(grid) {
+    if (this.isOutOfBounds(grid)) {
+      console.error("grid", grid);
+      throw "Grid out of bounds...";
+    }
+    return grid.x + grid.y * this.width;
+  }
+  isOutOfBounds(grid) {
+    if (
+      grid.x >= this.width ||
+      grid.x < 0 ||
+      grid.y >= this.height ||
+      grid.y < 0
+    ) {
+      return true;
+    } else return false;
+  }
 }
 class IndexArray {
-  constructor(sizeX, sizeY, byte = 1, banks = 1) {
+  constructor(sizeX = 1, sizeY = 1, byte = 1, banks = 1) {
     if (byte !== 1 && byte !== 2 && byte !== 4) {
-      console.error(
-        "IndexArray set up with wrong size. Reset to default 8 bit!"
-      );
+      console.error("IndexArray set up with wrong size. Reset to default 8 bit!");
       byte = 1;
     }
     banks = parseInt(banks, 10);
@@ -1324,7 +1371,6 @@ class IndexArray {
     }
     return false;
   }
-  //removeBank() {}
 }
 var MINIMAP = {
   LEGEND: {

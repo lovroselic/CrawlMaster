@@ -23,7 +23,7 @@ var DEBUG = {
   VERBOSE: false,
   LOAD: false,
   clearEnemies() {
-    ENEMY.clearAll();
+    ENEMY_RC.clearAll();
   },
   toLastRoom() {
     let map = MAP[GAME.level].DUNGEON;
@@ -66,11 +66,7 @@ class Scroll {
           T = ENGINE.TIMERS.access(visionTimerId);
           T.extend(INI.LAMP_PERSISTENCE);
         } else {
-          T = new CountDown(
-            visionTimerId,
-            INI.LAMP_PERSISTENCE,
-            HERO.extinguishLamp
-          );
+          T = new CountDown(visionTimerId, INI.LAMP_PERSISTENCE, HERO.extinguishLamp);
           let status = new Status("Light", "Lantern");
           HERO.inventory.status.push(status);
           TITLE.keys();
@@ -83,11 +79,7 @@ class Scroll {
           T = ENGINE.TIMERS.access(invisibilityTimerId);
           T.extend(INI.INVISIBILITY_TIME);
         } else {
-          T = new CountDown(
-            invisibilityTimerId,
-            INI.INVISIBILITY_TIME,
-            HERO.cancelInvisibility
-          );
+          T = new CountDown(invisibilityTimerId, INI.INVISIBILITY_TIME, HERO.cancelInvisibility);
           let status = new Status("Invisibility", "Invisible");
           HERO.inventory.status.push(status);
           TITLE.keys();
@@ -104,7 +96,7 @@ class Scroll {
         MINIMAP.reveal(origin, INI.MM_reveal_radius);
         break;
       case "DrainMana":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -115,7 +107,7 @@ class Scroll {
         TITLE.status();
         break;
       case "Cripple":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -130,7 +122,7 @@ class Scroll {
         Scroll.boost("defense");
         break;
       case "DestroyArmor":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -140,7 +132,7 @@ class Scroll {
         }
         break;
       case "DestroyWeapon":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -150,7 +142,7 @@ class Scroll {
         }
         break;
       case "Petrify":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -180,7 +172,7 @@ class Scroll {
         }
         break;
       case "HalfLife":
-        for (let enemy of ENEMY.POOL) {
+        for (let enemy of ENEMY_RC.POOL) {
           if (enemy === null) continue;
           if (enemy.distance === null) continue;
           if (enemy.distance <= INI.SCROLL_RANGE) {
@@ -220,7 +212,7 @@ class CommonItem {
     this.type = "CommonItem";
     this.distance = null;
     this.vectorToPlayer = null;
-    this.parent = FLOOR_OBJECT;
+    this.parent = FLOOR_OBJECT_WIDE;
     for (const prop in type) {
       this[prop] = type[prop];
     }
@@ -306,7 +298,7 @@ class FloorContainer {
     this.type = "FloorContainer";
     this.distance = null;
     this.vectorToPlayer = null;
-    this.parent = FLOOR_OBJECT;
+    this.parent = FLOOR_OBJECT_WIDE;
     for (const prop in type) {
       this[prop] = type[prop];
     }
@@ -504,7 +496,7 @@ class Monster {
     this.distance = null;
     this.vectorToPlayer = null;
     this.guardPosition = null;
-    this.parent = ENEMY;
+    this.parent = ENEMY_RC;
     this.dirStack = [];
     this.final_boss = false;
     for (const prop in type) {
@@ -556,13 +548,7 @@ class Monster {
     let target = PLAYER.pos.translate(PLAYER.dir, 0.1);
     let dir = source.direction(target);
     this.mana -= Missile.calcMana(this.magic);
-    let MFB = new Missile(
-      source,
-      dir,
-      MISSILE_TYPE.Fireball,
-      this.magic,
-      this.id
-    );
+    let MFB = new Missile(source, dir, MISSILE_TYPE.Fireball, this.magic, this.id);
     MISSILE.add(MFB);
     setTimeout(this.resetShooting.bind(this), INI.MONSTER_SHOOT_TIMEOUT);
   }
@@ -601,15 +587,11 @@ class Monster {
     if (dead) {
       exp += this.xp;
       type = "LongExplosion";
-      ENEMY.remove(this.id);
+      ENEMY_RC.remove(this.id);
       this.dropInventory();
     }
 
-    let explosion = new Destruction(
-      missile.moveState.pos,
-      missile.base,
-      DESTRUCTION_TYPE[type]
-    );
+    let explosion = new Destruction(missile.moveState.pos, missile.base, DESTRUCTION_TYPE[type]);
 
     DESTRUCTION_ANIMATION.add(explosion);
     MISSILE.remove(missile.id);
@@ -648,12 +630,8 @@ class Monster {
   }
   dropInventory() {
     if (this.inventory) {
-      let item = new CommonItem(
-        this.moveState.pos,
-        COMMON_ITEM_TYPE[this.inventory],
-        this.inventoryValue
-      );
-      FLOOR_OBJECT.add(item);
+      let item = new CommonItem(this.moveState.pos, COMMON_ITEM_TYPE[this.inventory], this.inventoryValue);
+      FLOOR_OBJECT_WIDE.add(item);
     }
   }
 }
@@ -687,8 +665,7 @@ class Missile {
       sum += img.width;
       sum += img.height;
     }
-    this.r =
-      sum / (2 * this.actor.asset.linear.length) / ENGINE.INI.GRIDPIX / 2;
+    this.r = sum / (2 * this.actor.asset.linear.length) / ENGINE.INI.GRIDPIX / 2;
   }
   show() {
     this.visible = true;
@@ -752,6 +729,9 @@ class LiftingGate {
   lift(lapsedTime) {
     this.top += lapsedTime * this.liftSpeed;
   }
+  change(lapsedTime) {
+    this.top += lapsedTime * this.liftSpeed;
+  }
   complete() {
     return this.top >= this.height;
   }
@@ -808,19 +788,15 @@ var INI = {
   FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "1.01",
+  VERSION: "1.03",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
   CSS: "color: #239AFF;",
   INIT() {
-    console.log(
-      `${PRG.NAME} ${PRG.VERSION} by Lovro Selic, (c) C00lSch00l ${PRG.YEAR} on ${navigator.userAgent}`
-    );
+    console.log(`${PRG.NAME} ${PRG.VERSION} by Lovro Selic, (c) C00lSch00l ${PRG.YEAR} on ${navigator.userAgent}`);
     $("#title").html(PRG.NAME);
-    $("#version").html(
-      `${PRG.NAME} V${PRG.VERSION} <span style='font-size:14px'>&copy</span> C00lSch00l ${PRG.YEAR}`
-    );
+    $("#version").html(`${PRG.NAME} V${PRG.VERSION} <span style='font-size:14px'>&copy</span> C00lSch00l ${PRG.YEAR}`);
     $("input#toggleAbout").val("About " + PRG.NAME);
     $("#about fieldset legend").append(" " + PRG.NAME + " ");
 
@@ -832,7 +808,7 @@ var PRG = {
   },
   setup() {
     console.log("PRG.setup");
-    if (DEBUG.SETTING){
+    if (DEBUG.SETTING) {
       $('#debug').show();
     } else $('#debug').hide();
     $("#gridsize").val(INI.GRIDSIZE);
@@ -903,25 +879,9 @@ var HERO = {
     this.defenseExpGoal = INI.INI_BASE_EXP_FONT;
     this.magicExpGoal = INI.INI_BASE_EXP_FONT;
     this.canShoot = true;
-    const propsToSave = [
-      "health",
-      "maxHealth",
-      "mana",
-      "maxMana",
-      "defense",
-      "reference_defense",
-      "attack",
-      "reference_attack",
-      "magic",
-      "attackExp",
-      "defenseExp",
-      "magicExp",
-      "attackExpGoal",
-      "defenseExpGoal",
-      "magicExpGoal",
-      "inventory.potion.red",
-      "inventory.potion.blue"
-    ];
+    const propsToSave = ["health", "maxHealth", "mana", "maxMana", "defense", "reference_defense", "attack",
+      "reference_attack", "magic", "attackExp", "defenseExp", "magicExp", "attackExpGoal", "defenseExpGoal", "magicExpGoal",
+      "inventory.potion.red", "inventory.potion.blue"];
     this.attributesForSaveGame = [];
     for (const P of propsToSave) {
       this.attributesForSaveGame.push(`HERO.${P}`);
@@ -1339,11 +1299,7 @@ var HERO = {
     HERO.applyDamage(damage);
     let type = "SmallShortExplosion";
     if (this.dead) type = "LongExplosion";
-    let explosion = new Destruction(
-      missile.moveState.pos,
-      missile.base,
-      DESTRUCTION_TYPE[type]
-    );
+    let explosion = new Destruction(missile.moveState.pos, missile.base, DESTRUCTION_TYPE[type]);
     DESTRUCTION_ANIMATION.add(explosion);
     MISSILE.remove(missile.id);
     AUDIO.Explosion.volume = RAYCAST.volume(missile.distance);
@@ -1405,7 +1361,7 @@ var SWORD = {
     if (enemies.length > 1) {
       let temp = [];
       for (let e of enemies) {
-        temp.push(ENEMY.POOL[e - 1]);
+        temp.push(ENEMY_RC.POOL[e - 1]);
       }
       temp.sortByPropAsc("distance");
       enemies = [];
@@ -1415,13 +1371,8 @@ var SWORD = {
     }
 
     for (let e of enemies) {
-      let enemy = ENEMY.POOL[e - 1];
-      let hit = ENGINE.lineIntersectsCircle(
-        PLAYER.pos,
-        refPoint,
-        enemy.moveState.pos,
-        enemy.r
-      );
+      let enemy = ENEMY_RC.POOL[e - 1];
+      let hit = ENGINE.lineIntersectsCircle(PLAYER.pos, refPoint, enemy.moveState.pos, enemy.r);
       if (hit) {
         return enemy;
       }
@@ -1460,13 +1411,9 @@ var SWORD = {
         }
         if (dead) {
           HERO.incExp(hit.xp, "attack");
-          let explosion = new Destruction(
-            hit.moveState.pos,
-            hit.base,
-            DESTRUCTION_TYPE.Smoke
-          );
+          let explosion = new Destruction(hit.moveState.pos, hit.base, DESTRUCTION_TYPE.Smoke);
           DESTRUCTION_ANIMATION.add(explosion);
-          ENEMY.remove(hit.id);
+          ENEMY_RC.remove(hit.id);
           AUDIO.MonsterDeath.play();
           hit.dropInventory();
         }
@@ -1512,16 +1459,7 @@ var GAME = {
     $(ENGINE.topCanvas).off("click", ENGINE.mouseClick);
     $(ENGINE.topCanvas).css("cursor", "");
 
-    let GameRD = new RenderData(
-      "DeepDown",
-      35,
-      "#FFF",
-      "text",
-      "#BBB",
-      2,
-      2,
-      2
-    );
+    let GameRD = new RenderData("DeepDown", 35, "#FFF", "text", "#BBB", 2, 2, 2);
     ENGINE.TEXT.setRD(GameRD);
     ENGINE.GAME.start();
     MINIMAP.setOffset(TITLE.stack.minimapX, TITLE.stack.minimapY);
@@ -1539,9 +1477,10 @@ var GAME = {
 
     ENGINE.VECTOR2D.configure("player");
     RAYCAST.initialize(INI.SCREEN_WIDTH, INI.SCREEN_HEIGHT, INI.TEX_SIZE);
+    AI.immobileWander = false;
     AI.initialize(PLAYER);
     RAY_MOUSE.initialize("WINDOW");
-    GAME.fps = new FPS_measurement();
+    GAME.fps = new FPS_short_term_measurement(300);
     HERO.construct();
 
     //SAVE GAME
@@ -1672,7 +1611,7 @@ var GAME = {
     if (DEBUG._2D_display) {
       GAME.drawPlayer();
       GAME.drawKeys();
-      ENEMY.draw();
+      ENEMY_RC.draw();
       MISSILE.draw();
     }
 
@@ -1777,7 +1716,7 @@ var GAME = {
     if (ENGINE.GAME.stopAnimation) return;
     let map = MAP[GAME.level].DUNGEON;
     //must be before to set indexArray
-    ENEMY.manage(lapsedTime, map, [HERO.invisible, HERO.dead]);
+    ENEMY_RC.manage(lapsedTime, map, [HERO.invisible, HERO.dead]);
     PLAYER.respond(lapsedTime);
     GAME.respond();
     MINIMAP.unveil(PLAYER.pos, HERO.vision);
@@ -1788,7 +1727,7 @@ var GAME = {
     SWORD.manage(lapsedTime);
     GAME.frameDraw(lapsedTime);
     //needs to repopulate IndexArray after Raycaster draws!!
-    FLOOR_OBJECT.manage(lapsedTime, map);
+    FLOOR_OBJECT_WIDE.manage();
 
     let checkMouse = RAY_MOUSE.click();
     if (checkMouse) {
@@ -1850,10 +1789,10 @@ var GAME = {
   linkMaps() {
     let map = MAP[GAME.level].DUNGEON;
     RAYCAST.setMap(map);
-    ENEMY.linkMap(map);
+    ENEMY_RC.linkMap(map);
     MISSILE.linkMap(map);
     DECAL.init(map);
-    FLOOR_OBJECT.init(map);
+    FLOOR_OBJECT_WIDE.init(map);
     MINIMAP.init(map, INI.MIMIMAP_WIDTH, INI.MIMIMAP_HEIGHT);
   },
   won() {
@@ -1887,16 +1826,10 @@ var GAME = {
     GAME.setlevelTextures(GAME.level);
     let randomDungeon;
     if (GAME.level < INI.FINAL_LEVEL) {
-      randomDungeon = DUNGEON.create(
-        MAP[GAME.level].width,
-        MAP[GAME.level].height
-      );
+      randomDungeon = DUNGEON.create(MAP[GAME.level].width, MAP[GAME.level].height);
     } else if (GAME.level === INI.FINAL_LEVEL) {
       console.log("newDungeon: CREATE FINAL LEVEL");
-      randomDungeon = ARENA.create(
-        MAP[GAME.level].width,
-        MAP[GAME.level].height
-      );
+      randomDungeon = ARENA.create(MAP[GAME.level].width, MAP[GAME.level].height);
     }
 
     MAP[GAME.level].DUNGEON = randomDungeon;
@@ -1946,9 +1879,7 @@ var GAME = {
     DUNGEON.CONFIGURE = false;
     DUNGEON.setLockLevel(3);
 
-    $("#buttons").prepend(
-      "<input type='button' id='startGame' value='Start Game'>"
-    );
+    $("#buttons").prepend("<input type='button' id='startGame' value='Start Game'>");
 
     $("#startGame").prop("disabled", true);
     $(ENGINE.gameWindowId).width(ENGINE.gameWIDTH + 4);
@@ -2020,20 +1951,9 @@ var GAME = {
     ENGINE.fill(LAYER.floorcanvas, TEXTURE[$("#floortexture")[0].value]);
     ENGINE.fill(LAYER.ceilingcanvas, TEXTURE[$("#ceilingtexture")[0].value]);
 
-    ENGINE.TEXT.RD = new RenderData(
-      "DeepDown",
-      50,
-      "#FFF",
-      "text",
-      "#333",
-      2,
-      2,
-      2
-    );
+    ENGINE.TEXT.RD = new RenderData("DeepDown", 50, "#FFF", "text", "#333", 2, 2, 2);
     FORM.set("WINDOW", "mouse");
     GAME.WIN_LEVEL = INI.FINAL_LEVEL + 1;
-
-   
   },
   configDungeon(waypoint = "entrance") {
     if (MAP[GAME.level].DUNGEON.type === "DUNGEON") {
@@ -2059,16 +1979,8 @@ var GAME = {
   over() {
     console.log("GAME OVER");
     AUDIO.Scream.play();
-    ENGINE.TEXT.centeredText(
-      "Rest In Peace",
-      INI.SCREEN_WIDTH,
-      INI.SCREEN_HEIGHT / 2
-    );
-    ENGINE.TEXT.centeredText(
-      "(ENTER)",
-      INI.SCREEN_WIDTH,
-      INI.SCREEN_HEIGHT / 2 + ENGINE.TEXT.RD.fs * 1.2
-    );
+    ENGINE.TEXT.centeredText("Rest In Peace", INI.SCREEN_WIDTH, INI.SCREEN_HEIGHT / 2);
+    ENGINE.TEXT.centeredText("(ENTER)", INI.SCREEN_WIDTH, INI.SCREEN_HEIGHT / 2 + ENGINE.TEXT.RD.fs * 1.2);
     ENGINE.TIMERS.stop();
     ENGINE.GAME.ANIMATION.resetTimer();
     ENGINE.GAME.ANIMATION.next(GAME.gameOverRun);
@@ -2080,14 +1992,14 @@ var GAME = {
       ENGINE.GAME.ANIMATION.waitThen(TITLE.startTitle);
     }
     let map = MAP[GAME.level].DUNGEON;
-    ENEMY.manage(lapsedTime, map, [HERO.invisible, HERO.dead]);
+    ENEMY_RC.manage(lapsedTime, map, [HERO.invisible, HERO.dead]);
     GAME.gameOverFrameDraw(lapsedTime);
   },
   gameOverFrameDraw(lapsedTime) {
     if (DEBUG._2D_display) {
       GAME.drawPlayer();
       GAME.drawKeys();
-      ENEMY.draw();
+      ENEMY_RC.draw();
       MISSILE.draw();
     }
 
@@ -2295,10 +2207,7 @@ var TITLE = {
     );
 
     let LN = INV.size();
-    let startIndex = Math.min(
-      (TITLE.stack.scrollIndex - TITLE.stack.scrollInRow / 2) | 0,
-      LN - TITLE.stack.scrollInRow
-    );
+    let startIndex = Math.min((TITLE.stack.scrollIndex - TITLE.stack.scrollInRow / 2) | 0, LN - TITLE.stack.scrollInRow);
     startIndex = Math.max(0, startIndex);
     let max = startIndex + Math.min(TITLE.stack.scrollInRow, LN);
     let y = TITLE.stack.SY;
@@ -2316,11 +2225,7 @@ var TITLE = {
 
       CTX.font = "10px Consolas";
       CTX.fillStyle = "#FFF";
-      CTX.fillText(
-        scroll.count.toString().padStart(2, "0"),
-        x + 32,
-        y + 18 + 4
-      );
+      CTX.fillText(scroll.count.toString().padStart(2, "0"), x + 32, y + 18 + 4);
 
       if (q === TITLE.stack.scrollIndex) {
         CTX.strokeStyle = "#FFF";
@@ -2481,29 +2386,9 @@ var TITLE = {
     CTX.fillText(`${GAME.gold.toString().padStart(6, "0")}`, 100, y);
   },
   clearAllLayers() {
-    ENGINE.layersToClear = new Set([
-      "title",
-      "Lside_background",
-      "potion",
-      "time",
-      "statusBars",
-      "stat",
-      "gold",
-      "view",
-      "sword",
-      "FPS",
-      "info",
-      "text",
-      "mouse",
-      "Rside_background",
-      "keys",
-      "minimap",
-      "scrolls",
-      "bottom_background",
-      "bottom_text",
-      "black",
-      "compassRose", "compassNeedle"
-    ]);
+    ENGINE.layersToClear = new Set(["title", "Lside_background", "potion", "time", "statusBars", "stat", "gold",
+      "view", "sword", "FPS", "info", "text", "mouse", "Rside_background", "keys", "minimap", "scrolls",
+      "bottom_background", "bottom_text", "black", "compassRose", "compassNeedle"]);
     ENGINE.clearLayerStack();
   },
   blackBackground() {
@@ -2512,36 +2397,10 @@ var TITLE = {
     ENGINE.fillLayer("Rside_background", "#000");
     let CTX = LAYER.title;
     CTX.fillStyle = "#000";
-    CTX.roundRect(
-      0,
-      0,
-      INI.SCREEN_WIDTH * 2,
-      INI.TITLE_HEIGHT,
-      {
-        upperLeft: 20,
-        upperRight: 20,
-        lowerLeft: 0,
-        lowerRight: 0
-      },
-      true,
-      true
-    );
+    CTX.roundRect(0, 0, INI.SCREEN_WIDTH * 2, INI.TITLE_HEIGHT, { upperLeft: 20, upperRight: 20, lowerLeft: 0, lowerRight: 0 }, true, true);
     CTX = LAYER.bottom_background;
     CTX.fillStyle = "#000";
-    CTX.roundRect(
-      0,
-      0,
-      INI.SCREEN_WIDTH * 2,
-      INI.BOTTOM_HEIGHT,
-      {
-        upperLeft: 0,
-        upperRight: 0,
-        lowerLeft: 20,
-        lowerRight: 20
-      },
-      true,
-      true
-    );
+    CTX.roundRect(0, 0, INI.SCREEN_WIDTH * 2, INI.BOTTOM_HEIGHT, { upperLeft: 0, upperRight: 0, lowerLeft: 20, lowerRight: 20 }, true, true);
   },
   startTitle() {
     $("#pause").prop("disabled", true);
@@ -2551,16 +2410,7 @@ var TITLE = {
     TITLE.firstTitle();
     let y = 104;
     let fs = 25;
-    let NameRD = new RenderData(
-      "DeepDown",
-      fs,
-      "#C0C0C0",
-      "black",
-      "#A9A9A9",
-      2,
-      2,
-      2
-    );
+    let NameRD = new RenderData("DeepDown", fs, "#C0C0C0", "black", "#A9A9A9", 2, 2, 2);
     ENGINE.TEXT.setRD(NameRD);
     ENGINE.TEXT.centeredText("by", INI.SCREEN_WIDTH, y);
     y += fs * 1.2;
@@ -2586,29 +2436,18 @@ var TITLE = {
     let buttonColors = new ColorInfo("#F00", "#A00", "#222", "#666", 10);
     let checkpointColors = new ColorInfo("#F0F", "#A0A", "#222", "#666", 10);
     let musicColors = new ColorInfo("#0E0", "#090", "#222", "#666", 10);
-    FORM.BUTTON.POOL.push(
-      new Button("Start new game", startBA, buttonColors, GAME.start)
-    );
+    FORM.BUTTON.POOL.push(new Button("Start new game", startBA, buttonColors, GAME.start));
 
     const sg = localStorage.getItem(PRG.SG);
     if (sg) {
       y += 1.5 * h;
       let resumeBA = new Area(x, y, w, h);
-      FORM.BUTTON.POOL.push(
-        new Button(
-          "Resume",
-          resumeBA,
-          checkpointColors,
-          GAME.checkpoint
-        )
-      );
+      FORM.BUTTON.POOL.push(new Button("Resume", resumeBA, checkpointColors, GAME.checkpoint));
     }
 
     y += 1.5 * h;
     let music = new Area(x, y, w, h);
-    FORM.BUTTON.POOL.push(
-      new Button("Play title music", music, musicColors, TITLE.music)
-    );
+    FORM.BUTTON.POOL.push(new Button("Play title music", music, musicColors, TITLE.music));
     FORM.BUTTON.draw();
     $(ENGINE.topCanvas).on(
       "mousemove",
@@ -2636,12 +2475,7 @@ var TITLE = {
   setTitleScroll() {
     const text = this.generateTitleText();
     const RD = new RenderData("DeepDown", 20, "#DAA520", "bottom_text");
-    const SQ = new Square(
-      0,
-      0,
-      LAYER.bottom_text.canvas.width,
-      LAYER.bottom_text.canvas.height
-    );
+    const SQ = new RectArea(0, 0, LAYER.bottom_text.canvas.width, LAYER.bottom_text.canvas.height);
     GAME.movingText = new MovingText(text, 2, RD, SQ);
   },
   generateEndingCredits() {
