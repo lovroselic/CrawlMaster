@@ -1156,7 +1156,43 @@ const ENGINE = {
         });
         return temp;
       }
-      function loadSequences(arrPath = LoadSequences) {
+      async function loadSequences(arrPath = LoadSequences) {
+        try {
+          if (!arrPath) return true;
+          console.log(`%c ...loading ${arrPath.length} sequences`, ENGINE.CSS);
+          var toLoad = [];
+
+          arrPath.forEach(function (el) {
+            ASSET[el.name] = new LiveSPRITE("1D", []);
+            for (let i = 1; i <= el.count; i++) {
+              toLoad.push({
+                srcName: el.srcName + "_" + i.toString().padStart(2, "0") + "." + el.type,
+                name: el.name + (i - 1).toString().padStart(2, "0"),
+                asset: el.name
+              });
+            }
+          });
+
+          ENGINE.LOAD.HMSequences = toLoad.length;
+          if (ENGINE.LOAD.HMSequences) appendCanvas("Sequences");
+
+          const obj = await Promise.all(
+            toLoad.map((img) => loadImage(img, "Sequences"))
+          );
+
+          obj.forEach(function (el) {
+            ENGINE.imgToSprite(el);
+            ENGINE.spriteToAsset(el);
+          });
+
+          return true;
+        } catch (error) {
+          console.error(`Failed to load sequences: ${error}`);
+          return false;
+        }
+      }
+
+      /*function loadSequences(arrPath = LoadSequences) {
         console.log(`%c ...loading ${arrPath.length} sequences`, ENGINE.CSS);
         var toLoad = [];
 
@@ -1183,7 +1219,7 @@ const ENGINE = {
           });
         });
         return temp;
-      }
+      }*/
       function loadPacks(arrPath = LoadPacks) {
         console.log(`%c ...loading ${arrPath.length} packs`, ENGINE.CSS);
         var toLoad = [];

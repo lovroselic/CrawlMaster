@@ -469,9 +469,7 @@ class Staircase {
     }
     this.width = SPRITE[this.sprite].width / 2;
     this.facePosition = this.parent.calcPosition(type.position);
-    [this.drawPosition, this.leftDraw, this.rightDraw] = DECAL.drawPosition(
-      this
-    );
+    [this.drawPosition, this.leftDraw, this.rightDraw] = DECAL.drawPosition(this);
     this.visible = false;
   }
   show() {
@@ -788,7 +786,7 @@ var INI = {
   FINAL_LEVEL: 10,
 };
 var PRG = {
-  VERSION: "1.04",
+  VERSION: "1.06",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
