@@ -15,10 +15,10 @@ known bugs:
  */
 ////////////////////////////////////////////////////
 
-var DEBUG = {
-  _2D_display: false,
-  FPS: false,
-  SETTING: false,
+const DEBUG = {
+  _2D_display: true,
+  FPS: true,
+  SETTING: true,
   BUTTONS: false,
   VERBOSE: false,
   LOAD: false,
@@ -745,7 +745,7 @@ class LiftingGate {
   }
 }
 
-var INI = {
+const INI = {
   MAXINT: 96,
   MININT: 10,
   MAXGOLD: 99,
@@ -785,16 +785,16 @@ var INI = {
   MM_reveal_radius: 4,
   FINAL_LEVEL: 10,
 };
-var PRG = {
+const PRG = {
   VERSION: "1.07.01",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
   CSS: "color: #239AFF;",
   INIT() {
-    console.log(`${PRG.NAME} ${PRG.VERSION} by Lovro Selic, (c) C00lSch00l ${PRG.YEAR} on ${navigator.userAgent}`);
+    console.log(`${PRG.NAME} ${PRG.VERSION} by Lovro Selic, (c) LaughingSkull ${PRG.YEAR} on ${navigator.userAgent}`);
     $("#title").html(PRG.NAME);
-    $("#version").html(`${PRG.NAME} V${PRG.VERSION} <span style='font-size:14px'>&copy</span> C00lSch00l ${PRG.YEAR}`);
+    $("#version").html(`${PRG.NAME} V${PRG.VERSION} <span style='font-size:14px'>&copy</span> LaughingSkull ${PRG.YEAR}`);
     $("input#toggleAbout").val("About " + PRG.NAME);
     $("#about fieldset legend").append(" " + PRG.NAME + " ");
 
@@ -806,32 +806,15 @@ var PRG = {
   },
   setup() {
     console.log("PRG.setup");
-    if (DEBUG.SETTING) {
-      $('#debug').show();
-    } else $('#debug').hide();
-    $("#gridsize").val(INI.GRIDSIZE);
-    $("#gridsize").change(GAME.resizeGrid);
+
     $("#engine_version").html(ENGINE.VERSION);
     $("#grid_version").html(GRID.VERSION);
     $("#maze_version").html(DUNGEON.VERSION);
     $("#raycast_version").html(RAYCAST.VERSION);
     $("#ai_version").html(AI.VERSION);
     $("#lib_version").html(LIB.VERSION);
-    $("#screen_width").html(INI.SCREEN_WIDTH);
-    $("#screen_height").html(INI.SCREEN_HEIGHT);
+    $("#iam_version").html(IndexArrayManagers.VERSION);
 
-    $("#walltexture").change(function () {
-      ENGINE.fill(LAYER.wallcanvas, TEXTURE[$("#walltexture")[0].value]);
-      GAME.applyTextures();
-    });
-    $("#floortexture").change(function () {
-      ENGINE.fill(LAYER.floorcanvas, TEXTURE[$("#floortexture")[0].value]);
-      GAME.applyTextures();
-    });
-    $("#ceilingtexture").change(function () {
-      ENGINE.fill(LAYER.ceilingcanvas, TEXTURE[$("#ceilingtexture")[0].value]);
-      GAME.applyTextures();
-    });
 
     $("#toggleHelp").click(function () {
       $("#help").toggle(400);
@@ -839,6 +822,10 @@ var PRG = {
     $("#toggleAbout").click(function () {
       $("#about").toggle(400);
     });
+    $("#toggleVersion").click(function () {
+      $("#debug").toggle(400);
+    });
+
   },
   start() {
     console.log(PRG.NAME + " started.");
@@ -855,7 +842,7 @@ var PRG = {
     TITLE.startTitle();
   }
 };
-var HERO = {
+const HERO = {
   construct() {
     this.resetVision();
     this.visible();
@@ -1313,7 +1300,7 @@ var HERO = {
     }
   }
 };
-var SWORD = {
+const SWORD = {
   init(picture, layer) {
     this.picture = picture;
     this.layer = layer;
@@ -1425,7 +1412,7 @@ var SWORD = {
     }
   }
 };
-var GAME = {
+const GAME = {
   clearInfo() {
     ENGINE.clearLayer("info");
   },
@@ -1928,26 +1915,6 @@ var GAME = {
       );
     }
 
-    for (var prop in TEXTURE) {
-      $("#walltexture").append(
-        "<option value='" + prop + "'>" + prop + "</option>"
-      );
-      $("#floortexture").append(
-        "<option value='" + prop + "'>" + prop + "</option>"
-      );
-      $("#ceilingtexture").append(
-        "<option value='" + prop + "'>" + prop + "</option>"
-      );
-    }
-    $("#walltexture").val("CastleWall");
-    $("#floortexture").val("RockFloor");
-    $("#ceilingtexture").val("MorgueFloor");
-    LAYER.wallcanvas = $("#wallcanvas")[0].getContext("2d");
-    LAYER.floorcanvas = $("#floorcanvas")[0].getContext("2d");
-    LAYER.ceilingcanvas = $("#ceilingcanvas")[0].getContext("2d");
-    ENGINE.fill(LAYER.wallcanvas, TEXTURE[$("#walltexture")[0].value]);
-    ENGINE.fill(LAYER.floorcanvas, TEXTURE[$("#floortexture")[0].value]);
-    ENGINE.fill(LAYER.ceilingcanvas, TEXTURE[$("#ceilingtexture")[0].value]);
 
     ENGINE.TEXT.RD = new RenderData("DeepDown", 50, "#FFF", "text", "#333", 2, 2, 2);
     FORM.set("WINDOW", "mouse");
@@ -2008,7 +1975,7 @@ var GAME = {
     }
   }
 };
-var TITLE = {
+const TITLE = {
   stack: {
     delta2: 48,
     delta3: 48, //48
@@ -2463,7 +2430,7 @@ var TITLE = {
   },
   generateTitleText() {
     let text = `${PRG.NAME} ${PRG.VERSION
-      }, a game by Lovro Selic, ${"\u00A9"} C00lSch00l ${PRG.YEAR
+      }, a game by Lovro Selic, ${"\u00A9"} LaughingSkull ${PRG.YEAR
       }.  Music: Laughing Skull written and performed by LaughingSkull, ${"\u00A9"} 2006 Lovro Selic. `;
     text +=
       "     ENGINE, MAZE, GRID, AI, RAYCASTER, SAVE GAME and GAME code by Lovro Selic using JavaScript. ";
@@ -2516,7 +2483,7 @@ var TITLE = {
   }
 
 };
-var TURN = {
+const TURN = {
   damage(attacker, defender) {
     if (attacker.attack === 0) return 0;
     let delta = attacker.attack - defender.defense;
