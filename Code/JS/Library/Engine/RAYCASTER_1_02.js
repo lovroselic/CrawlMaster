@@ -18,7 +18,7 @@ TODO:
 
 
 /** Raycaster main */
-var ROM = {
+const ROM = {
   staticPools: ["FLOOR_OBJECT_WIDE", "DECAL", "ENEMY_RC"],
   dinamicPools: ["DESTRUCTION_ANIMATION", "CHANGING_ANIMATION", "MISSILE"],
   linkMap(dungeon) {
@@ -39,7 +39,8 @@ var ROM = {
     }
   }
 };
-var CAMERA = {
+
+const CAMERA = {
   FOV: 70,
   dir: null,
   transformX: null,
@@ -58,7 +59,8 @@ var CAMERA = {
     this.Z = z;
   },
 };
-var PLAYER = {
+
+const PLAYER = {
   size: 0.5,
   pos: null,
   dir: null,
@@ -204,8 +206,9 @@ var PLAYER = {
   //proxy references
   hitByMissile: null
 };
-var RAYCAST = {
-  VERSION: "1.02",
+
+const RAYCAST = {
+  VERSION: "1.02.01",
   CSS: "color: gold",
   MAP: null,
   spriteSources: [ENEMY_RC, MISSILE, DESTRUCTION_ANIMATION, FLOOR_OBJECT_WIDE, CHANGING_ANIMATION],
@@ -746,7 +749,8 @@ var RAYCAST = {
     return ratio;
   }
 };
-var RAY_MOUSE = {
+
+const RAY_MOUSE = {
   floorSources: [FLOOR_OBJECT_WIDE],
   wallSources: [DECAL],
   initialize(id) {
@@ -841,5 +845,6 @@ var RAY_MOUSE = {
     return objects;
   }
 };
+
 //END
 console.log(`%cRAYCAST ${RAYCAST.VERSION} loaded.`, RAYCAST.CSS);

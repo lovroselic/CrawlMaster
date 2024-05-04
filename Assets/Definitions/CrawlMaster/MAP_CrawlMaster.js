@@ -1,4 +1,4 @@
-var DECAL_PAINTINGS = ["AA1", "AA2", "AA3", "AA4", "AA5", "AA7", "AA8", "AA9", "AMC", "Amberstar", "Apshai", "ArcticShipwreck", "Arena",
+const DECAL_PAINTINGS = ["AA1", "AA2", "AA3", "AA4", "AA5", "AA7", "AA8", "AA9", "AMC", "Amberstar", "Apshai", "ArcticShipwreck", "Arena",
   "Aztec", "BC1", "BFF", "Bagitman", "Barbarian1", "Barbarian5", "BeachHead", "Blackwyche", "BlueMax", "BlueMax2", "BlueMax3", "BoogaBoo1", "BoogaBoo3",
   "C64", "CH1", "CSB1", "CW1", "CW10", "CW2", "CW3", "CW5", "CW6", "Castle", "CastleTerror", "Cavelon", "Cavelon3", "Choplifter", "Commando2",
   "CrystalCastles", "Cuthbert1", "CyberPunk1", "DDID2", "DK", "DK2", "DM1", "DM11", "DM12", "DM13", "DM2", "DM3", "DM4", "DM5", "DM6", "DM7",
@@ -24,14 +24,15 @@ var DECAL_PAINTINGS = ["AA1", "AA2", "AA3", "AA4", "AA5", "AA7", "AA8", "AA9", "
   "SirFred2", "SirFred3", "SuperDogfight", "SuperDogfight2", "Unknown1", "BattleThroughTime", "BOF3", "Chopper2", "Cliffhanger", "F1", "IM10", "MoonPatrol", "SummerGames10"
 ];
 //console.log("DECAL_PAINTINGS", DECAL_PAINTINGS.sort());
-var DECAL_CRESTS = ["Crest", "Web2", "Web1", "SkeletonOnTheWall", "Torch", "Web4", "Web6", "Web5", "LS", "Ivy2", "Ivy1", "PrayingSkeleton",
+
+const DECAL_CRESTS = ["Crest", "Web2", "Web1", "SkeletonOnTheWall", "Torch", "Web4", "Web6", "Web5", "LS", "Ivy2", "Ivy1", "PrayingSkeleton",
   "Skull4", "Skull3", "Skull2", "Skull1", "skeletonDance", "Crack5", "Crack4", "Crack3", "HangingSkeleton", "DragonAndSword", "Candles1",
   "SpiderWeb7", "KnightStatue2", "WallSkell", "Crack7", "Crack6", "KnightStatue", "Ivy3", "Ivy4"
 ];
 //console.log("DECAL_CRESTS", DECAL_CRESTS.sort());
 
 //types
-var COMMON_ITEM_TYPE = {
+const COMMON_ITEM_TYPE = {
   GoldKey: {
     class: "GoldKey",
     inventorySprite: "GoldKeyBig",
@@ -105,14 +106,16 @@ var COMMON_ITEM_TYPE = {
     status: "mana"
   }
 };
-var FLOOR_CONTAINER_TYPE = {
+
+const FLOOR_CONTAINER_TYPE = {
   Chest: {
     class: "ChestClosed",
     classClosed: "ChestClosed",
     classOpen: "ChestOpen"
   }
 };
-var MONSTER = {
+
+const MONSTER = {
   SlowSkeletonTest: {
     class: "Skeleton",
     moveSpeed: 2.0,
@@ -1181,7 +1184,8 @@ var MONSTER = {
     behaviourArguments: [6, ["wanderer"], 4, ["follower"]],
   },
 };
-var MISSILE_TYPE = {
+
+const MISSILE_TYPE = {
   Fireball: {
     class: "Fireball",
     moveSpeed: 10.0,
@@ -1189,7 +1193,8 @@ var MISSILE_TYPE = {
     base: 0
   }
 };
-var DECAL_TYPE = {
+
+const DECAL_TYPE = {
   Painting: {
     spriteSource: DECAL_PAINTINGS,
     position: ["top", "center"]
@@ -1199,7 +1204,8 @@ var DECAL_TYPE = {
     position: ["center", "center"]
   }
 };
-var SHRINE_TYPE = {
+
+const SHRINE_TYPE = {
   AttackShrine: {
     sprite: "AttackShrine",
     position: ["center", "center"],
@@ -1219,7 +1225,8 @@ var SHRINE_TYPE = {
     skill: "magic"
   }
 };
-var GATE_TYPE = {
+
+const GATE_TYPE = {
   WoodenGate: {
     sprite: "WoodenDoor",
     position: ["center", "center"],
@@ -1249,7 +1256,8 @@ var GATE_TYPE = {
     color: "Red"
   }
 };
-var STAIRCASE_TYPE = {
+
+const STAIRCASE_TYPE = {
   UP: {
     sprite: "UpStairs",
     position: ["center", "center"],
@@ -1269,8 +1277,10 @@ var STAIRCASE_TYPE = {
     direction: 0
   }
 };
-var DECAL_TYPES_COLLECTION = [DECAL_TYPE.Painting, DECAL_TYPE.Crest];
-var DESTRUCTION_TYPE = {
+
+const DECAL_TYPES_COLLECTION = [DECAL_TYPE.Painting, DECAL_TYPE.Crest];
+
+const DESTRUCTION_TYPE = {
   Explosion: {
     class: "Explosion",
     SPRITE_FPS: 60
@@ -1296,7 +1306,8 @@ var DESTRUCTION_TYPE = {
     SPRITE_FPS: 60
   }
 };
-var SCROLL_TYPE = {
+
+const SCROLL_TYPE = {
   Light: 130,
   Invisibility: 100,
   Map: 100,
@@ -1312,7 +1323,8 @@ var SCROLL_TYPE = {
   Luck: 100,
   HalfLife: 50
 };
-var MAP = {
+
+const MAP = {
   1: {
     width: 37,
     height: 37,
@@ -1384,7 +1396,8 @@ var MAP = {
     wall: "StoneFloor3"
   }
 };
-var MOSTER_LAYOUT = {
+
+const MOSTER_LAYOUT = {
   1: {
     start: {
       N: 1,
@@ -1924,7 +1937,8 @@ var MOSTER_LAYOUT = {
     }
   },
 };
-var SPAWN = {
+
+const SPAWN = {
   INI: {
     health_potions_per_level: 6,
     mana_potions_per_level: 7,

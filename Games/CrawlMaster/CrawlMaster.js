@@ -786,7 +786,7 @@ const INI = {
   FINAL_LEVEL: 10,
 };
 const PRG = {
-  VERSION: "1.07.02",
+  VERSION: "1.07.03",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -2382,8 +2382,8 @@ const TITLE = {
     ENGINE.TEXT.centeredText("Lovro Selic", INI.SCREEN_WIDTH, y);
     y += fs * 1.2;
     ENGINE.resetShadow(LAYER.black);
-    let x = ((INI.SCREEN_WIDTH - SPRITE.Title.width) / 2) | 0;
-    ENGINE.draw("black", x, y, SPRITE.Title);
+    let x = ((INI.SCREEN_WIDTH - TEXTURE.Title.width) / 2) | 0;
+    ENGINE.draw("black", x, y, TEXTURE.Title);
 
     TITLE.drawButtons();
     TITLE.setTitleScroll();
