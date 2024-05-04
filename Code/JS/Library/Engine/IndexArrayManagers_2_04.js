@@ -381,19 +381,14 @@ class Decal_IA extends IAM {
         }
     }
     drawPosition(instance) {
-        console.warn("instance", SPRITE[instance.sprite])
         let resolution = RAYCAST.divineResolution(SPRITE[instance.sprite]);
         if (resolution > RAYCAST.MIN_DECAL_RESOLUTION) resolution *= 2;
         const reducingFactor = resolution / RAYCAST.MIN_DECAL_RESOLUTION;
-        console.info("IAM resolution", resolution, "reducingFactor", reducingFactor);
-        //throw "HERE";
-
         let drawPosition = new FP_Grid();
         let leftPosition = new FP_Grid();
         let rightPosition = new FP_Grid();
-        //let widthFactor = instance.width / RAYCAST.INI.BLOCK_SIZE;
-        let widthFactor = instance.width / RAYCAST.INI.BLOCK_SIZE /  reducingFactor; //reducing factor
-        console.warn("widthFactor", widthFactor);
+        let widthFactor = instance.width / RAYCAST.INI.BLOCK_SIZE /  reducingFactor;
+        
         let dims = ["x", "y"];
         for (const [i, comp] of dims.entries()) {
             if (instance.facingDir[comp] === 0) {

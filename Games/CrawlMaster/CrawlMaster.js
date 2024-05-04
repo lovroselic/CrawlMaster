@@ -16,10 +16,10 @@ known bugs:
 ////////////////////////////////////////////////////
 
 const DEBUG = {
-  _2D_display: true,
+  _2D_display: false,
   FPS: true,
   SETTING: true,
-  BUTTONS: false,
+  BUTTONS: true,
   VERBOSE: false,
   LOAD: false,
   clearEnemies() {
@@ -787,7 +787,7 @@ const INI = {
 };
 
 const PRG = {
-  VERSION: "1.07.05",
+  VERSION: "1.07.06",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -843,6 +843,7 @@ const PRG = {
     TITLE.startTitle();
   }
 };
+
 const HERO = {
   construct() {
     this.resetVision();
@@ -1301,6 +1302,7 @@ const HERO = {
     }
   }
 };
+
 const SWORD = {
   init(picture, layer) {
     this.picture = picture;
@@ -1413,6 +1415,7 @@ const SWORD = {
     }
   }
 };
+
 const GAME = {
   clearInfo() {
     ENGINE.clearLayer("info");
@@ -1976,6 +1979,7 @@ const GAME = {
     }
   }
 };
+
 const TITLE = {
   stack: {
     delta2: 48,
@@ -2484,6 +2488,7 @@ const TITLE = {
   }
 
 };
+
 const TURN = {
   damage(attacker, defender) {
     if (attacker.attack === 0) return 0;

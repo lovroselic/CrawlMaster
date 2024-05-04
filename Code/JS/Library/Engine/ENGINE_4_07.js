@@ -2702,7 +2702,11 @@ const ENGINE = {
       CTX.lineWidth = 1;
       CTX.miterLimit = 1;
       CTX.lineJoin = "round";
-      this._circle(CTX, Vector3.to_FP_Grid(player.pos), player.r, Vector3.to_FP_Grid(player.dir));
+      if (player.pos.constructor === FP_Grid) {
+        this._circle(CTX, player.pos, player.r, player.dir);
+      } else {
+        this._circle(CTX, Vector3.to_FP_Grid(player.pos), player.r, Vector3.to_FP_Grid(player.dir));
+      }
     },
     _circle(CTX, grid, R, dir, color = null) {
       if (color) CTX.strokeStyle = color;
