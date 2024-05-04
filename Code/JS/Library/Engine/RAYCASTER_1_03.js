@@ -65,7 +65,7 @@ const PLAYER = {
   pos: null,
   dir: null,
   rotationResolution: 64,
-  moveSpeed: 4.0, // grids/s
+  moveSpeed: 5.0, // grids/s
   initialize(start, dir) {
     PLAYER.pos = start;
     PLAYER.dir = dir;
@@ -208,7 +208,7 @@ const PLAYER = {
 };
 
 const RAYCAST = {
-  VERSION: "1.02.01",
+  VERSION: "1.03.00",
   CSS: "color: gold",
   MAP: null,
   spriteSources: [ENEMY_RC, MISSILE, DESTRUCTION_ANIMATION, FLOOR_OBJECT_WIDE, CHANGING_ANIMATION],
@@ -216,6 +216,8 @@ const RAYCAST = {
   SCREEN_WIDTH: null,
   SCREEN_HEIGHT: null,
   TEX_SIZE: 64,
+  MAX_DECAL_RESOLUTION: 256, // post CrawmMaster II, CCC change
+  MIN_DECAL_RESOLUTION: 128, // post CrawmMaster II, CCC change
   INI: {
     BLOCK_SIZE: 64,
     MAX_DISTANCE: 8,
@@ -585,15 +587,32 @@ const RAYCAST = {
       }
     }
   },
+  divineResolution(pic) {
+    let maxDimension = Math.max(pic.width, pic.height);
+    let resolution = 2 ** (Math.ceil(Math.log2(maxDimension)));
+    return Math.max(resolution, RAYCAST.MIN_DECAL_RESOLUTION);
+  },
   drawDecal(decal) {
+    console.info("decal", decal)
     decal.distance = decal.drawPosition.EuclidianDistance(PLAYER.pos);
     decal.hide();
-    let imageData = decal.getImageData();
-    let vScale = imageData.height / RAYCAST.INI.BLOCK_SIZE / 2;
+    const imageData = decal.getImageData();
+
+    let resolution = RAYCAST.divineResolution(imageData);
+    if (resolution > RAYCAST.MIN_DECAL_RESOLUTION) resolution *= 2;
+    const reducingFactor = resolution / RAYCAST.MIN_DECAL_RESOLUTION;
+
+    console.log(resolution, "reducingFactor", reducingFactor);
+
+    const vScale = imageData.height / RAYCAST.INI.BLOCK_SIZE / 2 / reducingFactor;
+
+    console.warn("vScale", vScale, imageData.height, "RAYCAST.INI.BLOCK_SIZE", RAYCAST.INI.BLOCK_SIZE, "RAYCAST.TEX_SIZE", RAYCAST.TEX_SIZE);
+
     let leftRel = decal.leftDraw.sub(PLAYER.pos);
     CAMERA.transform(leftRel);
     let drawStartX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawStartX = Math.max(drawStartX_abs, 0);
+    console.log("drawStartX", drawStartX);
     if (drawStartX >= RAYCAST.SCREEN_WIDTH) {
       return;
     }
@@ -602,14 +621,18 @@ const RAYCAST = {
     CAMERA.transform(rightRel);
     let drawEndX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
+    console.log("drawEndX", drawEndX);
     if (drawEndX < 0) {
       return;
     }
+
+    console.log("drawEndX- drawStartX", drawEndX - drawStartX);
 
     let decalRel = decal.drawPosition.sub(PLAYER.pos);
     CAMERA.transform(decalRel);
 
     let verticalMove = Math.floor((RAYCAST.INI.BLOCK_SIZE * (decal.facePosition.y - 0.5)) / vScale / CAMERA.transformDepth);
+    console.log("verticalMove", verticalMove);
 
     for (let stripe = drawStartX; stripe < drawEndX; stripe++) {
       let closeGrid = RAYCAST.DATA.GRID_BUFFER[stripe];
@@ -648,6 +671,7 @@ const RAYCAST = {
         }
       }
     }
+    //throw ("DEBUG");
   },
   drawFlatSprite(decal) {
     let initialGrid = FP_Grid.toClass(Grid.toClass(decal.moveState.pos));
