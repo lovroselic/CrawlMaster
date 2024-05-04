@@ -51,6 +51,7 @@ const CAMERA = {
     CAMERA.minPerspective = Math.cos(Math.radians((90 + this.FOV) / 2));
   },
   transform(spritePos) {
+    //let invDet = 1.0 / (CAMERA.dir.x * PLAYER.dir.y - PLAYER.dir.x * CAMERA.dir.y);
     let invDet = 1.0 / (CAMERA.dir.x * PLAYER.dir.y - PLAYER.dir.x * CAMERA.dir.y);
     CAMERA.transformX = invDet * (PLAYER.dir.y * spritePos.x - PLAYER.dir.x * spritePos.y);
     CAMERA.transformDepth = invDet * (-CAMERA.dir.y * spritePos.x + CAMERA.dir.x * spritePos.y);
@@ -610,6 +611,7 @@ const RAYCAST = {
 
     let leftRel = decal.leftDraw.sub(PLAYER.pos);
     CAMERA.transform(leftRel);
+    //let drawStartX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawStartX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawStartX = Math.max(drawStartX_abs, 0);
     console.log("drawStartX", drawStartX);
@@ -619,6 +621,7 @@ const RAYCAST = {
 
     let rightRel = decal.rightDraw.sub(PLAYER.pos);
     CAMERA.transform(rightRel);
+    //let drawEndX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawEndX_abs = Math.floor((RAYCAST.SCREEN_WIDTH / 2) * (1 + CAMERA.transformX / CAMERA.transformDepth));
     let drawEndX = Math.min(drawEndX_abs, RAYCAST.SCREEN_WIDTH - 1);
     console.log("drawEndX", drawEndX);
