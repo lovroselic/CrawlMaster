@@ -30,6 +30,9 @@ const DEBUG = {
     let last = map.findRoom("Gold");
     let target = map.findSpace(last.area);
     PLAYER.pos = Grid.toCenter(target);
+  },
+  goto(grid) {
+    PLAYER.pos = Grid.toCenter(grid);
   }
 };
 
@@ -787,7 +790,7 @@ const INI = {
 };
 
 const PRG = {
-  VERSION: "1.07.07",
+  VERSION: "1.07.08",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
@@ -874,6 +877,36 @@ const HERO = {
       this.attributesForSaveGame.push(`HERO.${P}`);
     }
     PLAYER.hitByMissile = HERO.hitByMissile;
+  },
+  depth1() {
+    GAME.level = 1;
+    GAME.upperLimit = GAME.level;
+    GAME.gold = 9999;
+    this.maxHealth = 999;
+    this.maxMana = 999;
+    this.health = 999;
+    this.mana = 999;
+    this.defense = 99;
+    this.reference_defense = this.defense;
+    this.attack = 99;
+    this.reference_attack = this.attack;
+    this.magic = 99;
+    this.reference_magic = this.magic;
+    this.attackExp = 43;
+    this.defenseExp = 30;
+    this.magicExp = 165;
+    this.attackExpGoal = 225;
+    this.defenseExpGoal = 100;
+    this.magicExpGoal = 225;
+    this.inventory.potion.red = 99;
+    this.inventory.potion.blue = 99;
+    let scrolls = ["DrainMana", "DrainMana", "Luck", "Map", "Map", "BoostArmor"];
+    for (let scr of scrolls) {
+      let scroll = new Scroll(scr);
+      HERO.inventory.scroll.add(scroll);
+    }
+    TITLE.stack.scrollIndex = Math.max(TITLE.stack.scrollIndex, 0);
+    TITLE.scrolls();
   },
   depth2() {
     GAME.level = 2;
@@ -1492,7 +1525,7 @@ const GAME = {
       console.log("FORCE LOAD FROM DEBUG!!");
       console.log("########################");
       HERO.inventory.scroll.clear();
-      HERO.depth10();
+      HERO.depth1();
       //HERO.depth9();
     }
 
