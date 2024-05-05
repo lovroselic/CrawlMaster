@@ -537,4 +537,4 @@ var MISSILE = new Missile_RC();
 var DECAL = new Decal_IA();
 /** *********************************************** */
 
-console.log(`%cIndexArrayManagers (IAM) ${IndexArrayManagers.version} ready.`, "color: #7FFFD4");
+console.log(`%cIndexArrayManagers (IAM) ${IndexArrayManagers.VERSION} ready.`, "color: #7FFFD4");

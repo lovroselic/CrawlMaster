@@ -17,9 +17,9 @@ known bugs:
 
 const DEBUG = {
   _2D_display: false,
-  FPS: true,
+  FPS: false,
   SETTING: true,
-  BUTTONS: true,
+  BUTTONS: false,
   VERBOSE: false,
   LOAD: false,
   clearEnemies() {
@@ -790,7 +790,7 @@ const INI = {
 };
 
 const PRG = {
-  VERSION: "1.07.08",
+  VERSION: "1.08",
   NAME: "Crawl Master",
   YEAR: "2021",
   SG: "CrawlMaster",
